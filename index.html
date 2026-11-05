@@ -161,6 +161,60 @@
   .note summary{cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:14px}
   .note summary span{color:var(--sub);font-size:12px;flex:none}
   .sh{font-size:15px;margin:20px 0 8px}
+  .qz{border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:10px;background:#fff}
+  .qz.ok{border-color:#111}
+  .qz.no{border-color:#b00020}
+  .qz-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:14px;font-size:14px}
+  .qz-head span{color:var(--sub);font-size:12px;flex:none}
+  .qz-q{font-weight:600;font-size:15px;margin-bottom:8px;line-height:1.5}
+  .qz-c{display:grid;gap:6px}
+  .qc{text-align:left;border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 10px;font-size:14px;font-family:inherit;cursor:pointer;color:var(--ink);line-height:1.4}
+  .qc.pick{background:var(--dark);color:#fff;border-color:var(--dark)}
+  .qc.ans{border:2px solid #111;font-weight:600}
+  .qc.bad{background:#fbe9eb;color:#b00020;border-color:#b00020}
+  .qc:disabled{cursor:default}
+  .qz-x{font-size:13px;color:var(--sub);margin-top:8px;line-height:1.5}
+  .qz-x b{color:var(--ink)}
+  .qz-sum{margin:14px 0 4px;font-weight:600;line-height:1.5}
+  .ev.ex{background:#111;color:#fff;border-left-color:#111;font-weight:600}
+  .ev.pl{background:#fff;border:1px dashed #9e9e9e;border-left:3px solid #9e9e9e}
+  .plan-d{font-size:14px;padding:6px 0;border-bottom:1px solid var(--soft);display:grid;grid-template-columns:86px 1fr;gap:8px}
+  .plan-d b{font-variant-numeric:tabular-nums}
+  .uni{position:relative;height:min(72vh,640px);min-height:420px;background:#000;border-radius:12px;overflow:hidden}
+  .uni canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+  .uni-count{position:absolute;left:14px;top:12px;color:#fff;font-size:13px;pointer-events:none;text-shadow:0 0 6px #000}
+  .uni-hint{position:absolute;left:14px;right:14px;bottom:12px;color:rgba(255,255,255,.55);font-size:12px;pointer-events:none}
+  .uni-card{position:absolute;right:12px;top:12px;width:min(300px,calc(100% - 24px));background:rgba(18,18,18,.94);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:14px;display:none}
+  .uni-card.show{display:block}
+  .uni-card .btn{background:#fff;color:#111;border-color:#fff}
+  .uni-card .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+  .uni-empty{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#ddd;text-align:center;padding:20px;font-size:14px;line-height:1.6}
+  .uni-empty.show{display:flex}
+  .uni-empty .btn{background:#fff;color:#111;border-color:#fff}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .tile{border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#fff}
+  .tile b{display:block;font-size:24px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .tile span{font-size:12px;color:var(--sub)}
+  .an-h{font-size:15px;margin:22px 0 4px}
+  .an-s{font-size:12px;color:var(--sub);margin-bottom:8px}
+  .hb{display:grid;grid-template-columns:84px 1fr 104px;gap:10px;align-items:center;font-size:13px;margin:9px 0}
+  .hb .tr{height:10px;background:var(--soft);border-radius:5px;overflow:hidden}
+  .hb .fl{height:100%;background:var(--dark);border-radius:0 4px 4px 0}
+  .hb.low .fl{background:#bdbdbd}
+  .hb .v{color:var(--sub);font-variant-numeric:tabular-nums}
+  .vb{display:flex;align-items:flex-end;gap:4px;height:150px}
+  .vb div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;padding-top:18px;position:relative;outline:none}
+  .vb i{display:block;width:100%;max-width:22px;background:var(--dark);border-radius:4px 4px 0 0;min-height:2px}
+  .vb div.zero i{background:var(--line)}
+  .vb small{font-size:10px;color:var(--sub);margin-top:4px}
+  .vb em{position:absolute;top:0;font-style:normal;font-size:11px;white-space:nowrap;color:var(--ink);opacity:0}
+  .vb div.lbl em,.vb div:hover em,.vb div:focus em{opacity:1}
+  .an-tb{width:100%;border-collapse:collapse;font-size:13px}
+  .an-tb th,.an-tb td{border-bottom:1px solid var(--soft);padding:8px 6px;text-align:right;font-variant-numeric:tabular-nums}
+  .an-tb th:first-child,.an-tb td:first-child{text-align:left}
+  .an-tb th{color:var(--sub);font-weight:600}
+  .ins{padding-left:18px;font-size:14px;line-height:1.7}
+  .demo-bar{background:var(--dark);color:#fff;padding:8px 12px;border-radius:6px;font-size:13px;margin-bottom:12px}
   .soon{color:var(--sub);font-size:14px}
 </style>
 </head>
@@ -170,6 +224,8 @@
   <button data-t="tt" class="on">시간표</button>
   <button data-t="cal">달력</button>
   <button data-t="tm">타이머</button>
+  <button data-t="uni">우주</button>
+  <button data-t="an">분석</button>
   <button data-t="vocab">단어</button>
   <button data-t="lk">링크 모음</button>
   <button data-t="rec">강의 정리</button>
@@ -201,6 +257,46 @@
     </div>
     <ul class="list" id="evList"></ul>
   </div>
+  <h3 class="sh">시험 기간 학습 계획</h3>
+  <div class="card">
+    <div class="row">
+      <input id="exSub" list="subjList" placeholder="과목 (예: 약리학)">
+      <input id="exDate" type="date" style="flex:0 0 160px" aria-label="시험 날짜">
+      <label class="tmn">하루 <input id="exMin" type="number" min="20" max="720" value="120"> 분</label>
+    </div>
+    <textarea id="exScope" style="min-height:80px" placeholder="시험 범위 (예: 1~4장, 심혈관계 약물, 5~9주차 강의)"></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn" id="exGo">AI 계획 만들기</button><button class="btn ghost" id="exApply" style="display:none">달력에 넣기</button></div>
+    <p class="soon" id="exMsg">퀴즈에서 틀린 개념과 나에게 맞는 공부 방식을 반영해서 시험 전날까지 계획을 짜요.</p>
+    <div id="exPrev"></div>
+    <h4 style="font-size:14px;margin:16px 0 4px">다가오는 시험</h4>
+    <ul class="list" id="exList"></ul>
+  </div>
+</section>
+
+<section id="uni">
+  <h2>우주</h2>
+  <div class="row" style="align-items:center">
+    <div class="seg" id="uniTheme"><button data-th="galaxy">은하</button><button data-th="hole">블랙홀</button></div>
+    <select id="uniSub" aria-label="과목"></select>
+    <button class="btn ghost" id="uniAdd">개념 추가</button>
+    <button class="btn ghost" id="uniReset">원래 크기</button>
+    <button class="btn ghost" id="uniDemo">예시 우주 보기</button>
+  </div>
+  <div class="uni" id="uniBox">
+    <canvas id="uniCv" role="img" aria-label="개념 별 지도"></canvas>
+    <div class="uni-count" id="uniCount"></div>
+    <div class="uni-hint">두 손가락으로 오므리거나 마우스 휠을 내리면 별이 모여요 · 벌리거나 휠을 올리면 확대 · 별을 누르면 설명</div>
+    <div class="uni-card" id="uniCard"></div>
+    <div class="uni-empty" id="uniEmpty"><p>아직 별이 없어요.<br>PDF 문제나 강의 퀴즈를 만들면 개념이 별로 떠올라요.</p><button class="btn" id="uniDemo2">예시 우주 보기</button></div>
+  </div>
+  <p class="soon" style="margin-top:8px">별 하나가 개념 하나예요. 퀴즈에서 그 개념 문제를 맞히면 은하에 합쳐지고, 블랙홀 모드에서는 빨려 들어가 사라져요. 틀리면 다시 바깥으로 나와요.</p>
+</section>
+
+<section id="an">
+  <h2>분석</h2>
+  <div class="row"><button class="btn ghost" id="anDemo">예시 데이터로 보기</button><button class="btn" id="anAI">AI 조언 받기</button></div>
+  <div id="anBody"></div>
+  <div class="card" style="margin-top:16px"><b style="font-size:14px">AI 조언</b><p class="soon" id="anAIMsg" style="margin-top:6px">버튼을 누르면 내 기록을 바탕으로 공부 방식을 조언해줘요.</p><div class="out" id="anAIOut"></div></div>
 </section>
 
 <section id="tm">
@@ -247,12 +343,15 @@
       <button class="btn" id="recBtn">녹음 시작</button>
     </div>
     <textarea id="recText" placeholder="녹음하면 여기에 글자로 나와요. 직접 붙여넣거나 고쳐 써도 돼요."></textarea>
-    <div class="row" style="margin-top:8px"><button class="btn" id="recGo">AI로 정리</button><button class="btn ghost" id="recSave" style="display:none">저장</button><button class="btn ghost" id="recRev" style="display:none">복습 일정 등록</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="recGo">AI로 정리</button><button class="btn ghost" id="recQuiz">채점 퀴즈 만들기</button><button class="btn ghost" id="recSave" style="display:none">저장</button><button class="btn ghost" id="recRev" style="display:none">복습 일정 등록</button></div>
     <p class="soon" id="recMsg"></p>
     <div class="out" id="recOut"></div>
+    <div id="recQuizBox"></div>
   </div>
   <h3 class="sh">저장한 강의 정리</h3>
   <div class="card" id="recSaved"></div>
+  <h3 class="sh">강의 퀴즈</h3>
+  <div class="card" id="recQuizSaved"></div>
 </section>
 
 <section id="pdf">
@@ -267,6 +366,7 @@
     <div class="row" style="margin-top:12px"><button class="btn" id="pdfGo">요약 만들기</button><button class="btn ghost" id="pdfSave" style="display:none">저장</button><button class="btn ghost" id="pdfRev" style="display:none">복습 일정 등록</button></div>
     <p class="soon" id="pdfMsg"></p>
     <div class="out" id="pdfOut"></div>
+    <div id="pdfQuiz" style="display:none"></div>
   </div>
   <h3 class="sh" id="pdfSavedTitle">저장한 PDF 요약</h3>
   <div class="card" id="pdfSaved"></div>
@@ -369,6 +469,7 @@ $('#tabs').addEventListener('click', e => {
   document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.t));
   if(b.dataset.t === 'cal') drawCal();
   if(b.dataset.t === 'tm') render();
+  if(window.onTab) window.onTab(b.dataset.t);
 });
 
 // ---------- 시간표 ----------
@@ -447,7 +548,7 @@ function drawCal(){
   for(let i = 0; i < 42; i++){
     const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i), k = fmt(d);
     const cls = ['day', d.getMonth() !== view.getMonth() ? 'other' : '', k === fmt(today) ? 'today' : '', k === sel ? 'sel' : ''].join(' ');
-    const evs = (events[k] || []).slice(0, 2).map(e => `<span class="ev">${esc(e.t)}</span>`).join('');
+    const evs = (events[k] || []).slice().sort((a, b) => (b.kind === 'exam') - (a.kind === 'exam')).slice(0, 2).map(e => `<span class="ev${e.kind === 'exam' ? ' ex' : e.kind === 'plan' ? ' pl' : ''}">${esc(e.t)}</span>`).join('');
     const more = (events[k] || []).length > 2 ? `<span class="ev">+${events[k].length - 2}</span>` : '';
     const st = dayTotal(k), stTag = st >= 60 ? `<span class="ev st">⏱ ${fmtShort(st)}</span>` : '';
     h += `<div class="${cls}" data-d="${k}"><span class="n">${d.getDate()}</span>${stTag}${evs}${more}</div>`;
@@ -461,7 +562,7 @@ function drawEvList(){
   $('#selStudy').textContent = tot >= 60 ? '공부 시간 ' + fmtDur(tot) + ' (' + Object.keys(sd).map(n => n + ' ' + fmtDur(sd[n])).join(' · ') + ')' : '기록된 공부 시간이 없어요.';
   const list = (events[sel] || []).map((e, i) => ({...e, i})).sort((a, b) => (a.time || '99').localeCompare(b.time || '99'));
   $('#evList').innerHTML = list.length
-    ? list.map(e => `<li><span>${e.time ? esc(e.time) + '  ' : ''}${esc(e.t)}</span><button class="x" data-i="${e.i}" aria-label="삭제">×</button></li>`).join('')
+    ? list.map(e => `<li><span>${e.time ? esc(e.time) + '  ' : ''}${e.kind === 'exam' ? '<b>[시험]</b> ' : e.kind === 'plan' ? '<b>[계획]</b> ' : ''}${esc(e.t)}</span><button class="x" data-i="${e.i}" aria-label="삭제">×</button></li>`).join('')
     : '<li class="empty">이 날짜에 일정이 없어요.</li>';
 }
 $('#grid').addEventListener('click', e => {
@@ -516,7 +617,7 @@ async function askAI(payload, msg, out, btn){
 function addReview(name){
   [1, 3, 7].forEach(n => {
     const d = new Date(); d.setDate(d.getDate() + n); const k = fmt(d);
-    (events[k] = events[k] || []).push({t:'복습: ' + (name || '공부'), time:''});
+    (events[k] = events[k] || []).push({t:'복습: ' + (name || '공부'), time:'', kind:'review'});
   });
   store.set('events', events); drawCal();
   alert('내일, 3일 뒤, 7일 뒤에 복습 일정을 달력에 넣었어요.');
@@ -524,7 +625,7 @@ function addReview(name){
 // ---------- 저장 · 강의 정리 · PDF ----------
 const readB64 = f => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result.split(',')[1]); r.readAsDataURL(f); });
 const KIND_NAME = {lecture:'강의 정리', summary:'PDF 요약', quiz:'PDF 문제', concept:'PDF 개념'};
-const GO_TXT = {summary:'요약 만들기', quiz:'문제 만들기', concept:'개념 정리하기'};
+const GO_TXT = {summary:'요약 만들기', quiz:'채점 퀴즈 만들기', concept:'개념 정리하기'};
 let notes = store.get('notes', []);
 let pdfKind = 'summary', pdfBusy = false;
 const outs = {summary:'', quiz:'', concept:''};
@@ -532,7 +633,9 @@ function saveNote(kind, title, text){ notes.unshift({id:Date.now(), kind, title,
 const noteHTML = n => `<details class="note"><summary><b>${esc(n.title)}</b><span>${esc(n.at.replace(/-/g, '.'))}</span></summary><div class="out">${esc(n.text)}</div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-cp="${n.id}">복사</button><button class="btn ghost" data-del="${n.id}">삭제</button></div></details>`;
 function drawNotes(){
   const fill = (el, kind) => { const l = notes.filter(n => n.kind === kind); el.innerHTML = l.length ? l.map(noteHTML).join('') : '<p class="empty">저장한 내용이 없어요.</p>'; };
-  fill($('#recSaved'), 'lecture'); fill($('#pdfSaved'), pdfKind);
+  fill($('#recSaved'), 'lecture');
+  if(pdfKind === 'quiz') $('#pdfSaved').innerHTML = quizListHTML('pdf'); else fill($('#pdfSaved'), pdfKind);
+  $('#recQuizSaved').innerHTML = quizListHTML('lecture');
   $('#pdfSavedTitle').textContent = '저장한 ' + KIND_NAME[pdfKind];
 }
 ['#recSaved', '#pdfSaved'].forEach(sel => $(sel).onclick = async e => {
@@ -545,6 +648,7 @@ function showPdf(){
   document.querySelectorAll('#pdfTabs button').forEach(b => b.classList.toggle('on', b.dataset.k === pdfKind));
   $('#pdfGo').textContent = outs[pdfKind] ? '다시 만들기' : GO_TXT[pdfKind];
   $('#pdfOut').textContent = outs[pdfKind]; $('#pdfMsg').textContent = '';
+  $('#pdfOut').style.display = pdfKind === 'quiz' ? 'none' : ''; $('#pdfQuiz').style.display = pdfKind === 'quiz' ? '' : 'none';
   $('#pdfSave').style.display = $('#pdfRev').style.display = outs[pdfKind] ? '' : 'none';
   drawNotes();
 }
@@ -554,6 +658,11 @@ $('#pdfGo').onclick = async () => {
   const f = $('#pdfFile').files[0], msg = $('#pdfMsg');
   if(!f){ msg.textContent = 'PDF 파일을 먼저 골라주세요.'; return; }
   if(f.size > 3 * 1024 * 1024){ msg.textContent = '3MB가 넘어요. 페이지를 나눠서 올려주세요.'; return; }
+  if(pdfKind === 'quiz'){
+    pdfBusy = true; const b64q = await readB64(f), sub = subjOf($('#pdfSubject').value);
+    await makeQuiz({src:'pdf', sub, title:sub + ' · ' + f.name.replace(/\.pdf$/i, ''), payload:{task:'pdf_quiz', pdf:b64q}, box:$('#pdfQuiz'), msg, btn:$('#pdfGo')});
+    pdfBusy = false; return;
+  }
   const k = pdfKind; pdfBusy = true;
   const b64 = await readB64(f);
   const ok = await askAI({task:'pdf_' + k, pdf:b64}, msg, $('#pdfOut'), $('#pdfGo'));
@@ -681,7 +790,7 @@ function saveStudy(force){ if(force || Date.now() - lastSave > 5000){ store.set(
 function addStudy(sec){
   if(sec <= 0 || tm.mode !== 'focus') return;
   const k = fmt(new Date()), n = prefs.subject || '과목 없음';
-  const d = studyLog[k] = studyLog[k] || {}; d[n] = (d[n] || 0) + sec; saveStudy();
+  const d = studyLog[k] = studyLog[k] || {}; d[n] = (d[n] || 0) + sec; saveStudy(); trackSess(sec, n);
 }
 function unlockAudio(){ try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); }catch(e){} }
 function beep(){
@@ -707,13 +816,13 @@ function pause(){
   tm.remain = Math.max(tm.endAt - now, 0); tm.running = false; clearInterval(timerId); unlock(); saveStudy(true); render();
 }
 function finish(){
-  const was = tm.mode; tm.running = false; clearInterval(timerId); unlock(); saveStudy(true);
+  const was = tm.mode; tm.running = false; clearInterval(timerId); unlock(); saveStudy(true); flushSess();
   tm.mode = was === 'focus' ? 'break' : 'focus'; tm.remain = dur();
   $('#tmMsg').textContent = was === 'focus' ? '집중 끝! 쉬는 시간을 시작해보세요.' : '휴식 끝! 다시 집중해볼까요?';
   beep(); render(); drawCal();
 }
-function reset(){ pause(); tm.remain = dur(); render(); }
-function skip(){ const run = tm.running; pause(); tm.mode = tm.mode === 'focus' ? 'break' : 'focus'; tm.remain = dur(); render(); if(run) start(); }
+function reset(){ pause(); flushSess(); tm.remain = dur(); render(); }
+function skip(){ const run = tm.running; pause(); flushSess(); tm.mode = tm.mode === 'focus' ? 'break' : 'focus'; tm.remain = dur(); render(); if(run) start(); }
 
 function dialSVG(){
   const c = 170; let t = '';
@@ -734,7 +843,7 @@ function wedge(f){
 function dateLabel(){ const d = new Date(); return d.getFullYear() + '. ' + (d.getMonth()+1) + '. ' + d.getDate() + '. (' + '일월화수목금토'[d.getDay()] + ')'; }
 function render(){
   const rm = Math.max(tm.remain, 0);
-  $('#tmTop').textContent = dateLabel() + '  ·  오늘 ' + fmtDur(dayTotal(fmt(new Date())));
+  $('#tmTop').textContent = dateLabel() + '  ·  오늘 ' + fmtDur(dayTotal(fmt(new Date()))) + examTag();
   $('#tmSub').textContent = '● ' + (prefs.subject || '과목 없음') + ' · ' + (tm.mode === 'focus' ? '집중' : '휴식');
   if(prefs.view === 'dial'){ wedge(Math.min(rm/3600000, 1)); $('#tmRight').textContent = Math.ceil(rm/60000); }
   else { const s = Math.ceil(rm/1000), p = n => String(n).padStart(2, '0'); $('#tmDigits').textContent = p(Math.floor(s/3600)) + ':' + p(Math.floor(s%3600/60)) + ':' + p(s%60); $('#tmRight').textContent = ''; }
@@ -759,7 +868,7 @@ $('#tmGo').onclick = () => tm.running ? pause() : start();
 $('#tmReset').onclick = reset;
 $('#tmSkip').onclick = skip;
 document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible'){ if(tm.running) lock(); } else saveStudy(true); });
-window.addEventListener('pagehide', () => saveStudy(true));
+window.addEventListener('pagehide', () => { saveStudy(true); flushSess(); });
 function initTimer(){ $('#tmSubject').value = prefs.subject; $('#tmFocus').value = prefs.focus; $('#tmBreak').value = prefs.brk; tm.remain = dur(); applyPrefs(); render(); }
 
 initTimer();
@@ -929,8 +1038,8 @@ function initMusic(){
 initMusic();
 
 // ---------- 계정 · 동기화 ----------
-const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'tmPrefs', 'music'];
-const CORE_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab'];
+const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'uniPrefs', 'tmPrefs', 'music'];
+const CORE_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams'];
 let acct = store.get('acct', null);             // {id, token, at}
 let authMode = 'login', pushTimer = null, ver = 0, lastSnap = null, syncText = '';
 const collect = () => { const d = {}; SYNC_KEYS.forEach(k => { const v = store.get(k, null); if(v !== null) d[k] = v; }); return d; };
@@ -1019,6 +1128,574 @@ document.addEventListener('visibilitychange', () => { if(document.visibilityStat
 drawAcct();
 if(!localStorage.getItem('syncDirty')) lastSnap = JSON.stringify(collect());
 syncOnLoad();
+
+// ---------- 학습 엔진: 개념(별) · 채점 퀴즈 · 시험 계획 · 분석 · 우주 ----------
+var concepts = store.get('concepts', []);      // [{id, name, desc, sub, c, w, ok, at, okAt}]
+var quizSets = store.get('quizSets', []);      // [{id, title, sub, src, at, qs, last}]
+var attempts = store.get('attempts', []);      // [{id, set, sub, src, at, n, ok, items, retry}]
+var sessions = store.get('sessions', []);      // [{at, sec, sub}] 집중 한 번 = 세션 하나
+var exams = store.get('exams', []);            // [{id, sub, date, scope, min, plan:{advice, days}}]
+var uniPrefs = Object.assign({theme:'galaxy', sub:''}, store.get('uniPrefs', {}));
+var curSess = null;
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const subjOf = v => (v || '').trim() || '과목 없음';
+const ckey = (sub, name) => subjOf(sub).toLowerCase() + '|' + String(name).trim().toLowerCase();
+const findConcept = (sub, name) => concepts.find(c => ckey(c.sub, c.name) === ckey(sub, name));
+const saveC = () => store.set('concepts', concepts);
+const P = v => Math.round(v * 100) + '%';
+const dstr = ts => fmt(new Date(ts)).replace(/-/g, '.');
+function dlabel(ds){ const d = new Date(ds + 'T00:00:00'); return (d.getMonth() + 1) + '.' + d.getDate() + ' (' + '일월화수목금토'[d.getDay()] + ')'; }
+function dday(ds){
+  const n = Math.round((new Date(ds + 'T00:00:00') - new Date(fmt(new Date()) + 'T00:00:00')) / 86400000);
+  return n === 0 ? 'D-DAY' : n > 0 ? 'D-' + n : 'D+' + (-n);
+}
+function examTag(){
+  if(!exams) return '';
+  const t = fmt(new Date()), up = exams.filter(e => e.date >= t).sort((a, b) => a.date.localeCompare(b.date))[0];
+  return up ? '  ·  ' + up.sub + ' ' + dday(up.date) : '';
+}
+async function callAI(payload){
+  const r = await fetch('/api/claude', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+  let d = {}; try{ d = await r.json(); }catch(e){}
+  if(!r.ok) throw new Error(d.error || 'AI 호출에 실패했어요.');
+  return d;
+}
+
+// 공부 세션 기록 (타이머 연동)
+function trackSess(sec, sub){ if(!curSess) curSess = {at:Date.now() - sec * 1000, sec:0, sub}; curSess.sec += sec; }
+function flushSess(){
+  if(curSess && curSess.sec >= 60 && sessions){
+    sessions.push({at:curSess.at, sec:Math.round(curSess.sec), sub:curSess.sub});
+    if(sessions.length > 1500) sessions.splice(0, sessions.length - 1500);
+    store.set('sessions', sessions);
+  }
+  curSess = null;
+}
+
+// ===== 개념 =====
+function addConcepts(list, sub){
+  let added = 0;
+  (list || []).forEach(x => {
+    if(!x || !x.name) return;
+    const ex = findConcept(sub, x.name);
+    if(ex){ if(!ex.desc && x.desc) ex.desc = x.desc; return; }
+    const c = {id:uid(), name:String(x.name).trim(), desc:x.desc || '', sub:subjOf(sub), c:0, w:0, ok:false, at:Date.now(), okAt:0};
+    concepts.push(c); U.newIds.add(c.id); added++;
+  });
+  saveC(); return added;
+}
+
+// ===== 채점 퀴즈 =====
+async function makeQuiz({src, sub, title, payload, box, msg, btn}){
+  btn.disabled = true; msg.textContent = 'AI가 문제를 만드는 중이에요. 20~40초 걸려요.';
+  try{
+    const d = await callAI(payload), q = d.data;
+    const set = {id:uid(), title, sub, src, at:Date.now(), qs:q.questions, last:null};
+    const added = addConcepts(q.concepts, sub);
+    quizSets.unshift(set); if(quizSets.length > 60) quizSets.length = 60;
+    store.set('quizSets', quizSets);
+    msg.textContent = `문제 ${set.qs.length}개를 만들었어요.` + (added ? ` 새 개념 ${added}개가 별이 되어 우주에 떠올랐어요.` : '');
+    openQuiz(box, set.id); drawNotes();
+  }catch(e){ msg.textContent = '실패: ' + e.message; }
+  finally{ btn.disabled = false; }
+}
+function quizListHTML(src){
+  const l = (quizSets || []).filter(s => s.src === src);
+  if(!l.length) return '<p class="empty">아직 만든 퀴즈가 없어요.</p>';
+  return l.map(s => `<div class="note"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px"><b>${esc(s.title)}</b><span style="color:var(--sub);font-size:12px;flex:none">${dstr(s.at)}${s.last != null ? ' · 최근 ' + s.last + '%' : ' · 아직 안 풂'}</span></div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-qo="${s.id}">풀기</button><button class="btn ghost" data-qd="${s.id}">삭제</button></div></div>`).join('');
+}
+function openQuiz(box, id, scroll){
+  const set = quizSets.find(s => s.id === id); if(!set) return;
+  box._q = {set, order:set.qs.map((_, i) => i), picks:{}, graded:false, retry:false};
+  box.style.display = ''; drawQuiz(box);
+  if(scroll) box.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function drawQuiz(box){
+  const st = box._q; if(!st) return;
+  const set = st.set;
+  let h = `<div class="qz-head"><b>${esc(set.title)}</b><span>${st.retry ? '틀린 문제 다시 풀기 · ' : ''}${st.order.length}문제</span></div>`;
+  st.order.forEach((qi, n) => {
+    const q = set.qs[qi], pick = st.picks[qi], res = st.graded ? (pick === q.answer ? 'ok' : 'no') : '';
+    h += `<div class="qz ${res}"><p class="qz-q">${n + 1}. ${esc(q.q)}</p><div class="qz-c">` + q.choices.map((c, ci) => {
+      let cls = 'qc'; if(pick === ci) cls += ' pick';
+      if(st.graded && ci === q.answer) cls += ' ans';
+      if(st.graded && pick === ci && ci !== q.answer) cls += ' bad';
+      return `<button class="${cls}" data-q="${qi}" data-c="${ci}"${st.graded ? ' disabled' : ''}>${'①②③④'[ci]} ${esc(c)}</button>`;
+    }).join('') + '</div>' + (st.graded ? `<p class="qz-x"><b>${res === 'ok' ? '정답' : '오답 · 정답은 ' + '①②③④'[q.answer]}</b> ${esc(q.explain || '')}${q.concept ? ' (' + esc(q.concept) + ')' : ''}</p>` : '') + '</div>';
+  });
+  if(!st.graded){
+    const left = st.order.filter(i => st.picks[i] === undefined).length;
+    h += `<div class="row" style="margin-top:12px"><button class="btn" data-act="grade"${left ? ' disabled' : ''}>${left ? left + '문제 남았어요' : '채점하기'}</button></div>`;
+  } else {
+    h += `<p class="qz-sum">${esc(st.summary)}</p><div class="row">` + (st.wrong.length ? '<button class="btn" data-act="wrong">틀린 문제만 다시 풀기</button>' : '') + '<button class="btn ghost" data-act="again">처음부터 다시</button><button class="btn ghost" data-act="uni">우주에서 보기</button></div>';
+  }
+  box.innerHTML = h;
+}
+function gradeQuiz(box){
+  const st = box._q, set = st.set, items = [], wrong = [];
+  const before = new Set(concepts.filter(c => c.ok).map(c => c.id));
+  let ok = 0;
+  st.order.forEach(qi => {
+    const q = set.qs[qi], good = st.picks[qi] === q.answer;
+    if(good) ok++; else wrong.push(qi);
+    if(!q.concept) return;
+    if(!findConcept(set.sub, q.concept)) addConcepts([{name:q.concept, desc:''}], set.sub);
+    const c = findConcept(set.sub, q.concept);
+    if(good) c.c++; else c.w++;
+    items.push({c:q.concept, ok:good});
+  });
+  // 이번에 그 개념 문제를 모두 맞히면 이해, 하나라도 틀리면 다시 바깥으로
+  const byC = {};
+  items.forEach(it => { byC[it.c] = (byC[it.c] !== false) && it.ok; });
+  Object.keys(byC).forEach(n => {
+    const c = findConcept(set.sub, n); if(!c) return;
+    c.ok = byC[n]; c.okAt = c.ok ? (c.okAt || Date.now()) : 0;
+    if(c.ok && !before.has(c.id)) U.justOk.add(c.id);
+  });
+  saveC();
+  attempts.push({id:uid(), set:set.id, sub:set.sub, src:set.src, at:Date.now(), n:st.order.length, ok, items, retry:st.retry});
+  if(attempts.length > 400) attempts.splice(0, attempts.length - 400);
+  store.set('attempts', attempts);
+  if(!st.retry){ set.last = Math.round(ok / st.order.length * 100); store.set('quizSets', quizSets); }
+  const gained = concepts.filter(c => c.ok && !before.has(c.id)).length;
+  const lost = [...before].filter(id => { const c = concepts.find(x => x.id === id); return c && !c.ok; }).length;
+  st.graded = true; st.wrong = wrong;
+  st.summary = `${st.order.length}문제 중 ${ok}개 정답 (${P(ok / st.order.length)})`
+    + (gained ? ` · 새로 이해한 개념 ${gained}개가 ${uniPrefs.theme === 'hole' ? '블랙홀로 빨려 들어갔어요' : '은하에 합쳐졌어요'}` : '')
+    + (lost ? ` · 흔들리는 개념 ${lost}개가 다시 바깥으로 나왔어요` : '');
+  drawQuiz(box); drawNotes();
+}
+function quizClick(e){
+  const box = e.currentTarget, st = box._q; if(!st) return;
+  const c = e.target.closest('[data-c]'), a = e.target.closest('[data-act]');
+  if(c && !st.graded){ st.picks[+c.dataset.q] = +c.dataset.c; drawQuiz(box); return; }
+  if(!a) return;
+  if(a.dataset.act === 'grade') gradeQuiz(box);
+  else if(a.dataset.act === 'wrong'){ st.order = st.wrong; st.picks = {}; st.graded = false; st.retry = true; drawQuiz(box); box.scrollIntoView({behavior:'smooth', block:'start'}); }
+  else if(a.dataset.act === 'again'){ openQuiz(box, st.set.id, true); }
+  else if(a.dataset.act === 'uni'){ uniPrefs.sub = st.set.sub; store.set('uniPrefs', uniPrefs); goTab('uni'); }
+}
+function quizListClick(box){
+  return e => {
+    const o = e.target.closest('[data-qo]'), d = e.target.closest('[data-qd]');
+    if(o) openQuiz(box, o.dataset.qo, true);
+    if(d && confirm('이 퀴즈를 삭제할까요? 별(개념)과 풀이 기록은 남아요.')){ quizSets = quizSets.filter(s => s.id !== d.dataset.qd); store.set('quizSets', quizSets); drawNotes(); }
+  };
+}
+function goTab(t){ const b = document.querySelector(`#tabs button[data-t="${t}"]`); if(b){ b.click(); window.scrollTo({top:0, behavior:'smooth'}); } }
+
+// ===== 시험 기간 계획 =====
+var planDraft = null;
+function anSummaryText(src){
+  src = src || realSrc();
+  const a = src.attempts, lines = [];
+  lines.push(`퀴즈 ${a.length}회, 전체 정답률 ${a.length ? P(accOf(a)) : '기록 없음'}`);
+  const sec = src.sessions.reduce((s, x) => s + x.sec, 0);
+  lines.push(`집중 세션 ${src.sessions.length}회, 총 ${fmtDur(sec)}, 평균 ${src.sessions.length ? Math.round(sec / src.sessions.length / 60) + '분' : '기록 없음'}`);
+  const fmtRows = rows => rows.map(r => `${r.label} ${r.acc == null ? '기록 없음' : P(r.acc) + '(' + r.n + '회)'}`).join(', ');
+  lines.push('시간대별 정답률: ' + fmtRows(byTime(src)));
+  lines.push('집중 길이별 정답률: ' + fmtRows(byLen(src)));
+  lines.push('공부 방법별 정답률: ' + fmtRows(byMethod(src)));
+  bySubject(src).forEach(r => lines.push(`${r.sub}: 공부 ${fmtDur(r.sec)}, 정답률 ${r.acc == null ? '기록 없음' : P(r.acc)}, 이해한 개념 ${r.okN}/${r.cN}`));
+  insightsOf(src).forEach(t => lines.push('분석: ' + t));
+  return lines.join('\n');
+}
+async function makePlan(id){
+  const msg = $('#exMsg'), sub = $('#exSub').value.trim(), date = $('#exDate').value, scope = $('#exScope').value.trim();
+  const min = clamp(+$('#exMin').value || 120, 20, 720), t0 = fmt(new Date());
+  if(!sub || !date){ msg.textContent = '과목과 시험 날짜를 입력해주세요.'; return; }
+  if(date <= t0){ msg.textContent = '시험 날짜는 내일 이후로 골라주세요.'; return; }
+  const dates = [];
+  for(let d = new Date(date + 'T00:00:00'), i = 0; i < 28; i++){ d.setDate(d.getDate() - 1); const k = fmt(d); if(k < t0) break; dates.unshift(k); }
+  const mine = concepts.filter(c => c.sub === sub);
+  const weak = mine.filter(c => !c.ok).sort((a, b) => (b.w - b.c) - (a.w - a.c)).slice(0, 15).map(c => `${c.name}(틀림 ${c.w}, 맞힘 ${c.c})`);
+  const good = mine.filter(c => c.ok).slice(0, 15).map(c => c.name);
+  const text = [`오늘: ${t0}`, `시험 과목: ${sub}, 시험 날짜: ${date} (${dday(date)})`, `계획에 쓸 날짜(이 날짜만 사용): ${dates.join(', ')}`,
+    `하루 공부 가능 시간: ${min}분`, `시험 범위: ${scope || '(입력 없음)'}`, `아직 이해 못한 개념(약한 순): ${weak.join(', ') || '(기록 없음)'}`,
+    `이미 이해한 개념: ${good.join(', ') || '(기록 없음)'}`, '공부 기록 분석:', anSummaryText()].join('\n');
+  $('#exGo').disabled = true; msg.textContent = 'AI가 계획을 짜는 중이에요. 20~40초 걸려요.';
+  try{
+    const d = await callAI({task:'plan', text}), ok = new Set(dates);
+    const days = d.data.days.filter(x => ok.has(x.date)).sort((a, b) => a.date.localeCompare(b.date));
+    if(!days.length) throw new Error('계획에 쓸 수 있는 날짜가 없어요. 다시 시도해주세요.');
+    planDraft = {id:id || uid(), sub, date, scope, min, plan:{advice:d.data.advice, days}};
+    msg.textContent = '계획이 나왔어요. 확인하고 달력에 넣어주세요.';
+    drawPlanDraft();
+  }catch(e){ msg.textContent = '실패: ' + e.message; }
+  finally{ $('#exGo').disabled = false; }
+}
+function drawPlanDraft(){
+  const p = planDraft;
+  $('#exApply').style.display = p ? '' : 'none';
+  $('#exPrev').innerHTML = p ? `<p style="font-size:14px;line-height:1.6;margin:8px 0">${esc(p.plan.advice)}</p>` + p.plan.days.map(d => `<div class="plan-d"><b>${dlabel(d.date)}</b><span>${d.tasks.map(esc).join('<br>')}</span></div>`).join('') + `<div class="plan-d"><b>${dlabel(p.date)}</b><span><b>${esc(p.sub)} 시험 (${dday(p.date)})</b></span></div>` : '';
+}
+function applyPlan(){
+  const p = planDraft; if(!p) return;
+  const t0 = fmt(new Date());
+  Object.keys(events).forEach(k => {
+    events[k] = events[k].filter(e => !(e.pid === p.id && (k >= t0 || e.kind === 'exam')));
+    if(!events[k].length) delete events[k];
+  });
+  (events[p.date] = events[p.date] || []).push({t:p.sub + ' 시험', time:'', kind:'exam', pid:p.id});
+  p.plan.days.forEach(d => (events[d.date] = events[d.date] || []).push({t:p.sub + ': ' + d.tasks.join(' / '), time:'', kind:'plan', pid:p.id}));
+  store.set('events', events);
+  const i = exams.findIndex(e => e.id === p.id); if(i >= 0) exams[i] = p; else exams.push(p);
+  store.set('exams', exams);
+  planDraft = null; drawPlanDraft();
+  $('#exMsg').textContent = `${p.sub} 시험과 ${p.plan.days.length}일치 계획을 달력에 넣었어요.`;
+  drawCal(); drawExams(); render();
+}
+function drawExams(){
+  const t0 = fmt(new Date()), l = exams.filter(e => e.date >= t0).sort((a, b) => a.date.localeCompare(b.date));
+  $('#exList').innerHTML = l.length ? l.map(e => `<li><span><b>${esc(e.sub)}</b> · ${dlabel(e.date)} · ${dday(e.date)}</span><span style="display:flex;gap:6px;align-items:center"><button class="btn ghost" data-re="${e.id}">다시 짜기</button><button class="x" data-del="${e.id}" aria-label="삭제">×</button></span></li>`).join('') : '<li class="empty">등록된 시험이 없어요.</li>';
+}
+
+// ===== 분석 =====
+var anDemo = null;
+function realSrc(){ return {sessions:sessions || [], attempts:(attempts || []).filter(a => !a.retry), concepts:concepts || [], log:studyLog}; }
+const accOf = l => { const n = l.reduce((s, a) => s + a.n, 0); return n ? l.reduce((s, a) => s + a.ok, 0) / n : null; };
+function rowsBy(list, keyFn, order){
+  const g = {}; order.forEach(k => g[k] = []);
+  list.forEach(a => { const k = keyFn(a); if(k && g[k]) g[k].push(a); });
+  return order.map(k => ({label:k, acc:accOf(g[k]), n:g[k].length}));
+}
+const hourLabel = ts => { const h = new Date(ts).getHours(); return h < 6 ? '새벽' : h < 12 ? '오전' : h < 18 ? '오후' : '저녁'; };
+function sessBefore(a, ss){
+  let best = null, bs = -1;
+  ss.forEach(s => { const end = s.at + s.sec * 1000; if(end <= a.at + 60000 && a.at - end <= 6 * 3600000){ const sc = (s.sub === a.sub ? 1e13 : 0) + end; if(sc > bs){ bs = sc; best = s; } } });
+  return best;
+}
+const byTime = src => rowsBy(src.attempts, a => hourLabel(a.at), ['오전', '오후', '저녁', '새벽']);
+const byLen = src => rowsBy(src.attempts, a => { const s = sessBefore(a, src.sessions); if(!s) return null; const m = s.sec / 60; return m <= 30 ? '30분 이하' : m <= 50 ? '31~50분' : '50분 넘게'; }, ['30분 이하', '31~50분', '50분 넘게']);
+const byMethod = src => rowsBy(src.attempts, a => a.src === 'pdf' ? 'PDF 문제' : a.src === 'lecture' ? '강의 퀴즈' : null, ['PDF 문제', '강의 퀴즈']);
+function bySubject(src){
+  const subs = new Set();
+  Object.values(src.log).forEach(d => Object.keys(d).forEach(k => subs.add(k)));
+  src.attempts.forEach(a => subs.add(a.sub)); src.concepts.forEach(c => subs.add(c.sub));
+  return [...subs].map(sub => {
+    const sec = Object.values(src.log).reduce((s, d) => s + (d[sub] || 0), 0), cs = src.concepts.filter(c => c.sub === sub);
+    return {sub, sec, acc:accOf(src.attempts.filter(a => a.sub === sub)), qn:src.attempts.filter(a => a.sub === sub).length, cN:cs.length, okN:cs.filter(c => c.ok).length};
+  }).sort((a, b) => b.sec - a.sec);
+}
+function spread(rows){
+  const v = rows.filter(r => r.n >= 2 && r.acc != null).sort((a, b) => b.acc - a.acc);
+  return v.length >= 2 && v[0].acc - v[v.length - 1].acc >= .1 ? {best:v[0], worst:v[v.length - 1]} : null;
+}
+function insightsOf(src){
+  const out = [];
+  if(src.attempts.length < 3){ out.push('퀴즈를 3번 이상 풀면 나에게 맞는 공부 방식을 찾아드려요. 지금은 예시 데이터로 미리 볼 수 있어요.'); return out; }
+  const t = spread(byTime(src)); if(t) out.push(`${t.best.label}에 푼 퀴즈 정답률이 ${P(t.best.acc)}로 가장 높고, ${t.worst.label}엔 ${P(t.worst.acc)}예요. 어려운 과목은 ${t.best.label}에 배치해보세요.`);
+  const l = spread(byLen(src)); if(l) out.push(`${l.best.label} 집중한 뒤 정답률이 ${P(l.best.acc)}로 가장 좋았어요. 타이머 집중 시간을 이쪽으로 맞춰보세요.`);
+  const m = spread(byMethod(src)); if(m) out.push(`${m.best.label}로 공부했을 때 정답률이 더 높아요 (${P(m.best.acc)} vs ${P(m.worst.acc)}).`);
+  const subs = bySubject(src).filter(r => r.qn >= 2 && r.acc != null).sort((a, b) => a.acc - b.acc);
+  if(subs.length >= 2) out.push(`${subs[0].sub} 정답률이 ${P(subs[0].acc)}로 가장 낮아요. 시험 계획을 짤 때 이 과목에 시간을 더 줄게요.`);
+  if(!out.length) out.push('아직 뚜렷한 차이는 없어요. 기록이 쌓이면 더 정확해져요.');
+  return out;
+}
+function hbRows(rows){
+  return rows.map(r => { const low = r.n < 2 || r.acc == null;
+    return `<div class="hb${low ? ' low' : ''}" title="${r.label}: ${r.acc == null ? '기록 없음' : P(r.acc) + ', 퀴즈 ' + r.n + '회'}"><span>${r.label}</span><div class="tr"><div class="fl" style="width:${r.acc == null ? 0 : Math.round(r.acc * 100)}%"></div></div><span class="v">${r.acc == null ? '기록 없음' : P(r.acc) + ' · ' + r.n + '회'}${!low || r.acc == null ? '' : ' (적음)'}</span></div>`; }).join('');
+}
+function drawAnalysis(){
+  const src = anDemo || realSrc(), a = src.attempts;
+  const now = new Date(), days = [];
+  for(let i = 13; i >= 0; i--){ const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i), k = fmt(d); days.push({k, d, sec:Object.values(src.log[k] || {}).reduce((s, v) => s + v, 0)}); }
+  const week = days.slice(-7).reduce((s, x) => s + x.sec, 0), max = Math.max(...days.map(x => x.sec), 1);
+  const peak = days.reduce((b, x) => x.sec > b.sec ? x : b, days[0]);
+  const ss = src.sessions, avg = ss.length ? Math.round(ss.reduce((s, x) => s + x.sec, 0) / ss.length / 60) : null;
+  const okN = src.concepts.filter(c => c.ok).length;
+  const weak = src.concepts.filter(c => !c.ok && c.w > 0).sort((x, y) => (y.w - y.c) - (x.w - x.c)).slice(0, 5);
+  const subs = bySubject(src);
+  let h = anDemo ? '<div class="demo-bar">예시 데이터예요. 내 기록은 바뀌지 않아요.</div>' : '';
+  h += `<div class="tiles"><div class="tile"><span>최근 7일 공부</span><b>${fmtDur(week)}</b></div><div class="tile"><span>퀴즈 정답률</span><b>${a.length ? P(accOf(a)) : '–'}</b><span>${a.length}회 풀이</span></div><div class="tile"><span>이해한 개념</span><b>${okN} / ${src.concepts.length}</b></div><div class="tile"><span>평균 집중 길이</span><b>${avg == null ? '–' : avg + '분'}</b><span>${ss.length}번 집중</span></div></div>`;
+  h += '<h3 class="an-h">나에게 맞는 공부 방식</h3><div class="card"><ul class="ins">' + insightsOf(src).map(t => `<li>${esc(t)}</li>`).join('') + '</ul></div>';
+  h += '<h3 class="an-h">최근 14일 공부 시간</h3><p class="an-s">막대를 누르면 시간이 보여요.</p><div class="card"><div class="vb">' + days.map(x => `<div tabindex="0" class="${x.sec ? '' : 'zero'}${x === peak && x.sec ? ' lbl' : ''}" title="${dlabel(x.k)} ${fmtDur(x.sec)}"><em>${x.sec ? fmtShort(x.sec) : '0m'}</em><i style="height:${Math.round(x.sec / max * 100)}%"></i><small>${x.d.getDate()}</small></div>`).join('') + '</div></div>';
+  h += '<h3 class="an-h">시간대별 퀴즈 정답률</h3><p class="an-s">퀴즈를 푼 시각 기준 · 회색 막대는 기록이 2번 미만이라 참고만 해주세요.</p><div class="card">' + hbRows(byTime(src)) + '</div>';
+  h += '<h3 class="an-h">집중 길이별 퀴즈 정답률</h3><p class="an-s">퀴즈 직전 6시간 안의 타이머 집중 기록(같은 과목 우선)과 연결했어요.</p><div class="card">' + hbRows(byLen(src)) + '</div>';
+  h += '<h3 class="an-h">공부 방법별 퀴즈 정답률</h3><div class="card">' + hbRows(byMethod(src)) + '</div>';
+  h += '<h3 class="an-h">과목별</h3><div class="card" style="overflow-x:auto"><table class="an-tb"><thead><tr><th>과목</th><th>공부 시간</th><th>퀴즈 정답률</th><th>이해한 개념</th></tr></thead><tbody>' + (subs.length ? subs.map(r => `<tr><td>${esc(r.sub)}</td><td>${fmtDur(r.sec)}</td><td>${r.acc == null ? '–' : P(r.acc)}</td><td>${r.okN} / ${r.cN}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">기록이 없어요.</td></tr>') + '</tbody></table></div>';
+  h += '<h3 class="an-h">자주 틀리는 개념</h3><div class="card">' + (weak.length ? '<ul class="list">' + weak.map(c => `<li><span><b>${esc(c.name)}</b> · ${esc(c.sub)}</span><span class="soon">틀림 ${c.w} · 맞힘 ${c.c}</span></li>`).join('') + '</ul>' : '<p class="empty">아직 없어요.</p>') + '</div>';
+  $('#anBody').innerHTML = h;
+  $('#anDemo').textContent = anDemo ? '내 기록으로 보기' : '예시 데이터로 보기';
+}
+function demoConcepts(){
+  const r = rng(11), names = {
+    '약리학':['반감기','생체이용률','초회통과효과','치료지수','작용제','길항제','베타차단제','ACE 억제제','이뇨제','항응고제','부하용량','약물상호작용','NSAIDs','오피오이드'],
+    '생리학':['심박출량','전부하','후부하','RAAS','항상성','삼투압','활동전위','시냅스','교감신경','부교감신경','가스교환','산염기 평형','사구체여과율','인슐린'],
+    '간호학개론':['간호과정','간호진단','활력징후','무균술','표준주의','투약 5원칙','낙상예방','욕창 단계','의사소통','환자안전']};
+  const out = [];
+  Object.keys(names).forEach(sub => names[sub].forEach((n, i) => { const ok = r() < .42, w = Math.floor(r() * 3) + (ok ? 0 : 1); out.push({id:'demo-' + sub + i, name:n, sub, desc:`${n}에 대한 예시 설명이에요. 실제로는 퀴즈를 만들 때 AI가 자료에서 설명을 뽑아 넣어요.`, c:ok ? 1 + Math.floor(r() * 3) : Math.floor(r() * 2), w:ok ? 0 : w, ok, at:0, okAt:0}); }));
+  return out;
+}
+function demoAnalysis(){
+  const r = rng(42), subs = ['약리학', '생리학', '간호학개론'], ss = [], at = [], log = {}, now = new Date();
+  for(let d = 20; d >= 0; d--){
+    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - d), cnt = r() < .15 ? 0 : 1 + Math.floor(r() * 3);
+    for(let i = 0; i < cnt; i++){
+      const hour = [8, 9, 10, 11, 14, 15, 16, 20, 21, 23][Math.floor(r() * 10)], len = [25, 30, 45, 50, 60, 60, 75][Math.floor(r() * 7)], sub = subs[Math.floor(r() * 3)];
+      const st = new Date(day); st.setHours(hour, Math.floor(r() * 50));
+      if(st > now) continue;
+      ss.push({at:st.getTime(), sec:len * 60, sub});
+      const k = fmt(day); log[k] = log[k] || {}; log[k][sub] = (log[k][sub] || 0) + len * 60;
+      if(r() < .8){
+        const p = .55 + (hour < 12 ? .18 : hour >= 22 ? -.12 : 0) + (len > 50 ? .12 : len > 30 ? .04 : -.08) + (sub === '약리학' ? -.1 : 0) + (r() - .5) * .14;
+        at.push({at:st.getTime() + (len + 10) * 60000, n:8, ok:clamp(Math.round(8 * p), 1, 8), sub, src:r() < .55 ? 'pdf' : 'lecture'});
+      }
+    }
+  }
+  return {sessions:ss, attempts:at, concepts:demoConcepts(), log};
+}
+
+// ===== 우주 (별 · 은하 · 블랙홀) =====
+const U = {cv:null, ctx:null, w:0, h:0, dpr:1, s:1, ox:0, oy:0, t:0, spin:0, rot:0, last:0, raf:0, on:false, rm:false,
+  stars:new Map(), dust:[], arms:[], disk:[], drawn:[], flash:[], demo:null, sel:null, ptrs:new Map(), pinch:null, moved:false,
+  justOk:new Set(), newIds:new Set(), countTxt:null};
+function hash(str){ let h = 2166136261; for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed){ let x = seed >>> 0 || 1; return () => { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; return x / 4294967296; }; }
+function spiralPt(r){ const arm = Math.floor(r() * 3), d = .03 + .5 * Math.pow(r(), .9); return {d, ang:arm * 2 * Math.PI / 3 + d * 7 + (r() - .5) * (.35 + d * .6)}; }
+const galAng = (ang, d) => ang + U.rot * .3 / (.25 + d);
+function uniList(){ return (U.demo || concepts).filter(c => !uniPrefs.sub || c.sub === uniPrefs.sub); }
+function mkStar(c){
+  const r = rng(hash(String(c.id)));
+  let fx = r() * 2 - 1, fy = r() * 2 - 1; const dd = Math.hypot(fx, fy);
+  if(dd < .55){ const k = (.55 + r() * .4) / (dd || 1); fx = clamp(fx * k, -1, 1); fy = clamp(fy * k, -1, 1); }
+  const g = spiralPt(r);
+  return {fx, fy, gd:g.d, ga:g.ang, ho:.17 + r() * .2, ha:r() * 6.283, size:1.7 + r() * 1.8, ph:r() * 6.283, sp:.6 + r() * 1.6, px:0, py:0, a:1, sc:1};
+}
+function uniInit(){
+  if(U.cv) return;
+  U.cv = $('#uniCv'); U.ctx = U.cv.getContext('2d');
+  U.rm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const r = rng(7);
+  U.dust = Array.from({length:260}, () => ({x:r() * 2 - 1, y:r() * 2 - 1, a:.08 + r() * .4, s:.5 + r() * .9}));
+  U.arms = Array.from({length:950}, () => { const p = spiralPt(r); return {d:p.d, ang:p.ang, a:.15 + r() * .6, s:.5 + r() * .9}; });
+  U.disk = Array.from({length:750}, () => ({rr:1.35 + Math.pow(r(), 1.6) * 2.3, ang:r() * 6.283, red:r() < .18, a:.25 + r() * .6, s:.5 + r() * 1.1}));
+  if(window.ResizeObserver) new ResizeObserver(uniResize).observe($('#uniBox')); else window.addEventListener('resize', uniResize);
+  const cv = U.cv, pos = e => { const b = cv.getBoundingClientRect(); return {x:e.clientX - b.left, y:e.clientY - b.top}; };
+  cv.addEventListener('pointerdown', e => {
+    try{ cv.setPointerCapture(e.pointerId); }catch(x){}
+    const p = pos(e); U.ptrs.set(e.pointerId, {x:p.x, y:p.y, sx:p.x, sy:p.y});
+    if(U.ptrs.size === 2){ const [a, b] = [...U.ptrs.values()]; U.pinch = {d:Math.hypot(a.x - b.x, a.y - b.y) || 1, s:U.s}; U.moved = true; }
+    else if(U.ptrs.size === 1) U.moved = false;
+  });
+  cv.addEventListener('pointermove', e => {
+    const q = U.ptrs.get(e.pointerId); if(!q) return;
+    const p = pos(e), dx = p.x - q.x, dy = p.y - q.y; q.x = p.x; q.y = p.y;
+    if(U.ptrs.size >= 2 && U.pinch){ const [a, b] = [...U.ptrs.values()]; setZoom(U.pinch.s * Math.hypot(a.x - b.x, a.y - b.y) / U.pinch.d); }
+    else if(U.ptrs.size === 1){
+      if(Math.hypot(p.x - q.sx, p.y - q.sy) > 6) U.moved = true;
+      if(U.moved && U.s > 1){ U.ox += dx / U.s; U.oy += dy / U.s; clampPan(); }
+    }
+  });
+  const up = e => {
+    const q = U.ptrs.get(e.pointerId);
+    if(q && e.type === 'pointerup' && U.ptrs.size === 1 && !U.moved) uniTap(q.x, q.y);
+    U.ptrs.delete(e.pointerId); if(U.ptrs.size < 2) U.pinch = null;
+  };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', e => { e.preventDefault(); setZoom(U.s * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015))); }, {passive:false});
+  ['gesturestart', 'gesturechange'].forEach(n => cv.addEventListener(n, e => e.preventDefault()));
+  $('#uniCard').addEventListener('click', uniCardAct);
+}
+function setZoom(s){ U.s = clamp(s, .5, 3); if(U.s <= 1){ U.ox = 0; U.oy = 0; } clampPan(); }
+function clampPan(){ U.ox = clamp(U.ox, -U.w / 2, U.w / 2); U.oy = clamp(U.oy, -U.h / 2, U.h / 2); }
+function uniResize(){
+  if(!U.cv) return;
+  const b = U.cv.getBoundingClientRect(); if(!b.width) return;
+  U.dpr = Math.min(window.devicePixelRatio || 1, 2); U.w = b.width; U.h = b.height;
+  U.cv.width = Math.round(b.width * U.dpr); U.cv.height = Math.round(b.height * U.dpr);
+}
+function uniStart(){
+  uniInit(); uniResize(); uniControls();
+  if(U.on) return;
+  U.on = true; U.last = 0; U.raf = requestAnimationFrame(uniFrame);
+}
+function uniStop(){ U.on = false; cancelAnimationFrame(U.raf); }
+function uniFrame(ts){
+  if(!U.on) return;
+  const dt = Math.min(.05, U.last ? (ts - U.last) / 1000 : .016); U.last = ts;
+  const sp = U.rm ? .15 : 1;
+  U.t += dt; U.spin += dt * sp; U.rot += dt * .05 * sp;
+  try{ uniDraw(dt); }catch(e){ console.error(e); }
+  U.raf = requestAnimationFrame(uniFrame);
+}
+function uniDraw(dt){
+  const {ctx, w, h} = U; if(!ctx || !w) return;
+  ctx.setTransform(U.dpr, 0, 0, U.dpr, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+  const R = Math.min(w, h) * .46, v = Math.max(U.s, 1), m = U.s < 1 ? (1 - U.s) / .5 : 0;
+  const ax = (w / 2) / R * .9, ay = (h / 2) / R * .86, cx = w / 2 + U.ox * v, cy = h / 2 + U.oy * v;
+  const S = (x, y) => [cx + x * R * v, cy + y * R * v];
+  const list = uniList(), total = list.length, okN = list.filter(c => c.ok).length, q = total ? okN / total : 0;
+  const hole = uniPrefs.theme === 'hole';
+  // 배경 먼지 별
+  ctx.fillStyle = '#fff';
+  U.dust.forEach(d => { ctx.globalAlpha = d.a; ctx.fillRect(w / 2 + d.x * w * .52 * (.85 + .15 * v) + U.ox * .3, h / 2 + d.y * h * .52 * (.85 + .15 * v) + U.oy * .3, d.s, d.s); });
+  if(!hole){
+    // 하얀 은하: 이해한 개념이 많을수록, 오므릴수록 밝아져요
+    const g = Math.max(m, q * .85, .06), [gx, gy] = S(0, 0), gr = R * v * (.16 + .2 * g);
+    const grd = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
+    grd.addColorStop(0, `rgba(255,255,255,${.22 + .6 * g})`); grd.addColorStop(.3, `rgba(255,255,255,${.06 + .18 * g})`); grd.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.globalAlpha = 1; ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(gx, gy, gr, 0, 6.283); ctx.fill();
+    ctx.fillStyle = '#fff';
+    U.arms.forEach(p => { const an = galAng(p.ang, p.d), [x, y] = S(p.d * Math.cos(an), p.d * Math.sin(an) * .6), z = p.s * (.7 + .3 * v); ctx.globalAlpha = p.a * g; ctx.fillRect(x, y, z, z); });
+  } else {
+    // 블랙홀: 흡수한 개념이 많을수록 커지고, 오므릴수록 원반이 밝아져요
+    const rb = R * v * (.07 + .07 * q), [hx, hy] = S(0, 0), glow = .35 + .65 * Math.max(m, q);
+    const grd = ctx.createRadialGradient(hx, hy, rb * .8, hx, hy, rb * 5);
+    grd.addColorStop(0, `rgba(255,255,255,${.12 * glow})`); grd.addColorStop(.4, `rgba(200,40,30,${.08 * glow})`); grd.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = 1; ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(hx, hy, rb * 5, 0, 6.283); ctx.fill();
+    const disk = front => U.disk.forEach(p => {
+      const an = p.ang + U.spin * .9 / p.rr, sn = Math.sin(an); if((sn > 0) !== front) return;
+      const z = p.s * (.7 + .3 * v); ctx.globalAlpha = p.a * glow * (front ? 1 : .6); ctx.fillStyle = p.red ? '#e5483c' : '#fff';
+      ctx.fillRect(hx + Math.cos(an) * p.rr * rb, hy + sn * p.rr * rb * .32, z, z);
+    });
+    disk(false);
+    ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(hx, hy, rb, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.5; ctx.shadowColor = 'rgba(255,70,50,.75)'; ctx.shadowBlur = 14;
+    ctx.beginPath(); ctx.arc(hx, hy, rb * 1.06, 0, 6.283); ctx.stroke(); ctx.shadowBlur = 0;
+    disk(true);
+  }
+  // 개념 별
+  const k = 1 - Math.exp(-dt * 2.2), labelA = clamp((v - 1.4) * 2, 0, 1) * .75;
+  U.drawn = []; ctx.font = '12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  list.forEach(c => {
+    let st = U.stars.get(c.id); const fresh = !st; if(fresh){ st = mkStar(c); U.stars.set(c.id, st); }
+    const fxW = st.fx * ax, fyW = st.fy * ay, ga = galAng(st.ga, st.gd), gxW = st.gd * Math.cos(ga), gyW = st.gd * Math.sin(ga) * .6;
+    let tx, ty, ta = 1, ts = 1;
+    if(!hole){
+      if(c.ok){ tx = gxW; ty = gyW; ts = .85; }
+      else { tx = fxW + (gxW - fxW) * m * .92; ty = fyW + (gyW - fyW) * m * .92; }
+    } else {
+      const ha = st.ha + U.spin * .5 / st.ho, ox = Math.cos(ha) * st.ho, oy = Math.sin(ha) * st.ho * .35;
+      if(c.ok){ tx = 0; ty = 0; ta = 0; ts = .1; }
+      else { tx = fxW + (ox - fxW) * m; ty = fyW + (oy - fyW) * m; }
+    }
+    const just = U.justOk.has(c.id);
+    if(fresh){
+      if(just || U.newIds.has(c.id)){ st.px = fxW; st.py = fyW; if(!just) st.sc = 0; }
+      else { st.px = tx; st.py = ty; st.a = ta; st.sc = ts; }
+    }
+    if(just) U.flash.push({id:c.id, t:0});
+    U.justOk.delete(c.id); U.newIds.delete(c.id);
+    st.px += (tx - st.px) * k; st.py += (ty - st.py) * k;
+    st.a += (ta - st.a) * k * (hole ? .55 : 1); st.sc += (ts - st.sc) * k;
+    const [sx, sy] = S(st.px, st.py);
+    if(sx < -30 || sy < -30 || sx > w + 30 || sy > h + 30) return;
+    const tw = c.ok || U.rm ? 1 : .6 + .4 * Math.sin(U.t * st.sp + st.ph), al = st.a * tw, rad = st.size * st.sc * (.75 + .25 * v);
+    if(al < .02 || rad < .05) return;
+    ctx.fillStyle = '#fff';
+    ctx.globalAlpha = al * .16; ctx.beginPath(); ctx.arc(sx, sy, rad * 3.2, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = al; ctx.beginPath(); ctx.arc(sx, sy, rad, 0, 6.283); ctx.fill();
+    if(!c.ok && st.size > 3){
+      ctx.globalAlpha = al * .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = .8; ctx.beginPath();
+      ctx.moveTo(sx - rad * 4, sy); ctx.lineTo(sx + rad * 4, sy); ctx.moveTo(sx, sy - rad * 4); ctx.lineTo(sx, sy + rad * 4); ctx.stroke();
+    }
+    if(U.sel === c.id){ ctx.globalAlpha = 1; ctx.strokeStyle = hole ? '#e5483c' : '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(sx, sy, rad + 8, 0, 6.283); ctx.stroke(); }
+    if(labelA > 0 && st.a > .3){ ctx.globalAlpha = labelA; ctx.fillStyle = '#fff'; ctx.fillText(c.name, sx + rad + 6, sy + 4); }
+    U.drawn.push({id:c.id, x:sx, y:sy});
+  });
+  // 이해한 순간 반짝임
+  U.flash = U.flash.filter(f => {
+    f.t += dt; const st = U.stars.get(f.id); if(!st || f.t > 1.4) return false;
+    const [x, y] = S(st.px, st.py); ctx.globalAlpha = 1 - f.t / 1.4; ctx.strokeStyle = hole ? '#e5483c' : '#fff'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(x, y, 4 + f.t * 34, 0, 6.283); ctx.stroke(); return true;
+  });
+  ctx.globalAlpha = 1;
+  const txt = (U.demo ? '예시 우주 · ' : '') + (total ? `${hole ? '블랙홀에 흡수된' : '은하에 합쳐진'} 개념 ${okN} / ${total}` : '');
+  if(txt !== U.countTxt){ U.countTxt = txt; $('#uniCount').textContent = txt; $('#uniEmpty').classList.toggle('show', !total); }
+}
+function uniTap(x, y){
+  let best = null, bd = 26;
+  U.drawn.forEach(d => { const dd = Math.hypot(d.x - x, d.y - y); if(dd < bd){ bd = dd; best = d; } });
+  U.sel = best ? best.id : null; uniCard();
+}
+function uniCard(){
+  const c = uniList().find(x => x.id === U.sel), el = $('#uniCard');
+  if(!c){ el.classList.remove('show'); return; }
+  el.innerHTML = `<b style="font-size:16px">${esc(c.name)}</b><p style="font-size:12px;color:#aaa;margin:2px 0 8px">${esc(c.sub)} · ${c.ok ? '이해함' : '아직'} · 맞힘 ${c.c || 0} · 틀림 ${c.w || 0}</p><p style="font-size:13px;line-height:1.6">${esc(c.desc || '설명이 없어요.')}</p><div class="row" style="margin:12px 0 0">${c.ok ? '<button class="btn ghost" data-u="no">다시 공부할래요</button>' : '<button class="btn" data-u="ok">이해했어요</button>'}<button class="btn ghost" data-u="del">삭제</button><button class="btn ghost" data-u="x">닫기</button></div>`;
+  el.classList.add('show');
+}
+function uniCardAct(e){
+  const b = e.target.closest('[data-u]'); if(!b) return;
+  const arr = U.demo || concepts, c = arr.find(x => x.id === U.sel), act = b.dataset.u;
+  if(c && act === 'ok'){ c.ok = true; c.okAt = Date.now(); U.justOk.add(c.id); }
+  if(c && act === 'no'){ c.ok = false; c.okAt = 0; }
+  if(c && act === 'del'){
+    if(!confirm(`'${c.name}' 별을 지울까요?`)) return;
+    arr.splice(arr.indexOf(c), 1); U.stars.delete(c.id); U.sel = null;
+  }
+  if(act === 'x') U.sel = null;
+  if(!U.demo) saveC();
+  uniCard(); uniControls();
+}
+function uniControls(){
+  document.querySelectorAll('#uniTheme button').forEach(b => b.classList.toggle('on', b.dataset.th === uniPrefs.theme));
+  const subs = [...new Set((U.demo || concepts).map(c => c.sub))];
+  if(uniPrefs.sub && !subs.includes(uniPrefs.sub)) uniPrefs.sub = '';
+  $('#uniSub').innerHTML = '<option value="">전체 과목</option>' + subs.map(s => `<option value="${esc(s)}"${s === uniPrefs.sub ? ' selected' : ''}>${esc(s)}</option>`).join('');
+  $('#uniDemo').textContent = U.demo ? '내 우주로 돌아가기' : '예시 우주 보기';
+  U.countTxt = null;
+}
+function toggleUniDemo(){ U.demo = U.demo ? null : demoConcepts(); U.sel = null; U.stars.clear(); U.s = 1; U.ox = U.oy = 0; uniCard(); uniControls(); }
+
+// ===== 연결 =====
+function initEngine(){
+  ['#pdfQuiz', '#recQuizBox'].forEach(id => $(id).addEventListener('click', quizClick));
+  $('#pdfSaved').addEventListener('click', quizListClick($('#pdfQuiz')));
+  $('#recQuizSaved').addEventListener('click', quizListClick($('#recQuizBox')));
+  $('#recQuiz').onclick = () => {
+    const t = ($('#recText').value.trim() + '\n' + $('#recOut').textContent.trim()).trim();
+    if(!t){ $('#recMsg').textContent = '퀴즈를 만들 글이 없어요. 녹음하거나 붙여넣어 주세요.'; return; }
+    const sub = subjOf($('#recSubject').value);
+    makeQuiz({src:'lecture', sub, title:sub + ' · 강의 퀴즈', payload:{task:'lecture_quiz', text:t.slice(0, 29000)}, box:$('#recQuizBox'), msg:$('#recMsg'), btn:$('#recQuiz')});
+  };
+  // 시험 계획
+  $('#exGo').onclick = () => makePlan(planDraft && planDraft.sub === $('#exSub').value.trim() ? planDraft.id : (exams.find(e => e.sub === $('#exSub').value.trim() && e.date === $('#exDate').value) || {}).id);
+  $('#exApply').onclick = applyPlan;
+  $('#exList').onclick = e => {
+    const re = e.target.closest('[data-re]'), del = e.target.closest('[data-del]');
+    if(re){ const x = exams.find(v => v.id === re.dataset.re); if(!x) return; $('#exSub').value = x.sub; $('#exDate').value = x.date; $('#exMin').value = x.min; $('#exScope').value = x.scope || ''; makePlan(x.id); }
+    if(del){
+      const x = exams.find(v => v.id === del.dataset.del); if(!x || !confirm(`${x.sub} 시험과 계획 일정을 달력에서 지울까요?`)) return;
+      Object.keys(events).forEach(k => { events[k] = events[k].filter(ev => ev.pid !== x.id); if(!events[k].length) delete events[k]; });
+      exams = exams.filter(v => v.id !== x.id); store.set('events', events); store.set('exams', exams); drawExams(); drawCal(); render();
+    }
+  };
+  // 분석
+  $('#anDemo').onclick = () => { anDemo = anDemo ? null : demoAnalysis(); drawAnalysis(); };
+  $('#anAI').onclick = async () => {
+    const btn = $('#anAI'), msg = $('#anAIMsg'); btn.disabled = true; msg.textContent = 'AI가 기록을 살펴보는 중이에요...'; $('#anAIOut').textContent = '';
+    try{ const d = await callAI({task:'insight', text:(anDemo ? '(예시 데이터)\n' : '') + anSummaryText(anDemo || realSrc())}); $('#anAIOut').textContent = d.text; msg.textContent = ''; }
+    catch(e){ msg.textContent = '실패: ' + e.message; }
+    finally{ btn.disabled = false; }
+  };
+  // 우주
+  $('#uniTheme').onclick = e => { const b = e.target.closest('button'); if(!b) return; uniPrefs.theme = b.dataset.th; store.set('uniPrefs', uniPrefs); uniControls(); };
+  $('#uniSub').onchange = () => { uniPrefs.sub = $('#uniSub').value; store.set('uniPrefs', uniPrefs); U.sel = null; uniCard(); U.countTxt = null; };
+  $('#uniReset').onclick = () => { U.s = 1; U.ox = U.oy = 0; };
+  $('#uniDemo').onclick = $('#uniDemo2').onclick = toggleUniDemo;
+  $('#uniAdd').onclick = () => {
+    const name = prompt('개념 이름 (예: 반감기)'); if(!name || !name.trim()) return;
+    const sub = uniPrefs.sub || prompt('과목', prefs.subject || '') || '';
+    if(U.demo){ U.demo.push({id:'demo-' + uid(), name:name.trim(), sub:subjOf(sub), desc:'', c:0, w:0, ok:false}); }
+    else addConcepts([{name:name.trim(), desc:''}], sub);
+    uniControls();
+  };
+  window.onTab = t => {
+    if(t === 'uni') uniStart(); else uniStop();
+    if(t === 'an') drawAnalysis();
+    if(t === 'cal') drawExams();
+  };
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'hidden') uniStop();
+    else if($('#uni').classList.contains('on')) uniStart();
+  });
+  const tmr = new Date(); tmr.setDate(tmr.getDate() + 14); $('#exDate').value = fmt(tmr);
+  drawExams(); drawNotes(); render();
+}
+initEngine();
 
 drawTT(); drawCal(); drawLinks();
 </script>
