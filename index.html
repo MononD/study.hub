@@ -26,14 +26,21 @@
   .row input{flex:1;min-width:120px}
   /* timetable */
   .tt-wrap{overflow-x:auto}
-  table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
-  th,td{border:1px solid var(--line);padding:0;text-align:center;height:48px}
-  th{background:var(--soft);font-weight:600;height:36px}
-  th.t{width:64px}
-  td.c{cursor:pointer;background:#fff}
-  td.c:hover{background:var(--soft)}
-  td .cell{padding:4px;font-size:12px;line-height:1.3;color:#fff;background:var(--dark);height:100%;display:flex;flex-direction:column;justify-content:center}
-  td .cell small{color:#bbb}
+  .tt-in{min-width:560px}
+  .tth,.ttb{display:grid;grid-template-columns:56px repeat(5,minmax(0,1fr))}
+  .th{background:var(--soft);font-weight:600;font-size:13px;text-align:center;padding:8px 0;border:1px solid var(--line);border-left:0}
+  .th:first-child{border-left:1px solid var(--line)}
+  .ttb{border-bottom:1px solid var(--line)}
+  .tcol{position:relative;height:624px;border-right:1px solid var(--line);cursor:pointer;
+    background-image:repeating-linear-gradient(to bottom,transparent 0 23px,#f0f0f0 23px 24px),repeating-linear-gradient(to bottom,transparent 0 47px,var(--line) 47px 48px)}
+  .tcol:first-child{border-left:1px solid var(--line);cursor:default;background:var(--soft)}
+  .tl{position:absolute;left:0;right:0;font-size:11px;color:var(--sub);text-align:center;transform:translateY(-7px)}
+  .blk{position:absolute;left:2px;right:2px;background:var(--dark);color:#fff;border-radius:4px;padding:3px 5px;font-size:12px;line-height:1.3;overflow:hidden;cursor:pointer}
+  .blk small{display:block;color:#bbb;font-size:11px}
+  .blk:hover{background:#333}
+  .tt-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .tt-top h2{margin:0}
+  /* calendar */
   /* calendar */
   .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
   .cal-head b{font-size:16px}
@@ -59,7 +66,7 @@
   dialog{border:1px solid var(--line);border-radius:10px;padding:20px;width:min(360px,92vw)}
   dialog::backdrop{background:rgba(0,0,0,.4)}
   dialog label{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px}
-  dialog input{width:100%}
+  dialog input,dialog select{width:100%}
   .soon{color:var(--sub);font-size:14px}
 </style>
 </head>
@@ -75,9 +82,9 @@
 <main>
 
 <section id="tt" class="on">
-  <h2>시간표</h2>
-  <div class="card tt-wrap"><table id="ttTable"></table></div>
-  <p class="soon" style="margin-top:8px">칸을 누르면 과목을 입력하거나 지울 수 있어요.</p>
+  <div class="tt-top"><h2>시간표</h2><button class="btn" id="ttAdd">수업 추가</button></div>
+  <div class="card tt-wrap"><div class="tt-in"><div class="tth" id="tth"></div><div class="ttb" id="ttb"></div></div></div>
+  <p class="soon" style="margin-top:8px">빈 곳을 누르면 그 시간에 수업을 추가하고, 수업을 누르면 수정하거나 지울 수 있어요.</p>
 </section>
 
 <section id="cal">
@@ -125,9 +132,14 @@
 
 <dialog id="dlg">
   <form method="dialog" id="dlgForm">
-    <b id="dlgTitle">과목 입력</b>
+    <b>수업 입력</b>
     <label for="dName">과목명</label><input id="dName">
     <label for="dRoom">강의실 (선택)</label><input id="dRoom">
+    <label for="dDay">요일</label><select id="dDay"></select>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1"><label for="dStart">시작</label><select id="dStart"></select></div>
+      <div style="flex:1"><label for="dEnd">끝</label><select id="dEnd"></select></div>
+    </div>
     <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
       <button type="button" class="btn ghost" id="dDel">지우기</button>
       <button type="button" class="btn ghost" id="dCancel">취소</button>
@@ -154,34 +166,64 @@ $('#tabs').addEventListener('click', e => {
 
 // ---------- 시간표 ----------
 const days = ['월','화','수','목','금'];
-const hours = [9,10,11,12,13,14,15,16,17,18];
-let tt = store.get('tt', {});
-let curCell = null;
-function drawTT(){
-  let h = '<tr><th class="t"></th>' + days.map(d => `<th>${d}</th>`).join('') + '</tr>';
-  hours.forEach(hr => {
-    h += `<tr><th class="t">${hr}:00</th>`;
-    days.forEach((d, i) => {
-      const k = i + '-' + hr, v = tt[k];
-      h += `<td class="c" data-k="${k}">` + (v ? `<div class="cell">${esc(v.name)}${v.room ? `<small>${esc(v.room)}</small>` : ''}</div>` : '') + '</td>';
-    });
-    h += '</tr>';
+const T0 = 8*60, T1 = 21*60, H = 24;           // 8시~21시, 30분 = 24px
+const tl = m => Math.floor(m/60) + ':' + (m%60 ? '30' : '00');
+let tt = store.get('tt2', null);
+if(!tt){                                       // 예전 형식 데이터 옮기기
+  const old = store.get('tt', {}); tt = [];
+  Object.keys(old).forEach(k => {
+    const [d, h] = k.split('-').map(Number);
+    const prev = tt.find(x => x.day === d && x.name === old[k].name && x.room === (old[k].room || '') && x.end === h*60);
+    if(prev) prev.end += 60; else tt.push({id:Date.now() + tt.length, day:d, start:h*60, end:h*60+60, name:old[k].name, room:old[k].room || ''});
   });
-  $('#ttTable').innerHTML = h;
+  store.set('tt2', tt);
 }
-$('#ttTable').addEventListener('click', e => {
-  const td = e.target.closest('td.c'); if(!td) return;
-  curCell = td.dataset.k;
-  const v = tt[curCell] || {};
-  $('#dName').value = v.name || ''; $('#dRoom').value = v.room || '';
+let editId = null;
+function opts(sel, from, to, val){
+  let h = ''; for(let m = from; m <= to; m += 30) h += `<option value="${m}"${m === val ? ' selected' : ''}>${tl(m)}</option>`;
+  sel.innerHTML = h;
+}
+$('#dDay').innerHTML = days.map((d, i) => `<option value="${i}">${d}요일</option>`).join('');
+function drawTT(){
+  $('#tth').innerHTML = '<div class="th"></div>' + days.map(d => `<div class="th">${d}</div>`).join('');
+  let times = ''; for(let m = T0 + 60; m < T1; m += 60) times += `<div class="tl" style="top:${(m - T0)/30*H}px">${tl(m)}</div>`;
+  let h = `<div class="tcol">${times}</div>`;
+  days.forEach((d, i) => {
+    h += `<div class="tcol" data-d="${i}">` + tt.filter(x => x.day === i).map(x =>
+      `<div class="blk" data-id="${x.id}" style="top:${(x.start - T0)/30*H}px;height:${(x.end - x.start)/30*H - 2}px">${esc(x.name)}${x.room ? `<small>${esc(x.room)}</small>` : ''}</div>`
+    ).join('') + '</div>';
+  });
+  $('#ttb').innerHTML = h;
+}
+function openDlg(id, day, start, end){
+  editId = id;
+  const x = tt.find(v => v.id === id) || {};
+  $('#dName').value = x.name || ''; $('#dRoom').value = x.room || '';
+  $('#dDay').value = x.day !== undefined ? x.day : day;
+  opts($('#dStart'), T0, T1 - 30, x.start || start);
+  opts($('#dEnd'), T0 + 30, T1, x.end || end);
+  $('#dDel').style.display = id ? '' : 'none';
   $('#dlg').showModal(); $('#dName').focus();
+}
+$('#ttAdd').onclick = () => openDlg(null, 0, 9*60, 11*60);
+$('#ttb').addEventListener('click', e => {
+  const b = e.target.closest('.blk');
+  if(b){ openDlg(+b.dataset.id); return; }
+  const c = e.target.closest('.tcol[data-d]'); if(!c) return;
+  const y = e.clientY - c.getBoundingClientRect().top;
+  const s = Math.min(T0 + Math.floor(y/H)*30, T1 - 60);
+  openDlg(null, +c.dataset.d, s, s + 60);
 });
 $('#dSave').onclick = () => {
-  const n = $('#dName').value.trim();
-  if(n) tt[curCell] = {name:n, room:$('#dRoom').value.trim()}; else delete tt[curCell];
-  store.set('tt', tt); drawTT(); $('#dlg').close();
+  const name = $('#dName').value.trim(), day = +$('#dDay').value, s = +$('#dStart').value, en = +$('#dEnd').value;
+  if(!name){ $('#dName').focus(); return; }
+  if(en <= s){ alert('끝나는 시간이 시작 시간보다 늦어야 해요.'); return; }
+  if(tt.some(x => x.id !== editId && x.day === day && x.start < en && x.end > s)){ alert('같은 요일에 겹치는 수업이 있어요.'); return; }
+  const item = {id:editId || Date.now(), day, start:s, end:en, name, room:$('#dRoom').value.trim()};
+  tt = editId ? tt.map(x => x.id === editId ? item : x) : tt.concat(item);
+  store.set('tt2', tt); drawTT(); $('#dlg').close();
 };
-$('#dDel').onclick = () => { delete tt[curCell]; store.set('tt', tt); drawTT(); $('#dlg').close(); };
+$('#dDel').onclick = () => { tt = tt.filter(x => x.id !== editId); store.set('tt2', tt); drawTT(); $('#dlg').close(); };
 $('#dCancel').onclick = () => $('#dlg').close();
 
 // ---------- 달력 ----------
