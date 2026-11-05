@@ -7,6 +7,8 @@ const QUIZ = BASE_TOOL + '자료를 읽고 개념 확인용 객관식 퀴즈를 
 
 const PLAN = BASE_TOOL + '학생 정보를 보고 시험 전날까지 하루 단위 공부 계획을 세우세요.\n규칙:\n"계획에 쓸 날짜"에 있는 날짜만 쓰기(YYYY-MM-DD).\n하루 할 일은 1~3개, 각 35자 이내로 무엇을 어떻게 할지 구체적으로.\n아직 이해 못한 개념을 앞쪽에 먼저 넣고, 2~3일 간격으로 다시 복습.\n마지막 1~2일은 전체 복습과 문제 풀이.\n하루 공부 가능 시간을 넘기지 않기.\n공부 기록 분석에 잘 맞는 시간대나 집중 길이가 있으면 할 일에 반영(예: "오전에", "50분씩 2번").\nadvice에는 이 계획의 전략을 2~3문장으로.';
 
+const CONST = BASE_TOOL + '한 과목의 개념 목록을 보고 서로 관련 있는 개념끼리 묶어 별자리를 만드세요.\n규칙:\n별자리는 2~6개, 별자리마다 개념 2~6개.\n개념 이름은 목록과 글자까지 똑같이 쓰고, 한 개념은 한 별자리에만 넣기. 어디에도 잘 맞지 않는 개념은 빼도 돼요.\nname은 묶음의 공통 주제로 "OO자리" 형식(예: 약동학자리), 8자 이내.\nlinks는 별자리 안에서 직접 이어지는 개념 쌍이에요. 학습 순서나 인과 관계대로 잇고, 모든 개념이 선으로 이어지게 하세요.';
+
 const TOOLS = {
   quiz: {
     type: 'object',
@@ -17,6 +19,15 @@ const TOOLS = {
         concept: { type: 'string' }, explain: { type: 'string' } }, required: ['q', 'choices', 'answer', 'concept', 'explain'] } }
     },
     required: ['concepts', 'questions']
+  },
+  constellation: {
+    type: 'object',
+    properties: {
+      groups: { type: 'array', items: { type: 'object', properties: {
+        name: { type: 'string' }, members: { type: 'array', items: { type: 'string' } },
+        links: { type: 'array', items: { type: 'array', items: { type: 'string' } } } }, required: ['name', 'members', 'links'] } }
+    },
+    required: ['groups']
   },
   plan: {
     type: 'object',
@@ -35,6 +46,7 @@ const TASKS = {
   lecture: { src: 'text', sys: BASE + '아래는 강의를 음성인식으로 받아 적은 글이라 오타나 끊긴 문장이 있을 수 있어요. 문맥에 맞게 바로잡아 아래 형식으로 정리하세요.\n\n[한 줄 요약]\n\n[핵심 내용]\n주제별로 짧게 정리\n\n[중요 용어]\n용어: 설명\n\n[복습 퀴즈]\n단답형 5문제와 정답' },
   lecture_quiz: { src: 'text', sys: QUIZ + '\n자료는 강의를 음성인식으로 받아 적은 글이라 오타가 있을 수 있어요. 문맥에 맞게 이해해서 만드세요.', tool: 'quiz' },
   plan: { src: 'text', sys: PLAN, tool: 'plan' },
+  constellation: { src: 'text', sys: CONST, tool: 'constellation' },
   insight: { src: 'text', sys: BASE + '아래는 한 학생의 공부 기록 통계예요. 이 학생에게 맞는 공부 방식을 4~6문장으로 조언하세요. 숫자를 근거로 들되, 기록이 적으면 단정하지 말고 "경향"이라고 표현하세요. 바로 실천할 수 있는 행동 1~2개로 끝내세요.' }
 };
 
@@ -50,6 +62,16 @@ function cleanQuiz(x) {
   qs.forEach(q => { if (q.concept && !names.has(q.concept)) { cs.push({ name: q.concept, desc: '' }); names.add(q.concept); } });
   if (qs.length < 3) throw new Error('문제를 충분히 만들지 못했어요. 다시 시도해주세요.');
   return { concepts: cs, questions: qs };
+}
+
+function cleanConst(x) {
+  const groups = (Array.isArray(x.groups) ? x.groups : [])
+    .filter(g => g && typeof g.name === 'string' && Array.isArray(g.members))
+    .map(g => ({ name: g.name.trim().slice(0, 12), members: g.members.map(String).filter(Boolean),
+      links: (Array.isArray(g.links) ? g.links : []).filter(l => Array.isArray(l) && l.length === 2).map(l => [String(l[0]), String(l[1])]) }))
+    .filter(g => g.members.length >= 2);
+  if (!groups.length) throw new Error('이을 만한 별자리를 찾지 못했어요.');
+  return { groups };
 }
 
 function cleanPlan(x) {
@@ -98,7 +120,7 @@ module.exports = async (req, res) => {
       const use = (d.content || []).find(b => b.type === 'tool_use');
       if (!use) return res.status(502).json({ error: 'AI 응답을 읽지 못했어요. 다시 시도해주세요.' });
       try {
-        return res.status(200).json({ data: T.tool === 'quiz' ? cleanQuiz(use.input) : cleanPlan(use.input) });
+        return res.status(200).json({ data: T.tool === 'quiz' ? cleanQuiz(use.input) : T.tool === 'plan' ? cleanPlan(use.input) : cleanConst(use.input) });
       } catch (e) {
         return res.status(502).json({ error: e.message });
       }
