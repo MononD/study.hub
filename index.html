@@ -85,11 +85,71 @@
   #tmRight{font-size:32px}
   .ev.st{background:#111;color:#fff;border-left-color:#111}
   .studyline{font-size:13px;color:var(--sub);margin-bottom:8px}
+  main{padding-bottom:110px}
+  .mp{position:fixed;display:flex;flex-direction:column;width:min(380px,calc(100vw - 24px));z-index:50;background:rgba(72,72,72,.94);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:#fff;border-radius:28px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .mp-body{max-height:0;overflow:hidden;padding:0 20px;transition:max-height .3s}
+  .mp.open .mp-body{max-height:80vh;overflow-y:auto;padding:20px 20px 4px}
+  .mp-art{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#000}
+  .mp-art iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .mp-ph{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;font-size:56px;color:#e6e6e6;background:#a3a3a3}
+  .mp-ph.hide{display:none}
+  .mp-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:16px 0 12px;font-size:15px;font-weight:600}
+  .mp-title span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mp button{font-family:inherit}
+  .mp-more{border:0;background:none;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+  .mp input[type=range]{-webkit-appearance:none;appearance:none;display:block;width:100%;height:6px;padding:0;border:0;border-radius:3px;min-width:0;background:linear-gradient(to right,#eee var(--p,0%),rgba(255,255,255,.3) var(--p,0%))}
+  .mp input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;border:0}
+  .mp input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:0}
+  .mp-times{display:flex;justify-content:space-between;font-size:12px;color:#ccc;margin-top:6px}
+  .mp-ctl{display:flex;justify-content:center;gap:40px;margin:6px 0}
+  .mp-ctl button{background:none;border:0;color:#fff;width:56px;height:56px;padding:8px;cursor:pointer}
+  .mp-ctl svg{width:100%;height:100%}
+  .mp-vol{display:flex;align-items:center;gap:12px;margin:6px 0 14px}
+  .mp-vol svg{width:20px;height:20px;flex:none;color:#ddd}
+  .mp-list{display:none;border-top:1px solid rgba(255,255,255,.2);padding-top:12px;margin-bottom:12px}
+  .mp-list.show{display:block}
+  .mp-add{display:flex;gap:8px}
+  .mp-add input{flex:1;min-width:0;background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:8px;padding:9px 10px;font-size:14px}
+  .mp-add input::placeholder{color:#ccc}
+  .mp-add button{border:0;background:#fff;color:#111;border-radius:8px;padding:0 14px;font-size:14px;cursor:pointer}
+  .mp-msg{font-size:12px;color:#ddd;min-height:16px;margin:6px 0}
+  .mp-list ul{list-style:none;padding:0;margin:0}
+  .mp-list li{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;font-size:14px}
+  .mp-list li.cur{font-weight:700}
+  .mp-list li.cur .tt::before{content:"▶ ";font-size:10px}
+  .mp-list li img,.mp-list li .ph{width:48px;height:36px;border-radius:6px;object-fit:cover;background:#888;flex:none;font-size:11px;display:flex;align-items:center;justify-content:center}
+  .mp-list li .tt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mp-list li.empty{cursor:default;color:#ccc;font-size:13px}
+  .mp .x{color:#ddd}
+  .mp-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
+  .mp-bar .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+  .mp-chev{border:0;background:none;color:#fff;width:28px;height:28px;padding:2px;cursor:pointer;transition:transform .3s}
+  .mp.open .mp-chev{transform:rotate(180deg)}
+  .mp-mini{display:flex;gap:4px}
+  .mp-mini button{border:0;background:none;color:#fff;width:34px;height:34px;padding:5px;cursor:pointer}
+  .mp-mini svg,.mp-chev svg{width:100%;height:100%}
+  .mp.open .mp-mini{display:none}
+  .mp.dock-bottom{left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .mp.dock-top{left:50%;transform:translateX(-50%);top:calc(8px + env(safe-area-inset-top,0px));flex-direction:column-reverse}
+  .mp.dock-left{left:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .mp.dock-right{right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .mp.dock-free{transform:none}
+  .mp.dock-top.open .mp-body{padding:4px 20px 20px}
+  .mp.dock-top .mp-chev{transform:rotate(180deg)}
+  .mp.dock-top.open .mp-chev{transform:none}
+  body.mp-top{padding-top:68px}
+  .mp-bar{touch-action:none;user-select:none;-webkit-user-select:none}
+  .mp-pos{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:13px;color:#ddd}
+  .mp-pos span{margin-right:auto}
+  .mp-pos button{border:1px solid rgba(255,255,255,.3);background:none;color:#fff;border-radius:8px;width:38px;height:32px;font-size:14px;cursor:pointer}
+  .mp-pos button.on{background:#fff;color:#111}
+  .auth-btn{margin-left:auto;align-self:center;border:1px solid #777;background:transparent;color:#fff;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;max-width:45vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .auth-btn.on{background:#fff;color:#111;border-color:#fff}
   .soon{color:var(--sub);font-size:14px}
 </style>
 </head>
 <body>
-<header><h1>Study Hub</h1><span>시간표 · 일정 · 링크</span></header>
+<header><h1>Study Hub</h1><span>시간표 · 일정 · 링크</span><button class="auth-btn" id="authBtn">로그인</button></header>
 <nav id="tabs">
   <button data-t="tt" class="on">시간표</button>
   <button data-t="cal">달력</button>
@@ -192,6 +252,47 @@
 
 </main>
 
+<div class="mp dock-bottom" id="mp">
+  <div class="mp-body">
+    <div class="mp-art"><div id="mpYT"></div><div class="mp-ph" id="mpPh">♪</div></div>
+    <div class="mp-title"><span id="mpTitle">재생 중이 아님</span><button class="mp-more" id="mpMore" aria-label="재생목록 열기">⋯</button></div>
+    <input type="range" id="mpSeek" min="0" max="1000" value="0" aria-label="재생 위치">
+    <div class="mp-times"><span id="mpCur">--:--</span><span id="mpDur">--:--</span></div>
+    <div class="mp-ctl"><button class="mp-prev" aria-label="이전 곡"></button><button class="mp-pp" aria-label="재생/일시정지"></button><button class="mp-next" aria-label="다음 곡"></button></div>
+    <div class="mp-vol"><span id="mpVL"></span><input type="range" id="mpVol" min="0" max="100" value="80" aria-label="볼륨"><span id="mpVH"></span></div>
+    <div class="mp-pos"><span>위치 (막대를 끌어도 돼요)</span><button data-pos="left" aria-label="왼쪽">◀</button><button data-pos="top" aria-label="위쪽">▲</button><button data-pos="bottom" aria-label="아래쪽">▼</button><button data-pos="right" aria-label="오른쪽">▶</button></div>
+    <div class="mp-list" id="mpListBox">
+      <div class="mp-add"><input id="mpUrl" type="text" placeholder="유튜브 영상 또는 재생목록 링크"><button id="mpAdd">추가</button></div>
+      <div class="mp-msg" id="mpMsg"></div>
+      <ul id="mpList"></ul>
+    </div>
+  </div>
+  <div class="mp-bar" id="mpBar">
+    <button class="mp-chev" id="mpChev" aria-label="플레이어 열기/닫기"></button>
+    <span class="t" id="mpBarTitle">재생 중이 아님</span>
+    <span class="mp-mini"><button class="mp-prev" aria-label="이전 곡"></button><button class="mp-pp" aria-label="재생/일시정지"></button><button class="mp-next" aria-label="다음 곡"></button></span>
+  </div>
+</div>
+
+<dialog id="authDlg">
+  <div id="auOut">
+    <form id="auForm">
+      <div class="seg" id="auTabs" style="margin-bottom:8px"><button type="button" data-m="login" class="on">로그인</button><button type="button" data-m="signup">가입</button></div>
+      <label for="auId">아이디</label><input id="auId" autocapitalize="none" autocorrect="off" autocomplete="username" placeholder="영문 소문자·숫자 3~20자">
+      <button type="button" class="btn ghost" id="auRand" style="margin-top:6px;display:none">랜덤 아이디 만들기</button>
+      <label for="auPw">비밀번호</label><input id="auPw" type="password" autocomplete="current-password" placeholder="4자 이상">
+      <p class="soon" id="auMsg" style="margin-top:10px;min-height:20px"></p>
+      <p class="soon" id="auNote" style="font-size:12px">로그인하면 시간표·일정·링크·공부 기록·음악 목록이 계정에 저장돼서 다른 기기에서도 볼 수 있어요. 로그인하지 않아도 모든 기능을 쓸 수 있어요.</p>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end"><button type="button" class="btn ghost" id="auCancel">닫기</button><button type="submit" class="btn" id="auGo">로그인</button></div>
+    </form>
+  </div>
+  <div id="auIn" style="display:none">
+    <b id="auWho"></b>
+    <p class="soon" id="auStat" style="margin:8px 0 16px"></p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="btn ghost" id="auClose">닫기</button><button type="button" class="btn ghost" id="auSync">지금 동기화</button><button type="button" class="btn" id="auLogout">로그아웃</button></div>
+  </div>
+</dialog>
+
 <dialog id="dlg">
   <form method="dialog" id="dlgForm">
     <b>수업 입력</b>
@@ -214,7 +315,7 @@
 // ---------- 저장소 (브라우저 안에 저장) ----------
 const store = {
   get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} if(window.__syncHook) window.__syncHook(k); }
 };
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -506,6 +607,263 @@ window.addEventListener('pagehide', () => saveStudy(true));
 function initTimer(){ $('#tmSubject').value = prefs.subject; $('#tmFocus').value = prefs.focus; $('#tmBreak').value = prefs.brk; tm.remain = dur(); applyPrefs(); render(); }
 
 initTimer();
+// ---------- 음악 (유튜브 연동) ----------
+const IC = {
+  prev:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 6v12L2 12zM22 6v12l-9-6z"/></svg>',
+  next:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 6v12l9-6zM2 6v12l9-6z"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',
+  vl:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 4V5L7 9z"/></svg>',
+  vh:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path stroke="none" d="M3 9v6h4l5 4V5L7 9z"/><path fill="none" d="M15.5 9a4.5 4.5 0 010 6M18.5 6a8.5 8.5 0 010 12"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>'
+};
+const music = Object.assign({items:[], idx:-1, vol:80, pos:'bottom', x:0, y:0}, store.get('music', {}));
+const saveMusic = () => store.set('music', music);
+const curTrack = () => music.items[music.idx];
+let yt = null, ytReady = false, wantPlay = false, ytState = -1, loaded = false, seeking = false, nowTitle = '', errStreak = 0;
+const tfmt = t => { t = Math.floor(t || 0); const h = Math.floor(t/3600), m = Math.floor(t%3600/60), s = String(t%60).padStart(2, '0'); return h ? h + ':' + String(m).padStart(2, '0') + ':' + s : m + ':' + s; };
+
+function parseYT(u){
+  try{
+    const x = new URL(u.trim()); let v = x.searchParams.get('v'); const l = x.searchParams.get('list');
+    if(x.hostname === 'youtu.be') v = x.pathname.slice(1);
+    if(x.pathname.startsWith('/shorts/')) v = x.pathname.split('/')[2];
+    if(v && /^[\w-]{11}$/.test(v)) return {type:'v', id:v, url:u.trim()};
+    if(l) return {type:'pl', id:l, url:u.trim()};
+  }catch(e){}
+  return null;
+}
+window.onYouTubeIframeAPIReady = () => {
+  yt = new YT.Player('mpYT', {width:'100%', height:'100%',
+    playerVars:{playsinline:1, controls:0, rel:0, modestbranding:1, disablekb:1},
+    events:{
+      onReady: () => { ytReady = true; yt.setVolume(music.vol); if(wantPlay){ wantPlay = false; playIdx(music.idx < 0 ? 0 : music.idx); } },
+      onStateChange: e => {
+        ytState = e.data;
+        if(e.data === 1){
+          errStreak = 0;
+          try{ const d = yt.getVideoData(); nowTitle = (d && d.title) || ''; const it = curTrack();
+            if(it && it.type === 'v' && nowTitle && it.title !== nowTitle){ it.title = nowTitle; saveMusic(); } }catch(x){}
+        }
+        if(e.data === 0){
+          const it = curTrack();
+          if(it && it.type === 'pl'){ try{ const pl = yt.getPlaylist() || []; if(yt.getPlaylistIndex() < pl.length - 1) return; }catch(x){} }
+          playIdx(music.idx + 1);
+        }
+        drawMusic();
+      },
+      onError: () => {
+        nowTitle = '재생할 수 없는 영상이에요'; errStreak++; drawMusic();
+        if(music.items.length > 1 && errStreak < music.items.length) setTimeout(() => playIdx(music.idx + 1), 1500);
+      }
+    }});
+};
+function playIdx(i){
+  if(!music.items.length) return;
+  music.idx = (i + music.items.length) % music.items.length; saveMusic();
+  if(!ytReady){ wantPlay = true; $('#mpMsg').textContent = '플레이어를 불러오는 중이에요...'; return; }
+  const it = curTrack(); loaded = true; nowTitle = '';
+  if(it.type === 'v') yt.loadVideoById(it.id); else yt.loadPlaylist({list:it.id, listType:'playlist', index:0});
+  drawMusic();
+}
+function togglePlay(){
+  if(!music.items.length){ $('#mp').classList.add('open'); $('#mpListBox').classList.add('show'); $('#mpMsg').textContent = '먼저 유튜브 링크를 추가해주세요.'; return; }
+  if(!ytReady){ wantPlay = true; $('#mpMsg').textContent = '플레이어를 불러오는 중이에요...'; return; }
+  if(loaded && (ytState === 1 || ytState === 3)) yt.pauseVideo();
+  else if(loaded) yt.playVideo();
+  else playIdx(music.idx < 0 ? 0 : music.idx);
+}
+function prevTrack(){
+  if(!ytReady || !loaded){ playIdx(music.idx < 0 ? 0 : music.idx - 1); return; }
+  if(yt.getCurrentTime() > 3){ yt.seekTo(0, true); return; }
+  const it = curTrack();
+  if(it && it.type === 'pl'){ try{ if(yt.getPlaylistIndex() > 0){ yt.previousVideo(); return; } }catch(x){} }
+  playIdx(music.idx - 1);
+}
+function nextTrack(){
+  const it = curTrack();
+  if(ytReady && loaded && it && it.type === 'pl'){ try{ if(yt.getPlaylistIndex() < yt.getPlaylist().length - 1){ yt.nextVideo(); return; } }catch(x){} }
+  playIdx(music.idx + 1);
+}
+async function addTrack(){
+  const inp = $('#mpUrl'), p = parseYT(inp.value);
+  if(!p){ $('#mpMsg').textContent = '유튜브 링크를 확인해주세요.'; return; }
+  $('#mpMsg').textContent = '추가하는 중...';
+  let title = p.type === 'v' ? '영상 ' + p.id : '재생목록', thumb = p.type === 'v' ? 'https://i.ytimg.com/vi/' + p.id + '/mqdefault.jpg' : '';
+  try{ const r = await fetch('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent(p.url)); if(r.ok){ const d = await r.json(); title = d.title || title; thumb = d.thumbnail_url || thumb; } }catch(e){}
+  music.items.push({type:p.type, id:p.id, title, thumb}); saveMusic(); inp.value = ''; $('#mpMsg').textContent = ''; drawMusic();
+}
+function drawMusic(){
+  const it = curTrack(), t = loaded ? (nowTitle || (it && it.title) || '') : '재생 중이 아님';
+  $('#mpTitle').textContent = t; $('#mpBarTitle').textContent = t;
+  const playing = loaded && (ytState === 1 || ytState === 3);
+  document.querySelectorAll('.mp-pp').forEach(b => b.innerHTML = playing ? IC.pause : IC.play);
+  $('#mpPh').classList.toggle('hide', loaded);
+  $('#mpList').innerHTML = music.items.length ? music.items.map((x, i) =>
+    `<li data-i="${i}" class="${loaded && i === music.idx ? 'cur' : ''}">${x.thumb ? `<img src="${esc(x.thumb)}" alt="">` : '<span class="ph">목록</span>'}<span class="tt">${esc(x.title)}</span><button class="x" data-del="${i}" aria-label="삭제">×</button></li>`
+  ).join('') : '<li class="empty">링크를 추가해 나만의 재생목록을 만들어보세요.</li>';
+}
+function updateProgress(){
+  if(!ytReady || !loaded || seeking) return;
+  try{
+    const c = yt.getCurrentTime(), d = yt.getDuration(), v = d ? c/d*1000 : 0;
+    $('#mpCur').textContent = tfmt(c); $('#mpDur').textContent = d ? tfmt(d) : '--:--';
+    $('#mpSeek').value = v; $('#mpSeek').style.setProperty('--p', v/10 + '%');
+  }catch(e){}
+}
+let drag = null, lastDrag = 0;
+function clampFree(){ if(music.pos === 'free') applyPos(); }
+function applyPos(){
+  const el = $('#mp');
+  ['bottom', 'top', 'left', 'right', 'free'].forEach(p => el.classList.toggle('dock-' + p, music.pos === p));
+  if(music.pos === 'free'){
+    music.x = Math.min(Math.max(music.x, 0), Math.max(innerWidth - el.offsetWidth, 0));
+    music.y = Math.min(Math.max(music.y, 0), Math.max(innerHeight - el.offsetHeight, 0));
+    el.style.left = music.x + 'px'; el.style.top = music.y + 'px';
+  } else { el.style.left = ''; el.style.top = ''; }
+  document.body.classList.toggle('mp-top', music.pos === 'top');
+  document.querySelectorAll('.mp-pos button').forEach(b => b.classList.toggle('on', b.dataset.pos === music.pos));
+}
+function initMusic(){
+  document.querySelectorAll('.mp-prev').forEach(b => { b.innerHTML = IC.prev; b.onclick = prevTrack; });
+  document.querySelectorAll('.mp-next').forEach(b => { b.innerHTML = IC.next; b.onclick = nextTrack; });
+  document.querySelectorAll('.mp-pp').forEach(b => b.onclick = togglePlay);
+  $('#mpVL').innerHTML = IC.vl; $('#mpVH').innerHTML = IC.vh; $('#mpChev').innerHTML = IC.chev;
+  $('#mpVol').value = music.vol; $('#mpVol').style.setProperty('--p', music.vol + '%');
+  $('#mpVol').oninput = e => { music.vol = +e.target.value; e.target.style.setProperty('--p', music.vol + '%'); saveMusic(); if(ytReady) yt.setVolume(music.vol); };
+  $('#mpSeek').oninput = e => { seeking = true; e.target.style.setProperty('--p', e.target.value/10 + '%'); if(ytReady){ try{ $('#mpCur').textContent = tfmt(yt.getDuration()*e.target.value/1000); }catch(x){} } };
+  $('#mpSeek').onchange = e => { if(ytReady && loaded){ try{ yt.seekTo(yt.getDuration()*e.target.value/1000, true); }catch(x){} } seeking = false; };
+  $('#mpBar').onclick = e => {
+    if(Date.now() - lastDrag < 400 || e.target.closest('.mp-mini')) return;
+    $('#mp').classList.toggle('open'); setTimeout(clampFree, 350);
+  };
+  $('#mpBar').addEventListener('pointerdown', e => {
+    if(e.target.closest('.mp-mini')) return;
+    const r = $('#mp').getBoundingClientRect(); drag = {sx:e.clientX, sy:e.clientY, ox:r.left, oy:r.top, on:false};
+    try{ $('#mpBar').setPointerCapture(e.pointerId); }catch(x){}
+  });
+  $('#mpBar').addEventListener('pointermove', e => {
+    if(!drag) return;
+    const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+    if(!drag.on && Math.hypot(dx, dy) < 8) return;
+    drag.on = true; music.pos = 'free'; music.x = drag.ox + dx; music.y = drag.oy + dy; applyPos();
+  });
+  const endDrag = () => { if(drag && drag.on){ lastDrag = Date.now(); saveMusic(); } drag = null; };
+  $('#mpBar').addEventListener('pointerup', endDrag);
+  $('#mpBar').addEventListener('pointercancel', endDrag);
+  document.querySelector('.mp-pos').onclick = e => { const b = e.target.closest('button'); if(!b) return; music.pos = b.dataset.pos; saveMusic(); applyPos(); };
+  window.addEventListener('resize', clampFree);
+  $('#mpMore').onclick = () => $('#mpListBox').classList.toggle('show');
+  $('#mpAdd').onclick = addTrack;
+  $('#mpUrl').addEventListener('keydown', e => { if(e.key === 'Enter') addTrack(); });
+  $('#mpList').onclick = e => {
+    const del = e.target.closest('[data-del]');
+    if(del){
+      const i = +del.dataset.del; music.items.splice(i, 1);
+      if(i === music.idx){ if(ytReady) try{ yt.stopVideo(); }catch(x){} loaded = false; nowTitle = ''; ytState = -1; music.idx = -1; }
+      else if(i < music.idx) music.idx--;
+      saveMusic(); drawMusic(); return;
+    }
+    const li = e.target.closest('li[data-i]'); if(li) playIdx(+li.dataset.i);
+  };
+  setInterval(updateProgress, 500);
+  const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(sc);
+  applyPos(); drawMusic();
+}
+initMusic();
+
+// ---------- 계정 · 동기화 ----------
+const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'tmPrefs', 'music'];
+const CORE_KEYS = ['tt2', 'events', 'links', 'study'];
+let acct = store.get('acct', null);             // {id, token, at}
+let authMode = 'login', pushTimer = null, ver = 0, lastSnap = null, syncText = '';
+const collect = () => { const d = {}; SYNC_KEYS.forEach(k => { const v = store.get(k, null); if(v !== null) d[k] = v; }); return d; };
+const isEmpty = v => !v || (Array.isArray(v) ? !v.length : !Object.keys(v).length);
+const hasLocal = () => CORE_KEYS.some(k => !isEmpty(store.get(k, null)));
+const sameCore = d => CORE_KEYS.every(k => JSON.stringify(store.get(k, null) || null) === JSON.stringify((d && d[k]) || null));
+function applyData(d){ SYNC_KEYS.forEach(k => { if(d && k in d) localStorage.setItem(k, JSON.stringify(d[k])); else localStorage.removeItem(k); }); }
+async function api(body){
+  const r = await fetch('/api/sync', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  let d = {}; try{ d = await r.json(); }catch(e){}
+  if(!r.ok){ const err = new Error(d.error || '서버에 연결하지 못했어요.'); err.status = r.status; throw err; }
+  return d;
+}
+function drawAcct(){
+  const b = $('#authBtn'); b.textContent = acct ? acct.id : '로그인'; b.classList.toggle('on', !!acct);
+  $('#auOut').style.display = acct ? 'none' : ''; $('#auIn').style.display = acct ? '' : 'none';
+  if(acct){ $('#auWho').textContent = acct.id + ' 님으로 로그인됨'; $('#auStat').textContent = syncText || ''; }
+}
+function setSync(t){ syncText = t; if(acct) $('#auStat').textContent = t; }
+function markDirty(){
+  ver++; localStorage.setItem('syncDirty', '1'); setSync('저장 대기 중...');
+  if(!pushTimer) pushTimer = setTimeout(push, 8000);
+}
+window.__syncHook = k => { if(acct && SYNC_KEYS.includes(k) && JSON.stringify(collect()) !== lastSnap) markDirty(); };
+function logoutLocal(){ acct = null; localStorage.removeItem('acct'); localStorage.removeItem('syncDirty'); clearTimeout(pushTimer); pushTimer = null; syncText = ''; drawAcct(); }
+async function push(){
+  clearTimeout(pushTimer); pushTimer = null; if(!acct) return;
+  const v = ver, snap = JSON.stringify(collect());
+  try{
+    const d = await api({action:'save', token:acct.token, data:collect()});
+    acct.at = d.at; store.set('acct', acct); lastSnap = snap;
+    if(v === ver){ localStorage.removeItem('syncDirty'); setSync('동기화됨 · ' + new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'})); }
+    else pushTimer = setTimeout(push, 3000);
+  }catch(e){
+    if(e.status === 401){ logoutLocal(); alert('로그인이 만료됐어요. 다시 로그인해주세요.'); }
+    else { setSync('동기화 실패 · 곧 다시 시도해요'); pushTimer = setTimeout(push, 30000); }
+  }
+}
+async function syncOnLoad(){
+  if(!acct) return;
+  if(localStorage.getItem('syncDirty')){ await push(); return; }
+  try{
+    const d = await api({action:'load', token:acct.token});
+    if(d.at > (acct.at || 0)){ applyData(d.data || {}); acct.at = d.at; store.set('acct', acct); location.reload(); return; }
+    lastSnap = JSON.stringify(collect()); setSync('동기화됨');
+  }catch(e){ if(e.status === 401) logoutLocal(); else setSync('오프라인 · 기록은 이 기기에 저장돼요'); }
+}
+function setMode(m){
+  authMode = m;
+  document.querySelectorAll('#auTabs button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  $('#auRand').style.display = m === 'signup' ? '' : 'none';
+  $('#auGo').textContent = m === 'signup' ? '가입하기' : '로그인';
+  $('#auPw').autocomplete = m === 'signup' ? 'new-password' : 'current-password';
+  $('#auMsg').textContent = m === 'signup' ? '아이디와 비밀번호를 꼭 기억해두세요. 비밀번호를 잊으면 찾을 수 없어요.' : '';
+}
+async function doAuth(){
+  const id = $('#auId').value.trim().toLowerCase(), pw = $('#auPw').value, msg = $('#auMsg');
+  if(!id || !pw){ msg.textContent = '아이디와 비밀번호를 입력해주세요.'; return; }
+  $('#auGo').disabled = true; msg.textContent = '확인하는 중...';
+  try{
+    const d = await api({action:authMode, id, pw, data:authMode === 'signup' ? collect() : undefined});
+    if(authMode === 'login' && hasLocal() && !sameCore(d.data)){
+      if(!confirm('이 기기의 기록 대신 계정에 저장된 기록을 불러와요. 이 기기에만 있던 기록은 사라져요. 계속할까요?')){
+        try{ await api({action:'logout', token:d.token}); }catch(e){} msg.textContent = ''; return;
+      }
+    }
+    acct = {id:d.id, token:d.token, at:d.at}; store.set('acct', acct); localStorage.removeItem('syncDirty');
+    $('#auPw').value = '';
+    if(authMode === 'login'){ applyData(d.data || {}); location.reload(); return; }
+    lastSnap = JSON.stringify(collect()); setSync('가입 완료 · 기록을 저장했어요'); drawAcct();
+  }catch(e){ msg.textContent = e.message; }
+  finally{ $('#auGo').disabled = false; }
+}
+$('#authBtn').onclick = () => { drawAcct(); if(!acct) setMode(authMode); $('#authDlg').showModal(); };
+$('#auTabs').onclick = e => { const b = e.target.closest('button'); if(b) setMode(b.dataset.m); };
+$('#auRand').onclick = () => { $('#auId').value = 'user-' + Math.random().toString(36).slice(2, 8); };
+$('#auForm').onsubmit = e => { e.preventDefault(); doAuth(); };
+$('#auCancel').onclick = $('#auClose').onclick = () => $('#authDlg').close();
+$('#auSync').onclick = () => { markDirty(); push(); };
+$('#auLogout').onclick = async () => {
+  if(acct && localStorage.getItem('syncDirty')) await push();
+  try{ if(acct) await api({action:'logout', token:acct.token}); }catch(e){}
+  logoutLocal(); $('#authDlg').close();
+};
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden' && acct && localStorage.getItem('syncDirty')) push(); });
+drawAcct();
+if(!localStorage.getItem('syncDirty')) lastSnap = JSON.stringify(collect());
+syncOnLoad();
+
 drawTT(); drawCal(); drawLinks();
 </script>
 </body>
