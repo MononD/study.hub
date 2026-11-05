@@ -1,7 +1,7 @@
 const MODEL = 'claude-sonnet-5-5';
 
 const BASE = '당신은 대학생의 공부를 돕는 튜터입니다. 모든 답은 한국어로 쓰고, 마크다운 기호(#, *, -)는 쓰지 말고 일반 텍스트로만 쓰세요.\n\n';
-const BASE_TOOL = '당신은 대학생의 공부를 돕는 튜터입니다. 결과는 반드시 submit 도구로만 제출하세요. 모든 내용은 한국어로 쓰세요(전문 용어는 원어를 같이 써도 돼요).\n\n';
+const BASE_TOOL = '당신은 대학생의 공부를 돕는 튜터입니다. 결과는 반드시 submit 도구를 호출해서 제출하세요. 도구를 쓸 수 없다면 다른 말 없이 같은 구조의 JSON 하나만 출력하세요. 모든 내용은 한국어로 쓰세요(전문 용어는 원어를 같이 써도 돼요).\n\n';
 
 const QUIZ = BASE_TOOL + '자료를 읽고 개념 확인용 객관식 퀴즈를 만드세요.\n규칙:\n개념은 5~10개, 이름은 짧게(15자 이내), 설명은 한두 문장.\n문제는 8개, 보기는 꼭 4개, answer는 정답 보기의 번호(0~3)이고 정답 위치를 골고루 섞기.\n모든 문제의 concept는 concepts에 있는 name과 글자까지 똑같이 쓰기.\n개념마다 문제가 최소 1개는 있게 하기.\nexplain은 왜 정답인지 한 줄.';
 
@@ -105,7 +105,7 @@ module.exports = async (req, res) => {
   const body = { model: MODEL, max_tokens: T.tool ? 4000 : 2500, system: T.sys, messages: [{ role: 'user', content }] };
   if (T.tool) {
     body.tools = [{ name: 'submit', description: '결과 제출', input_schema: TOOLS[T.tool] }];
-    body.tool_choice = { type: 'tool', name: 'submit' };
+    body.tool_choice = { type: 'auto' };
   }
 
   try {
@@ -117,8 +117,14 @@ module.exports = async (req, res) => {
     const d = await r.json();
     if (!r.ok) return res.status(502).json({ error: (d.error && d.error.message) || 'AI 호출에 실패했어요.' });
     if (T.tool) {
-      const use = (d.content || []).find(b => b.type === 'tool_use');
-      if (!use) return res.status(502).json({ error: 'AI 응답을 읽지 못했어요. 다시 시도해주세요.' });
+      let input = ((d.content || []).find(b => b.type === 'tool_use') || {}).input;
+      if (!input) {
+        const t = (d.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+        const a = t.indexOf('{'), z = t.lastIndexOf('}');
+        try { input = JSON.parse(t.slice(a, z + 1)); } catch (e) { input = null; }
+      }
+      if (!input) return res.status(502).json({ error: 'AI 응답을 읽지 못했어요. 다시 시도해주세요.' });
+      const use = { input };
       try {
         return res.status(200).json({ data: T.tool === 'quiz' ? cleanQuiz(use.input) : T.tool === 'plan' ? cleanPlan(use.input) : cleanConst(use.input) });
       } catch (e) {
