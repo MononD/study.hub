@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Hub</title>
+<style>
+  :root{--bg:#f4f4f4;--card:#fff;--ink:#111;--sub:#6b6b6b;--line:#dcdcdc;--soft:#ececec;--dark:#1a1a1a}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  header{background:var(--dark);color:#fff;padding:18px 24px;display:flex;align-items:baseline;gap:12px}
+  header h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+  header span{color:#aaa;font-size:13px}
+  nav{display:flex;gap:4px;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--line);overflow-x:auto}
+  nav button{border:0;background:none;padding:8px 16px;font-size:14px;color:var(--sub);cursor:pointer;border-radius:6px;white-space:nowrap;font-family:inherit}
+  nav button.on{background:var(--dark);color:#fff}
+  nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+  main{max-width:960px;margin:0 auto;padding:24px}
+  section{display:none}section.on{display:block}
+  h2{font-size:18px;margin-bottom:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px}
+  .btn{border:1px solid var(--dark);background:var(--dark);color:#fff;padding:8px 14px;border-radius:6px;font-size:14px;cursor:pointer;font-family:inherit}
+  .btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+  input,select{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:14px;font-family:inherit;background:#fff;color:var(--ink);min-width:0}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .row input{flex:1;min-width:120px}
+  /* timetable */
+  .tt-wrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
+  th,td{border:1px solid var(--line);padding:0;text-align:center;height:48px}
+  th{background:var(--soft);font-weight:600;height:36px}
+  th.t{width:64px}
+  td.c{cursor:pointer;background:#fff}
+  td.c:hover{background:var(--soft)}
+  td .cell{padding:4px;font-size:12px;line-height:1.3;color:#fff;background:var(--dark);height:100%;display:flex;flex-direction:column;justify-content:center}
+  td .cell small{color:#bbb}
+  /* calendar */
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .cal-head b{font-size:16px}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  .grid div{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .dow{background:var(--soft);text-align:center;font-size:12px;padding:6px 0;font-weight:600}
+  .day{min-height:76px;padding:4px;cursor:pointer;font-size:12px;overflow:hidden}
+  .day:hover{background:var(--soft)}
+  .day.other{background:#fafafa;color:#bbb}
+  .day.today .n{background:var(--dark);color:#fff;border-radius:10px;padding:0 6px}
+  .day.sel{outline:2px solid var(--ink);outline-offset:-2px}
+  .ev{display:block;background:var(--soft);border-left:3px solid var(--dark);padding:1px 4px;margin-top:2px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .list{list-style:none;padding:0}
+  .list li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--soft);font-size:14px}
+  .list li:last-child{border:0}
+  .x{border:0;background:none;color:var(--sub);cursor:pointer;font-size:18px;line-height:1}
+  .empty{color:var(--sub);font-size:14px;padding:8px 0}
+  .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .lk{border:1px solid var(--line);border-radius:8px;padding:14px;background:#fff;display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+  .lk a{color:var(--ink);font-weight:600;text-decoration:none;word-break:break-all}
+  .lk a:hover{text-decoration:underline}
+  .lk small{display:block;color:var(--sub);font-weight:400;font-size:12px;margin-top:2px}
+  dialog{border:1px solid var(--line);border-radius:10px;padding:20px;width:min(360px,92vw)}
+  dialog::backdrop{background:rgba(0,0,0,.4)}
+  dialog label{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px}
+  dialog input{width:100%}
+  .soon{color:var(--sub);font-size:14px}
+</style>
+</head>
+<body>
+<header><h1>Study Hub</h1><span>시간표 · 일정 · 링크</span></header>
+<nav id="tabs">
+  <button data-t="tt" class="on">시간표</button>
+  <button data-t="cal">달력</button>
+  <button data-t="lk">링크 모음</button>
+  <button data-t="rec">강의 정리</button>
+  <button data-t="pdf">PDF 요약</button>
+</nav>
+<main>
+
+<section id="tt" class="on">
+  <h2>시간표</h2>
+  <div class="card tt-wrap"><table id="ttTable"></table></div>
+  <p class="soon" style="margin-top:8px">칸을 누르면 과목을 입력하거나 지울 수 있어요.</p>
+</section>
+
+<section id="cal">
+  <h2>달력</h2>
+  <div class="card">
+    <div class="cal-head">
+      <button class="btn ghost" id="prev" aria-label="이전 달">‹</button>
+      <b id="monthLabel"></b>
+      <button class="btn ghost" id="next" aria-label="다음 달">›</button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <h3 style="font-size:15px;margin:20px 0 8px" id="selLabel"></h3>
+    <div class="row">
+      <input id="evText" placeholder="일정 내용 (예: 중간고사, 과제 마감)">
+      <input id="evTime" type="time" style="flex:0 0 120px">
+      <button class="btn" id="evAdd">추가</button>
+    </div>
+    <ul class="list" id="evList"></ul>
+  </div>
+</section>
+
+<section id="lk">
+  <h2>링크 모음</h2>
+  <div class="card">
+    <div class="row">
+      <input id="lkName" placeholder="이름 (예: 학교 LMS)">
+      <input id="lkUrl" placeholder="주소 (https://...)">
+      <button class="btn" id="lkAdd">추가</button>
+    </div>
+    <div class="links" id="lkList"></div>
+  </div>
+</section>
+
+<section id="rec">
+  <h2>강의 정리</h2>
+  <div class="card"><p class="soon">준비 중이에요. 강의 녹음을 텍스트로 바꾸고 AI가 정리해줄 예정이에요.</p></div>
+</section>
+
+<section id="pdf">
+  <h2>PDF 요약 · 문제</h2>
+  <div class="card"><p class="soon">준비 중이에요. PDF를 올리면 요약과 예상 문제를 만들어줄 예정이에요.</p></div>
+</section>
+
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="dlgForm">
+    <b id="dlgTitle">과목 입력</b>
+    <label for="dName">과목명</label><input id="dName">
+    <label for="dRoom">강의실 (선택)</label><input id="dRoom">
+    <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+      <button type="button" class="btn ghost" id="dDel">지우기</button>
+      <button type="button" class="btn ghost" id="dCancel">취소</button>
+      <button type="button" class="btn" id="dSave">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+// ---------- 저장소 (브라우저 안에 저장) ----------
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// ---------- 탭 ----------
+$('#tabs').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.t));
+});
+
+// ---------- 시간표 ----------
+const days = ['월','화','수','목','금'];
+const hours = [9,10,11,12,13,14,15,16,17,18];
+let tt = store.get('tt', {});
+let curCell = null;
+function drawTT(){
+  let h = '<tr><th class="t"></th>' + days.map(d => `<th>${d}</th>`).join('') + '</tr>';
+  hours.forEach(hr => {
+    h += `<tr><th class="t">${hr}:00</th>`;
+    days.forEach((d, i) => {
+      const k = i + '-' + hr, v = tt[k];
+      h += `<td class="c" data-k="${k}">` + (v ? `<div class="cell">${esc(v.name)}${v.room ? `<small>${esc(v.room)}</small>` : ''}</div>` : '') + '</td>';
+    });
+    h += '</tr>';
+  });
+  $('#ttTable').innerHTML = h;
+}
+$('#ttTable').addEventListener('click', e => {
+  const td = e.target.closest('td.c'); if(!td) return;
+  curCell = td.dataset.k;
+  const v = tt[curCell] || {};
+  $('#dName').value = v.name || ''; $('#dRoom').value = v.room || '';
+  $('#dlg').showModal(); $('#dName').focus();
+});
+$('#dSave').onclick = () => {
+  const n = $('#dName').value.trim();
+  if(n) tt[curCell] = {name:n, room:$('#dRoom').value.trim()}; else delete tt[curCell];
+  store.set('tt', tt); drawTT(); $('#dlg').close();
+};
+$('#dDel').onclick = () => { delete tt[curCell]; store.set('tt', tt); drawTT(); $('#dlg').close(); };
+$('#dCancel').onclick = () => $('#dlg').close();
+
+// ---------- 달력 ----------
+let events = store.get('events', {});   // { '2026-11-05': [{t:'내용', time:'14:00'}] }
+const today = new Date();
+let view = new Date(today.getFullYear(), today.getMonth(), 1);
+let sel = fmt(today);
+function fmt(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function drawCal(){
+  $('#monthLabel').textContent = view.getFullYear() + '년 ' + (view.getMonth()+1) + '월';
+  let h = ['일','월','화','수','목','금','토'].map(d => `<div class="dow">${d}</div>`).join('');
+  const start = new Date(view.getFullYear(), view.getMonth(), 1 - view.getDay());
+  for(let i = 0; i < 42; i++){
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i), k = fmt(d);
+    const cls = ['day', d.getMonth() !== view.getMonth() ? 'other' : '', k === fmt(today) ? 'today' : '', k === sel ? 'sel' : ''].join(' ');
+    const evs = (events[k] || []).slice(0, 2).map(e => `<span class="ev">${esc(e.t)}</span>`).join('');
+    const more = (events[k] || []).length > 2 ? `<span class="ev">+${events[k].length - 2}</span>` : '';
+    h += `<div class="${cls}" data-d="${k}"><span class="n">${d.getDate()}</span>${evs}${more}</div>`;
+  }
+  $('#grid').innerHTML = h;
+  drawEvList();
+}
+function drawEvList(){
+  $('#selLabel').textContent = sel.replace(/-/g, '.') + ' 일정';
+  const list = (events[sel] || []).map((e, i) => ({...e, i})).sort((a, b) => (a.time || '99').localeCompare(b.time || '99'));
+  $('#evList').innerHTML = list.length
+    ? list.map(e => `<li><span>${e.time ? esc(e.time) + '  ' : ''}${esc(e.t)}</span><button class="x" data-i="${e.i}" aria-label="삭제">×</button></li>`).join('')
+    : '<li class="empty">이 날짜에 일정이 없어요.</li>';
+}
+$('#grid').addEventListener('click', e => {
+  const d = e.target.closest('.day'); if(!d) return;
+  sel = d.dataset.d; drawCal();
+});
+$('#prev').onclick = () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); drawCal(); };
+$('#next').onclick = () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); drawCal(); };
+$('#evAdd').onclick = () => {
+  const t = $('#evText').value.trim(); if(!t) return;
+  (events[sel] = events[sel] || []).push({t, time:$('#evTime').value});
+  store.set('events', events); $('#evText').value = ''; $('#evTime').value = ''; drawCal();
+};
+$('#evText').addEventListener('keydown', e => { if(e.key === 'Enter') $('#evAdd').click(); });
+$('#evList').addEventListener('click', e => {
+  const b = e.target.closest('.x'); if(!b) return;
+  events[sel].splice(+b.dataset.i, 1);
+  if(!events[sel].length) delete events[sel];
+  store.set('events', events); drawCal();
+});
+
+// ---------- 링크 ----------
+let links = store.get('links', []);
+function drawLinks(){
+  $('#lkList').innerHTML = links.length ? links.map((l, i) =>
+    `<div class="lk"><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.name)}<small>${esc(l.url.replace(/^https?:\/\//, ''))}</small></a><button class="x" data-i="${i}" aria-label="삭제">×</button></div>`
+  ).join('') : '<p class="empty">자주 쓰는 사이트를 추가해보세요.</p>';
+}
+$('#lkAdd').onclick = () => {
+  const name = $('#lkName').value.trim(); let url = $('#lkUrl').value.trim();
+  if(!name || !url) return;
+  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  links.push({name, url}); store.set('links', links);
+  $('#lkName').value = ''; $('#lkUrl').value = ''; drawLinks();
+};
+$('#lkList').addEventListener('click', e => {
+  const b = e.target.closest('.x'); if(!b) return;
+  links.splice(+b.dataset.i, 1); store.set('links', links); drawLinks();
+});
+
+drawTT(); drawCal(); drawLinks();
+</script>
+</body>
+</html>
