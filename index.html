@@ -182,8 +182,9 @@
   .plan-d b{font-variant-numeric:tabular-nums}
   .uni{position:relative;height:min(72vh,640px);min-height:420px;background:#000;border-radius:12px;overflow:hidden}
   .uni canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
-  .uni-count{position:absolute;left:14px;top:12px;color:#fff;font-size:13px;pointer-events:none;text-shadow:0 0 6px #000}
-  .uni-hint{position:absolute;left:14px;right:14px;bottom:12px;color:rgba(255,255,255,.55);font-size:12px;pointer-events:none}
+  .uni-count{position:absolute;left:10px;top:10px;color:#fff;font-size:13px;pointer-events:none;background:rgba(0,0,0,.55);padding:4px 9px;border-radius:6px;max-width:calc(100% - 20px)}
+  .uni-count:empty{display:none}
+  .uni-hint{position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);color:rgba(255,255,255,.8);font-size:12px;pointer-events:none;background:rgba(0,0,0,.55);padding:4px 9px;border-radius:6px}
   .uni-card{position:absolute;right:12px;top:12px;width:min(300px,calc(100% - 24px));background:rgba(18,18,18,.94);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:14px;display:none}
   .uni-card.show{display:block}
   .uni-card .btn{background:#fff;color:#111;border-color:#fff}
@@ -276,20 +277,37 @@
 <section id="uni">
   <h2>우주</h2>
   <div class="row" style="align-items:center">
+    <button class="btn ghost" id="uniBack">← 태양계</button>
     <div class="seg" id="uniTheme"><button data-th="galaxy">은하</button><button data-th="hole">블랙홀</button></div>
-    <select id="uniSub" aria-label="과목"></select>
+    <button class="btn" id="uniReview">흐려진 별 복습</button>
+    <button class="btn ghost" id="uniLink">별자리 잇기</button>
     <button class="btn ghost" id="uniAdd">개념 추가</button>
+    <button class="btn ghost" id="uniTL">타임랩스</button>
     <button class="btn ghost" id="uniReset">원래 크기</button>
     <button class="btn ghost" id="uniDemo">예시 우주 보기</button>
   </div>
   <div class="uni" id="uniBox">
-    <canvas id="uniCv" role="img" aria-label="개념 별 지도"></canvas>
+    <canvas id="uniCv" role="img" aria-label="과목 행성과 개념 별 지도"></canvas>
     <div class="uni-count" id="uniCount"></div>
-    <div class="uni-hint">두 손가락으로 오므리거나 마우스 휠을 내리면 별이 모여요 · 벌리거나 휠을 올리면 확대 · 별을 누르면 설명</div>
+    <div class="uni-hint" id="uniHint"></div>
     <div class="uni-card" id="uniCard"></div>
-    <div class="uni-empty" id="uniEmpty"><p>아직 별이 없어요.<br>PDF 문제나 강의 퀴즈를 만들면 개념이 별로 떠올라요.</p><button class="btn" id="uniDemo2">예시 우주 보기</button></div>
+    <div class="uni-empty" id="uniEmpty"><p id="uniEmptyTxt"></p><button class="btn" id="uniDemo2">예시 우주 보기</button></div>
   </div>
-  <p class="soon" style="margin-top:8px">별 하나가 개념 하나예요. 퀴즈에서 그 개념 문제를 맞히면 은하에 합쳐지고, 블랙홀 모드에서는 빨려 들어가 사라져요. 틀리면 다시 바깥으로 나와요.</p>
+  <p class="soon" id="uniMsg" style="margin-top:8px"></p>
+  <div id="uniQuiz"></div>
+  <details class="note card" style="margin-top:12px">
+    <summary><b>우주 읽는 법</b></summary>
+    <table class="an-tb" style="margin-top:8px"><tbody>
+      <tr><td>태양</td><td style="text-align:left">나 · 언제나 밝게 빛나요</td></tr>
+      <tr><td>행성</td><td style="text-align:left">과목 (수성부터 해왕성 순서) · 크기는 공부 시간, 밝기는 기억 상태</td></tr>
+      <tr><td>별</td><td style="text-align:left">개념 하나 · 퀴즈에서 맞히면 밝아져요</td></tr>
+      <tr><td>흐려지는 별</td><td style="text-align:left">잊어가는 개념 (망각 곡선) · 붉은 점선 테두리, 복습하면 다시 밝아지고 더 오래 기억돼요</td></tr>
+      <tr><td>별자리</td><td style="text-align:left">서로 이어지는 개념 묶음 · 모두 이해하면 ✦ 이름이 빛나요</td></tr>
+      <tr><td>은하 / 블랙홀</td><td style="text-align:left">이해한 개념이 모이는 곳 · 오므리면 모든 별이 모여요</td></tr>
+      <tr><td>혜성</td><td style="text-align:left">다가오는 시험 · D-day가 줄수록 행성에 가까워지고, 3일 전부터 붉어져요</td></tr>
+      <tr><td>유성</td><td style="text-align:left">타이머 집중 1회 완료 · 그 과목 행성으로 떨어져요</td></tr>
+    </tbody></table>
+  </details>
 </section>
 
 <section id="an">
@@ -1038,8 +1056,8 @@ function initMusic(){
 initMusic();
 
 // ---------- 계정 · 동기화 ----------
-const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'uniPrefs', 'tmPrefs', 'music'];
-const CORE_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams'];
+const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'consts', 'uniPrefs', 'tmPrefs', 'music'];
+const CORE_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'consts'];
 let acct = store.get('acct', null);             // {id, token, at}
 let authMode = 'login', pushTimer = null, ver = 0, lastSnap = null, syncText = '';
 const collect = () => { const d = {}; SYNC_KEYS.forEach(k => { const v = store.get(k, null); if(v !== null) d[k] = v; }); return d; };
@@ -1129,31 +1147,41 @@ drawAcct();
 if(!localStorage.getItem('syncDirty')) lastSnap = JSON.stringify(collect());
 syncOnLoad();
 
-// ---------- 학습 엔진: 개념(별) · 채점 퀴즈 · 시험 계획 · 분석 · 우주 ----------
-var concepts = store.get('concepts', []);      // [{id, name, desc, sub, c, w, ok, at, okAt}]
+// ---------- 학습 엔진: 태양계 · 개념 별 · 망각 곡선 · 별자리 · 채점 퀴즈 · 시험 계획 · 분석 ----------
+var concepts = store.get('concepts', []);      // [{id, name, desc, sub, c, w, ok, st, rev, okAt, at}]
 var quizSets = store.get('quizSets', []);      // [{id, title, sub, src, at, qs, last}]
-var attempts = store.get('attempts', []);      // [{id, set, sub, src, at, n, ok, items, retry}]
+var attempts = store.get('attempts', []);      // [{id, set, sub, src, at, n, ok, items:[{c, s, ok}], retry, manual}]
 var sessions = store.get('sessions', []);      // [{at, sec, sub}] 집중 한 번 = 세션 하나
 var exams = store.get('exams', []);            // [{id, sub, date, scope, min, plan:{advice, days}}]
-var uniPrefs = Object.assign({theme:'galaxy', sub:''}, store.get('uniPrefs', {}));
+var consts = store.get('consts', {});          // {과목: [{name, ids:[개념 id], links:[[id, id]]}]}
+var uniPrefs = Object.assign({theme:'galaxy', view:'solar', sub:'', order:[], seenAt:0}, store.get('uniPrefs', {}));
 var curSess = null;
+const DAY = 86400000, FADE = .5;
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const subjOf = v => (v || '').trim() || '과목 없음';
 const ckey = (sub, name) => subjOf(sub).toLowerCase() + '|' + String(name).trim().toLowerCase();
-const findConcept = (sub, name) => concepts.find(c => ckey(c.sub, c.name) === ckey(sub, name));
+const findIn = (arr, sub, name) => arr.find(c => ckey(c.sub, c.name) === ckey(sub, name));
+const findConcept = (sub, name) => findIn(concepts, sub, name);
 const saveC = () => store.set('concepts', concepts);
 const P = v => Math.round(v * 100) + '%';
 const dstr = ts => fmt(new Date(ts)).replace(/-/g, '.');
 function dlabel(ds){ const d = new Date(ds + 'T00:00:00'); return (d.getMonth() + 1) + '.' + d.getDate() + ' (' + '일월화수목금토'[d.getDay()] + ')'; }
-function dday(ds){
-  const n = Math.round((new Date(ds + 'T00:00:00') - new Date(fmt(new Date()) + 'T00:00:00')) / 86400000);
-  return n === 0 ? 'D-DAY' : n > 0 ? 'D-' + n : 'D+' + (-n);
+function dayDiff(ds, from){ return Math.round((new Date(ds + 'T00:00:00') - new Date(fmt(new Date(from || Date.now())) + 'T00:00:00')) / DAY); }
+function dday(ds, from){ const n = dayDiff(ds, from); return n === 0 ? 'D-DAY' : n > 0 ? 'D-' + n : 'D+' + (-n); }
+
+// 망각 곡선: 기억 = e^(-지난 날 / 안정도). 맞힐 때마다 안정도가 커져서 더 천천히 잊혀요.
+function memAt(s, now){ if(!s.ok) return 0; const rev = s.rev || s.okAt || now; return Math.exp(-Math.max(0, now - rev) / DAY / (s.st || 3)); }
+const memOf = c => memAt(c, Date.now());
+const isFading = c => c.ok && memOf(c) < FADE;
+function learn(s, good, t){
+  if(good){ s.st = s.ok ? Math.min(60, (s.st || 3) * 2.2) : 3; s.ok = true; s.rev = t; s.okAt = s.okAt || t; }
+  else { s.st = Math.max(1, (s.st || 3) * .5); s.ok = false; s.okAt = 0; }
 }
 function examTag(){
-  if(!exams) return '';
-  const t = fmt(new Date()), up = exams.filter(e => e.date >= t).sort((a, b) => a.date.localeCompare(b.date))[0];
-  return up ? '  ·  ' + up.sub + ' ' + dday(up.date) : '';
+  if(!exams || !concepts) return '';
+  const t = fmt(new Date()), up = exams.filter(e => e.date >= t).sort((a, b) => a.date.localeCompare(b.date))[0], fade = concepts.filter(isFading).length;
+  return (up ? '  ·  ' + up.sub + ' ' + dday(up.date) : '') + (fade ? '  ·  흐려지는 별 ' + fade : '');
 }
 async function callAI(payload){
   const r = await fetch('/api/claude', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
@@ -1180,10 +1208,48 @@ function addConcepts(list, sub){
     if(!x || !x.name) return;
     const ex = findConcept(sub, x.name);
     if(ex){ if(!ex.desc && x.desc) ex.desc = x.desc; return; }
-    const c = {id:uid(), name:String(x.name).trim(), desc:x.desc || '', sub:subjOf(sub), c:0, w:0, ok:false, at:Date.now(), okAt:0};
+    const c = {id:uid(), name:String(x.name).trim(), desc:x.desc || '', sub:subjOf(sub), c:0, w:0, ok:false, st:3, rev:0, okAt:0, at:Date.now()};
     concepts.push(c); U.newIds.add(c.id); added++;
   });
   saveC(); return added;
+}
+function logManual(c, good){
+  attempts.push({id:uid(), set:'manual', sub:c.sub, src:'manual', at:Date.now(), n:0, ok:0, items:[{c:c.name, s:c.sub, ok:good}], manual:true});
+  store.set('attempts', attempts);
+}
+function doneConsts(wd){
+  const out = new Set();
+  Object.keys(wd.consts || {}).forEach(sub => (wd.consts[sub] || []).forEach(g => {
+    const cs = g.ids.map(id => wd.concepts.find(c => c.id === id)).filter(Boolean);
+    if(cs.length >= 2 && cs.every(c => c.ok && memOf(c) >= FADE)) out.add(g.name);
+  }));
+  return out;
+}
+
+// ===== 별자리 (AI가 관련 개념을 이어요) =====
+async function linkStars(sub, silent){
+  const msg = t => { if(!silent) $('#uniMsg').textContent = t; };
+  if(U.demo){ msg('예시 우주는 별자리가 이미 이어져 있어요.'); return; }
+  const cs = concepts.filter(c => c.sub === sub);
+  if(cs.length < 4){ msg('개념(별)이 4개 이상 있어야 별자리를 이을 수 있어요.'); return; }
+  msg('AI가 관련 있는 별끼리 잇는 중이에요...');
+  try{
+    const d = await callAI({task:'constellation', text:`과목: ${sub}\n개념 목록:\n` + cs.map(c => `- ${c.name}: ${c.desc || ''}`).join('\n')});
+    const used = new Set(), groups = [];
+    d.data.groups.forEach(g => {
+      const ids = []; g.members.forEach(n => { const c = findConcept(sub, n); if(c && !used.has(c.id) && !ids.includes(c.id)) ids.push(c.id); });
+      if(ids.length < 2) return;
+      ids.forEach(id => used.add(id));
+      let links = g.links.map(([a, b]) => [(findConcept(sub, a) || {}).id, (findConcept(sub, b) || {}).id]).filter(([a, b]) => a && b && a !== b && ids.includes(a) && ids.includes(b));
+      if(!links.length) links = ids.slice(1).map((id, i) => [ids[i], id]);
+      const linked = new Set(links.flat());
+      ids.forEach(id => { if(!linked.has(id)) links.push([ids[0] === id ? ids[1] : ids[0], id]); });
+      groups.push({name:String(g.name).slice(0, 12), ids, links});
+    });
+    consts[sub] = groups; store.set('consts', consts);
+    if(U.view === 'sub' && U.sub === sub){ buildCmap(); relayout(); }
+    msg(groups.length ? `${sub}에 별자리 ${groups.length}개를 이었어요: ${groups.map(g => g.name).join(', ')}` : '이을 만한 별자리를 찾지 못했어요.');
+  }catch(e){ msg('실패: ' + e.message); }
 }
 
 // ===== 채점 퀴즈 =====
@@ -1195,8 +1261,9 @@ async function makeQuiz({src, sub, title, payload, box, msg, btn}){
     const added = addConcepts(q.concepts, sub);
     quizSets.unshift(set); if(quizSets.length > 60) quizSets.length = 60;
     store.set('quizSets', quizSets);
-    msg.textContent = `문제 ${set.qs.length}개를 만들었어요.` + (added ? ` 새 개념 ${added}개가 별이 되어 우주에 떠올랐어요.` : '');
-    openQuiz(box, set.id); drawNotes();
+    msg.textContent = `문제 ${set.qs.length}개를 만들었어요.` + (added ? ` 새 개념 ${added}개가 ${sub} 행성 하늘에 별로 떠올랐어요.` : '');
+    openQuiz(box, set); drawNotes();
+    if(concepts.filter(c => c.sub === sub).length >= 4) linkStars(sub, true);
   }catch(e){ msg.textContent = '실패: ' + e.message; }
   finally{ btn.disabled = false; }
 }
@@ -1205,8 +1272,8 @@ function quizListHTML(src){
   if(!l.length) return '<p class="empty">아직 만든 퀴즈가 없어요.</p>';
   return l.map(s => `<div class="note"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px"><b>${esc(s.title)}</b><span style="color:var(--sub);font-size:12px;flex:none">${dstr(s.at)}${s.last != null ? ' · 최근 ' + s.last + '%' : ' · 아직 안 풂'}</span></div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-qo="${s.id}">풀기</button><button class="btn ghost" data-qd="${s.id}">삭제</button></div></div>`).join('');
 }
-function openQuiz(box, id, scroll){
-  const set = quizSets.find(s => s.id === id); if(!set) return;
+function openQuiz(box, idOrSet, scroll){
+  const set = typeof idOrSet === 'string' ? quizSets.find(s => s.id === idOrSet) : idOrSet; if(!set) return;
   box._q = {set, order:set.qs.map((_, i) => i), picks:{}, graded:false, retry:false};
   box.style.display = ''; drawQuiz(box);
   if(scroll) box.scrollIntoView({behavior:'smooth', block:'start'});
@@ -1233,38 +1300,43 @@ function drawQuiz(box){
   box.innerHTML = h;
 }
 function gradeQuiz(box){
-  const st = box._q, set = st.set, items = [], wrong = [];
-  const before = new Set(concepts.filter(c => c.ok).map(c => c.id));
+  const st = box._q, set = st.set, items = [], wrong = [], now = Date.now();
+  const real = {concepts, consts}, doneBefore = doneConsts(real);
+  const snap = new Map(concepts.map(c => [c.id, {ok:c.ok, strong:c.ok && memOf(c) >= FADE}]));
   let ok = 0;
   st.order.forEach(qi => {
-    const q = set.qs[qi], good = st.picks[qi] === q.answer;
+    const q = set.qs[qi], good = st.picks[qi] === q.answer, sub = q.sub || set.sub;
     if(good) ok++; else wrong.push(qi);
     if(!q.concept) return;
-    if(!findConcept(set.sub, q.concept)) addConcepts([{name:q.concept, desc:''}], set.sub);
-    const c = findConcept(set.sub, q.concept);
+    if(!findConcept(sub, q.concept)) addConcepts([{name:q.concept, desc:''}], sub);
+    const c = findConcept(sub, q.concept);
     if(good) c.c++; else c.w++;
-    items.push({c:q.concept, ok:good});
+    items.push({c:q.concept, s:sub, ok:good});
   });
-  // 이번에 그 개념 문제를 모두 맞히면 이해, 하나라도 틀리면 다시 바깥으로
-  const byC = {};
-  items.forEach(it => { byC[it.c] = (byC[it.c] !== false) && it.ok; });
-  Object.keys(byC).forEach(n => {
-    const c = findConcept(set.sub, n); if(!c) return;
-    c.ok = byC[n]; c.okAt = c.ok ? (c.okAt || Date.now()) : 0;
-    if(c.ok && !before.has(c.id)) U.justOk.add(c.id);
+  // 이번 풀이에서 그 개념 문제를 모두 맞히면 기억 강화, 하나라도 틀리면 다시 흐려져요
+  const by = new Map();
+  items.forEach(it => { const c = findConcept(it.s, it.c); by.set(c, (by.get(c) !== false) && it.ok); });
+  let gained = 0, revived = 0, lost = 0;
+  by.forEach((good, c) => {
+    const b = snap.get(c.id) || {ok:false, strong:false};
+    learn(c, good, now);
+    if(good && !b.ok){ gained++; U.justOk.add(c.id); }
+    else if(good && !b.strong){ revived++; U.justOk.add(c.id); }
+    else if(!good && b.ok) lost++;
   });
   saveC();
-  attempts.push({id:uid(), set:set.id, sub:set.sub, src:set.src, at:Date.now(), n:st.order.length, ok, items, retry:st.retry});
+  attempts.push({id:uid(), set:set.id, sub:set.sub, src:set.src, at:now, n:st.order.length, ok, items, retry:st.retry});
   if(attempts.length > 400) attempts.splice(0, attempts.length - 400);
   store.set('attempts', attempts);
-  if(!st.retry){ set.last = Math.round(ok / st.order.length * 100); store.set('quizSets', quizSets); }
-  const gained = concepts.filter(c => c.ok && !before.has(c.id)).length;
-  const lost = [...before].filter(id => { const c = concepts.find(x => x.id === id); return c && !c.ok; }).length;
+  if(!st.retry && quizSets.includes(set)){ set.last = Math.round(ok / st.order.length * 100); store.set('quizSets', quizSets); }
+  const done = [...doneConsts(real)].filter(n => !doneBefore.has(n));
   st.graded = true; st.wrong = wrong;
   st.summary = `${st.order.length}문제 중 ${ok}개 정답 (${P(ok / st.order.length)})`
-    + (gained ? ` · 새로 이해한 개념 ${gained}개가 ${uniPrefs.theme === 'hole' ? '블랙홀로 빨려 들어갔어요' : '은하에 합쳐졌어요'}` : '')
-    + (lost ? ` · 흔들리는 개념 ${lost}개가 다시 바깥으로 나왔어요` : '');
-  drawQuiz(box); drawNotes();
+    + (gained ? ` · 새로 빛나는 별 ${gained}개${uniPrefs.theme === 'hole' ? '가 블랙홀로 빨려 들어갔어요' : ''}` : '')
+    + (revived ? ` · 다시 밝아진 별 ${revived}개` : '')
+    + (lost ? ` · 흐려진 별 ${lost}개` : '')
+    + (done.length ? ` · ✦ ${done.join(', ')} 완성!` : '');
+  drawQuiz(box); drawNotes(); render();
 }
 function quizClick(e){
   const box = e.currentTarget, st = box._q; if(!st) return;
@@ -1273,8 +1345,8 @@ function quizClick(e){
   if(!a) return;
   if(a.dataset.act === 'grade') gradeQuiz(box);
   else if(a.dataset.act === 'wrong'){ st.order = st.wrong; st.picks = {}; st.graded = false; st.retry = true; drawQuiz(box); box.scrollIntoView({behavior:'smooth', block:'start'}); }
-  else if(a.dataset.act === 'again'){ openQuiz(box, st.set.id, true); }
-  else if(a.dataset.act === 'uni'){ uniPrefs.sub = st.set.sub; store.set('uniPrefs', uniPrefs); goTab('uni'); }
+  else if(a.dataset.act === 'again'){ openQuiz(box, st.set, true); }
+  else if(a.dataset.act === 'uni'){ if(box.id === 'uniQuiz') $('#uniBox').scrollIntoView({behavior:'smooth'}); else uniOpen(st.set.src === 'review' ? '' : st.set.sub); }
 }
 function quizListClick(box){
   return e => {
@@ -1284,6 +1356,19 @@ function quizListClick(box){
   };
 }
 function goTab(t){ const b = document.querySelector(`#tabs button[data-t="${t}"]`); if(b){ b.click(); window.scrollTo({top:0, behavior:'smooth'}); } }
+function reviewQuiz(){
+  const box = $('#uniQuiz'), msg = $('#uniMsg');
+  if(U.demo){ msg.textContent = '예시 우주에서는 복습 퀴즈를 만들 수 없어요. 내 우주로 돌아가서 눌러주세요.'; return; }
+  const sub = U.view === 'sub' ? U.sub : '';
+  const fading = concepts.filter(c => (!sub || c.sub === sub) && isFading(c)).sort((a, b) => memOf(a) - memOf(b));
+  if(!fading.length){ msg.textContent = '지금 흐려지는 별이 없어요. 잘 기억하고 있어요!'; return; }
+  const qs = [];
+  fading.forEach(c => { for(const s of quizSets){ if(s.sub !== c.sub) continue; const q = s.qs.find(x => x.concept === c.name); if(q){ qs.push(Object.assign({}, q, {sub:c.sub})); break; } } });
+  if(!qs.length){ msg.textContent = `흐려지는 별 ${fading.length}개가 있지만 저장된 문제가 없어요. 별을 눌러 설명을 다시 보거나 퀴즈를 새로 만들어보세요.`; return; }
+  const set = {id:'review-' + uid(), title:(sub ? sub + ' · ' : '') + '흐려진 별 복습', sub:sub || '여러 과목', src:'review', at:Date.now(), qs:qs.slice(0, 10)};
+  msg.textContent = `흐려지는 별 ${fading.length}개 중 ${set.qs.length}개를 복습해요. 맞히면 별이 다시 밝아지고 더 오래 기억돼요.`;
+  openQuiz(box, set, true);
+}
 
 // ===== 시험 기간 계획 =====
 var planDraft = null;
@@ -1297,6 +1382,7 @@ function anSummaryText(src){
   lines.push('시간대별 정답률: ' + fmtRows(byTime(src)));
   lines.push('집중 길이별 정답률: ' + fmtRows(byLen(src)));
   lines.push('공부 방법별 정답률: ' + fmtRows(byMethod(src)));
+  lines.push(`잊어가는 개념: ${src.concepts.filter(c => c.ok && memOf(c) < FADE).length}개`);
   bySubject(src).forEach(r => lines.push(`${r.sub}: 공부 ${fmtDur(r.sec)}, 정답률 ${r.acc == null ? '기록 없음' : P(r.acc)}, 이해한 개념 ${r.okN}/${r.cN}`));
   insightsOf(src).forEach(t => lines.push('분석: ' + t));
   return lines.join('\n');
@@ -1310,10 +1396,11 @@ async function makePlan(id){
   for(let d = new Date(date + 'T00:00:00'), i = 0; i < 28; i++){ d.setDate(d.getDate() - 1); const k = fmt(d); if(k < t0) break; dates.unshift(k); }
   const mine = concepts.filter(c => c.sub === sub);
   const weak = mine.filter(c => !c.ok).sort((a, b) => (b.w - b.c) - (a.w - a.c)).slice(0, 15).map(c => `${c.name}(틀림 ${c.w}, 맞힘 ${c.c})`);
-  const good = mine.filter(c => c.ok).slice(0, 15).map(c => c.name);
+  const fading = mine.filter(isFading).sort((a, b) => memOf(a) - memOf(b)).slice(0, 15).map(c => `${c.name}(기억 ${P(memOf(c))})`);
+  const good = mine.filter(c => c.ok && !isFading(c)).slice(0, 15).map(c => c.name);
   const text = [`오늘: ${t0}`, `시험 과목: ${sub}, 시험 날짜: ${date} (${dday(date)})`, `계획에 쓸 날짜(이 날짜만 사용): ${dates.join(', ')}`,
     `하루 공부 가능 시간: ${min}분`, `시험 범위: ${scope || '(입력 없음)'}`, `아직 이해 못한 개념(약한 순): ${weak.join(', ') || '(기록 없음)'}`,
-    `이미 이해한 개념: ${good.join(', ') || '(기록 없음)'}`, '공부 기록 분석:', anSummaryText()].join('\n');
+    `잊어가는 개념(망각 곡선상 복습 필요): ${fading.join(', ') || '(없음)'}`, `잘 기억하는 개념: ${good.join(', ') || '(기록 없음)'}`, '공부 기록 분석:', anSummaryText()].join('\n');
   $('#exGo').disabled = true; msg.textContent = 'AI가 계획을 짜는 중이에요. 20~40초 걸려요.';
   try{
     const d = await callAI({task:'plan', text}), ok = new Set(dates);
@@ -1343,7 +1430,7 @@ function applyPlan(){
   const i = exams.findIndex(e => e.id === p.id); if(i >= 0) exams[i] = p; else exams.push(p);
   store.set('exams', exams);
   planDraft = null; drawPlanDraft();
-  $('#exMsg').textContent = `${p.sub} 시험과 ${p.plan.days.length}일치 계획을 달력에 넣었어요.`;
+  $('#exMsg').textContent = `${p.sub} 시험과 ${p.plan.days.length}일치 계획을 달력에 넣었어요. 우주에서는 혜성으로 다가와요.`;
   drawCal(); drawExams(); render();
 }
 function drawExams(){
@@ -1353,7 +1440,7 @@ function drawExams(){
 
 // ===== 분석 =====
 var anDemo = null;
-function realSrc(){ return {sessions:sessions || [], attempts:(attempts || []).filter(a => !a.retry), concepts:concepts || [], log:studyLog}; }
+function realSrc(){ return {sessions:sessions || [], attempts:(attempts || []).filter(a => !a.retry && !a.manual), concepts:concepts || [], log:studyLog}; }
 const accOf = l => { const n = l.reduce((s, a) => s + a.n, 0); return n ? l.reduce((s, a) => s + a.ok, 0) / n : null; };
 function rowsBy(list, keyFn, order){
   const g = {}; order.forEach(k => g[k] = []);
@@ -1368,14 +1455,14 @@ function sessBefore(a, ss){
 }
 const byTime = src => rowsBy(src.attempts, a => hourLabel(a.at), ['오전', '오후', '저녁', '새벽']);
 const byLen = src => rowsBy(src.attempts, a => { const s = sessBefore(a, src.sessions); if(!s) return null; const m = s.sec / 60; return m <= 30 ? '30분 이하' : m <= 50 ? '31~50분' : '50분 넘게'; }, ['30분 이하', '31~50분', '50분 넘게']);
-const byMethod = src => rowsBy(src.attempts, a => a.src === 'pdf' ? 'PDF 문제' : a.src === 'lecture' ? '강의 퀴즈' : null, ['PDF 문제', '강의 퀴즈']);
+const byMethod = src => rowsBy(src.attempts, a => ({pdf:'PDF 문제', lecture:'강의 퀴즈', review:'별 복습'})[a.src], ['PDF 문제', '강의 퀴즈', '별 복습']);
 function bySubject(src){
   const subs = new Set();
   Object.values(src.log).forEach(d => Object.keys(d).forEach(k => subs.add(k)));
-  src.attempts.forEach(a => subs.add(a.sub)); src.concepts.forEach(c => subs.add(c.sub));
+  src.attempts.forEach(a => { if(a.sub !== '여러 과목') subs.add(a.sub); }); src.concepts.forEach(c => subs.add(c.sub));
   return [...subs].map(sub => {
-    const sec = Object.values(src.log).reduce((s, d) => s + (d[sub] || 0), 0), cs = src.concepts.filter(c => c.sub === sub);
-    return {sub, sec, acc:accOf(src.attempts.filter(a => a.sub === sub)), qn:src.attempts.filter(a => a.sub === sub).length, cN:cs.length, okN:cs.filter(c => c.ok).length};
+    const sec = Object.values(src.log).reduce((s, d) => s + (d[sub] || 0), 0), cs = src.concepts.filter(c => c.sub === sub), at = src.attempts.filter(a => a.sub === sub);
+    return {sub, sec, acc:accOf(at), qn:at.length, cN:cs.length, okN:cs.filter(c => c.ok).length};
   }).sort((a, b) => b.sec - a.sec);
 }
 function spread(rows){
@@ -1390,6 +1477,8 @@ function insightsOf(src){
   const m = spread(byMethod(src)); if(m) out.push(`${m.best.label}로 공부했을 때 정답률이 더 높아요 (${P(m.best.acc)} vs ${P(m.worst.acc)}).`);
   const subs = bySubject(src).filter(r => r.qn >= 2 && r.acc != null).sort((a, b) => a.acc - b.acc);
   if(subs.length >= 2) out.push(`${subs[0].sub} 정답률이 ${P(subs[0].acc)}로 가장 낮아요. 시험 계획을 짤 때 이 과목에 시간을 더 줄게요.`);
+  const fade = src.concepts.filter(c => c.ok && memOf(c) < FADE).length;
+  if(fade) out.push(`이해했던 개념 중 ${fade}개가 흐려지고 있어요. 우주 탭의 '흐려진 별 복습'으로 다시 밝혀주세요.`);
   if(!out.length) out.push('아직 뚜렷한 차이는 없어요. 기록이 쌓이면 더 정확해져요.');
   return out;
 }
@@ -1398,17 +1487,17 @@ function hbRows(rows){
     return `<div class="hb${low ? ' low' : ''}" title="${r.label}: ${r.acc == null ? '기록 없음' : P(r.acc) + ', 퀴즈 ' + r.n + '회'}"><span>${r.label}</span><div class="tr"><div class="fl" style="width:${r.acc == null ? 0 : Math.round(r.acc * 100)}%"></div></div><span class="v">${r.acc == null ? '기록 없음' : P(r.acc) + ' · ' + r.n + '회'}${!low || r.acc == null ? '' : ' (적음)'}</span></div>`; }).join('');
 }
 function drawAnalysis(){
-  const src = anDemo || realSrc(), a = src.attempts;
+  const src = anDemo ? Object.assign({}, anDemo, {attempts:anDemo.attempts.filter(a => !a.manual)}) : realSrc(), a = src.attempts;
   const now = new Date(), days = [];
   for(let i = 13; i >= 0; i--){ const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i), k = fmt(d); days.push({k, d, sec:Object.values(src.log[k] || {}).reduce((s, v) => s + v, 0)}); }
   const week = days.slice(-7).reduce((s, x) => s + x.sec, 0), max = Math.max(...days.map(x => x.sec), 1);
   const peak = days.reduce((b, x) => x.sec > b.sec ? x : b, days[0]);
   const ss = src.sessions, avg = ss.length ? Math.round(ss.reduce((s, x) => s + x.sec, 0) / ss.length / 60) : null;
-  const okN = src.concepts.filter(c => c.ok).length;
+  const okN = src.concepts.filter(c => c.ok).length, fadeN = src.concepts.filter(c => c.ok && memOf(c) < FADE).length;
   const weak = src.concepts.filter(c => !c.ok && c.w > 0).sort((x, y) => (y.w - y.c) - (x.w - x.c)).slice(0, 5);
   const subs = bySubject(src);
   let h = anDemo ? '<div class="demo-bar">예시 데이터예요. 내 기록은 바뀌지 않아요.</div>' : '';
-  h += `<div class="tiles"><div class="tile"><span>최근 7일 공부</span><b>${fmtDur(week)}</b></div><div class="tile"><span>퀴즈 정답률</span><b>${a.length ? P(accOf(a)) : '–'}</b><span>${a.length}회 풀이</span></div><div class="tile"><span>이해한 개념</span><b>${okN} / ${src.concepts.length}</b></div><div class="tile"><span>평균 집중 길이</span><b>${avg == null ? '–' : avg + '분'}</b><span>${ss.length}번 집중</span></div></div>`;
+  h += `<div class="tiles"><div class="tile"><span>최근 7일 공부</span><b>${fmtDur(week)}</b></div><div class="tile"><span>퀴즈 정답률</span><b>${a.length ? P(accOf(a)) : '–'}</b><span>${a.length}회 풀이</span></div><div class="tile"><span>이해한 개념</span><b>${okN} / ${src.concepts.length}</b></div><div class="tile"><span>흐려지는 개념</span><b>${fadeN}</b><span>복습하면 다시 밝아져요</span></div><div class="tile"><span>평균 집중 길이</span><b>${avg == null ? '–' : avg + '분'}</b><span>${ss.length}번 집중</span></div></div>`;
   h += '<h3 class="an-h">나에게 맞는 공부 방식</h3><div class="card"><ul class="ins">' + insightsOf(src).map(t => `<li>${esc(t)}</li>`).join('') + '</ul></div>';
   h += '<h3 class="an-h">최근 14일 공부 시간</h3><p class="an-s">막대를 누르면 시간이 보여요.</p><div class="card"><div class="vb">' + days.map(x => `<div tabindex="0" class="${x.sec ? '' : 'zero'}${x === peak && x.sec ? ' lbl' : ''}" title="${dlabel(x.k)} ${fmtDur(x.sec)}"><em>${x.sec ? fmtShort(x.sec) : '0m'}</em><i style="height:${Math.round(x.sec / max * 100)}%"></i><small>${x.d.getDate()}</small></div>`).join('') + '</div></div>';
   h += '<h3 class="an-h">시간대별 퀴즈 정답률</h3><p class="an-s">퀴즈를 푼 시각 기준 · 회색 막대는 기록이 2번 미만이라 참고만 해주세요.</p><div class="card">' + hbRows(byTime(src)) + '</div>';
@@ -1419,57 +1508,134 @@ function drawAnalysis(){
   $('#anBody').innerHTML = h;
   $('#anDemo').textContent = anDemo ? '내 기록으로 보기' : '예시 데이터로 보기';
 }
-function demoConcepts(){
-  const r = rng(11), names = {
-    '약리학':['반감기','생체이용률','초회통과효과','치료지수','작용제','길항제','베타차단제','ACE 억제제','이뇨제','항응고제','부하용량','약물상호작용','NSAIDs','오피오이드'],
-    '생리학':['심박출량','전부하','후부하','RAAS','항상성','삼투압','활동전위','시냅스','교감신경','부교감신경','가스교환','산염기 평형','사구체여과율','인슐린'],
-    '간호학개론':['간호과정','간호진단','활력징후','무균술','표준주의','투약 5원칙','낙상예방','욕창 단계','의사소통','환자안전']};
-  const out = [];
-  Object.keys(names).forEach(sub => names[sub].forEach((n, i) => { const ok = r() < .42, w = Math.floor(r() * 3) + (ok ? 0 : 1); out.push({id:'demo-' + sub + i, name:n, sub, desc:`${n}에 대한 예시 설명이에요. 실제로는 퀴즈를 만들 때 AI가 자료에서 설명을 뽑아 넣어요.`, c:ok ? 1 + Math.floor(r() * 3) : Math.floor(r() * 2), w:ok ? 0 : w, ok, at:0, okAt:0}); }));
-  return out;
-}
-function demoAnalysis(){
-  const r = rng(42), subs = ['약리학', '생리학', '간호학개론'], ss = [], at = [], log = {}, now = new Date();
-  for(let d = 20; d >= 0; d--){
-    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - d), cnt = r() < .15 ? 0 : 1 + Math.floor(r() * 3);
+
+// ===== 예시 우주 (심사·시연용) =====
+function demoWorld(){
+  const r = rng(42), now = Date.now(), SPAN = 24;
+  const names = {
+    '약리학':['반감기','생체이용률','초회통과효과','부하용량','작용제','길항제','치료지수','베타차단제','ACE 억제제','이뇨제','항응고제','NSAIDs'],
+    '생리학':['심박출량','전부하','후부하','RAAS','삼투압','항상성','활동전위','시냅스','교감신경','가스교환','산염기 평형','사구체여과율'],
+    '간호학개론':['간호과정','간호진단','활력징후','무균술','표준주의','투약 5원칙','낙상예방','의사소통'],
+    '성인간호학':['심부전','당뇨병 관리','COPD','쇼크','수액요법','통증사정'],
+    '해부학':['심장 구조','관상동맥','폐포','네프론','뇌신경','척수']};
+  const groups = {
+    '약리학':[['약동학자리',[0,1,2,3]],['약력학자리',[4,5,6]],['심혈관약자리',[7,8,9,10]]],
+    '생리학':[['심장자리',[0,1,2]],['콩팥자리',[3,4,11]],['신경자리',[6,7,8]],['호흡자리',[9,10]]],
+    '간호학개론':[['간호과정자리',[0,1,2]],['안전자리',[3,4,5,6]]],
+    '성인간호학':[['순환자리',[0,3,4]]],
+    '해부학':[['심폐자리',[0,1,2]]]};
+  const concepts = [], cs = {}, consts = {};
+  Object.keys(names).forEach((sub, si) => {
+    cs[sub] = names[sub].map((n, i) => {
+      const c = {id:'demo-' + si + '-' + i, name:n, sub, desc:`${n}에 대한 예시 설명이에요. 실제로는 퀴즈를 만들 때 AI가 자료에서 설명을 뽑아 넣어요.`, c:0, w:0, ok:false, st:3, rev:0, okAt:0, at:now - (SPAN - Math.floor(i / 3) * 4 - si) * DAY};
+      concepts.push(c); return c;
+    });
+    consts[sub] = groups[sub].map(([gn, idx]) => { const ids = idx.map(i => cs[sub][i].id); return {name:gn, ids, links:ids.slice(1).map((id, i) => [ids[i], id])}; });
+  });
+  const subs = Object.keys(names), sessionsD = [], att = [], log = {};
+  for(let d = SPAN; d >= 0; d--){
+    const day = new Date(now - d * DAY), cnt = r() < .15 ? 0 : 1 + Math.floor(r() * 3);
     for(let i = 0; i < cnt; i++){
-      const hour = [8, 9, 10, 11, 14, 15, 16, 20, 21, 23][Math.floor(r() * 10)], len = [25, 30, 45, 50, 60, 60, 75][Math.floor(r() * 7)], sub = subs[Math.floor(r() * 3)];
-      const st = new Date(day); st.setHours(hour, Math.floor(r() * 50));
-      if(st > now) continue;
-      ss.push({at:st.getTime(), sec:len * 60, sub});
-      const k = fmt(day); log[k] = log[k] || {}; log[k][sub] = (log[k][sub] || 0) + len * 60;
-      if(r() < .8){
-        const p = .55 + (hour < 12 ? .18 : hour >= 22 ? -.12 : 0) + (len > 50 ? .12 : len > 30 ? .04 : -.08) + (sub === '약리학' ? -.1 : 0) + (r() - .5) * .14;
-        at.push({at:st.getTime() + (len + 10) * 60000, n:8, ok:clamp(Math.round(8 * p), 1, 8), sub, src:r() < .55 ? 'pdf' : 'lecture'});
+      const hour = [8, 9, 10, 11, 14, 15, 16, 20, 21, 23][Math.floor(r() * 10)], len = [25, 30, 45, 50, 60, 60, 75][Math.floor(r() * 7)], sub = subs[Math.floor(r() * (d > 12 ? 3 : 5))];
+      const st = new Date(day); st.setHours(hour, Math.floor(r() * 50), 0, 0);
+      const end = st.getTime() + len * 60000, qAt = end + 10 * 60000;
+      if(qAt > now) continue;
+      sessionsD.push({at:st.getTime(), sec:len * 60, sub});
+      const k = fmt(st); log[k] = log[k] || {}; log[k][sub] = (log[k][sub] || 0) + len * 60;
+      const pool = cs[sub].filter(c => c.at <= qAt);
+      if(pool.length && r() < .85){
+        const p = .55 + (hour < 12 ? .18 : hour >= 22 ? -.12 : 0) + (len > 50 ? .12 : len > 30 ? .04 : -.08) + (sub === '약리학' ? -.08 : 0);
+        const pick = pool.slice().sort(() => r() - .5).slice(0, 4), items = [];
+        pick.forEach(c => { for(let q = 0; q < 2; q++){ const good = r() < p + (r() - .5) * .2; items.push({c:c.name, s:sub, ok:good}); if(good) c.c++; else c.w++; } });
+        att.push({id:'demo-a' + att.length, set:'demo', sub, src:r() < .5 ? 'pdf' : r() < .7 ? 'lecture' : 'review', at:qAt, n:items.length, ok:items.filter(x => x.ok).length, items});
       }
     }
   }
-  return {sessions:ss, attempts:at, concepts:demoConcepts(), log};
+  const rv = concepts.filter(c => c.at < now - 2 * DAY && r() < .45).map(c => ({c:c.name, s:c.sub, ok:true}));
+  att.push({id:'demo-rv', set:'demo', sub:'여러 과목', src:'review', at:now - 3 * 3600000, n:rv.length, ok:rv.length, items:rv});
+  const wd = {concepts, attempts:att, sessions:sessionsD, log, consts, demo:true,
+    exams:[{id:'demo-e1', sub:'약리학', date:fmt(new Date(now + 4 * DAY))}, {id:'demo-e2', sub:'생리학', date:fmt(new Date(now + 11 * DAY))}]};
+  buildEvents(wd).forEach(ev => ev.list.forEach(x => learn(concepts.find(c => c.id === x.id), x.good, ev.t)));
+  return wd;
+}
+function buildEvents(wd){
+  const evs = [], seen = new Set();
+  wd.attempts.slice().sort((a, b) => a.at - b.at).forEach(a => {
+    const by = new Map();
+    (a.items || []).forEach(it => { const c = findIn(wd.concepts, it.s || a.sub, it.c); if(c) by.set(c.id, (by.get(c.id) !== false) && it.ok); });
+    if(by.size){ evs.push({t:a.at, list:[...by].map(([id, good]) => ({id, good}))}); by.forEach((_, id) => seen.add(id)); }
+  });
+  wd.concepts.forEach(c => { if(c.ok && !seen.has(c.id)) evs.push({t:c.okAt || c.rev || c.at || Date.now(), list:[{id:c.id, good:true}]}); });
+  return evs.sort((a, b) => a.t - b.t);
 }
 
-// ===== 우주 (별 · 은하 · 블랙홀) =====
-const U = {cv:null, ctx:null, w:0, h:0, dpr:1, s:1, ox:0, oy:0, t:0, spin:0, rot:0, last:0, raf:0, on:false, rm:false,
-  stars:new Map(), dust:[], arms:[], disk:[], drawn:[], flash:[], demo:null, sel:null, ptrs:new Map(), pinch:null, moved:false,
-  justOk:new Set(), newIds:new Set(), countTxt:null};
+// ===== 우주: 태양계(과목 행성) ↔ 과목 하늘(개념 별 · 별자리 · 은하/블랙홀) =====
+const PLANETS = [
+  {n:'수성', s:.62, base:'#9c9994'}, {n:'금성', s:.95, base:'#e0c994', atm:'255,236,190'}, {n:'지구', s:1, base:'#2a5a8c', atm:'120,180,255', moon:true},
+  {n:'화성', s:.72, base:'#b5573c', atm:'255,170,130'}, {n:'목성', s:2.5, base:'#d6bf9c'}, {n:'토성', s:2.15, base:'#dcc795', ring:true},
+  {n:'천왕성', s:1.55, base:'#a3d8de', atm:'170,230,240', ring2:true}, {n:'해왕성', s:1.5, base:'#3e63c6', atm:'110,150,255'}];
+const DWARF = {n:'왜소행성', s:.5, base:'#8d8a86'};
+const U = {lock:0, cv:null, ctx:null, w:0, h:0, dpr:1, k:1, view:'solar', sub:'', s:1, ox:0, oy:0, cam:{x:0, y:0}, focus:null, over:0,
+  t:0, spin:0, rot:0, last:0, raf:0, on:false, rm:false, fade:0, stars:new Map(), dust:[], arms:[], disk:[], drawn:[], planets:[],
+  flash:[], meteors:[], demo:null, sel:null, ptrs:new Map(), pinch:null, moved:false, justOk:new Set(), newIds:new Set(), cmap:new Map(), tl:null, hud:null};
 function hash(str){ let h = 2166136261; for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 function rng(seed){ let x = seed >>> 0 || 1; return () => { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; return x / 4294967296; }; }
 function spiralPt(r){ const arm = Math.floor(r() * 3), d = .03 + .5 * Math.pow(r(), .9); return {d, ang:arm * 2 * Math.PI / 3 + d * 7 + (r() - .5) * (.35 + d * .6)}; }
 const galAng = (ang, d) => ang + U.rot * .3 / (.25 + d);
-function uniList(){ return (U.demo || concepts).filter(c => !uniPrefs.sub || c.sub === uniPrefs.sub); }
-function mkStar(c){
-  const r = rng(hash(String(c.id)));
-  let fx = r() * 2 - 1, fy = r() * 2 - 1; const dd = Math.hypot(fx, fy);
-  if(dd < .55){ const k = (.55 + r() * .4) / (dd || 1); fx = clamp(fx * k, -1, 1); fy = clamp(fy * k, -1, 1); }
-  const g = spiralPt(r);
-  return {fx, fy, gd:g.d, ga:g.ang, ho:.17 + r() * .2, ha:r() * 6.283, size:1.7 + r() * 1.8, ph:r() * 6.283, sp:.6 + r() * 1.6, px:0, py:0, a:1, sc:1};
+function W(){ return U.demo || {concepts, attempts, sessions, log:studyLog, exams, consts}; }
+const nowT = () => U.tl ? U.tl.T : Date.now();
+function stateOf(c){
+  const tl = U.tl;
+  if(tl){ if(c.at && c.at > tl.T) return {vis:false}; const s = tl.map.get(c.id); return s ? {vis:true, ok:s.ok, mem:memAt(s, tl.T)} : {vis:true, ok:false, mem:0}; }
+  return {vis:true, ok:!!c.ok, mem:memOf(c)};
 }
+function planetSubs(wd){
+  const has = new Set();
+  wd.concepts.forEach(c => has.add(c.sub));
+  Object.values(wd.log).forEach(d => Object.keys(d).forEach(k => has.add(k)));
+  (wd.exams || []).forEach(e => has.add(e.sub));
+  if(!U.demo) tt.forEach(x => has.add(x.name));
+  if(!wd.concepts.some(c => c.sub === '과목 없음')) has.delete('과목 없음');
+  if(U.demo) return [...has];
+  let changed = false;
+  has.forEach(s => { if(!uniPrefs.order.includes(s)){ uniPrefs.order.push(s); changed = true; } });
+  if(changed) store.set('uniPrefs', uniPrefs);
+  return uniPrefs.order.filter(s => has.has(s));
+}
+function hoursOf(wd, sub, T){ const lim = fmt(new Date(T)); let s = 0; Object.keys(wd.log).forEach(k => { if(k <= lim) s += wd.log[k][sub] || 0; }); return s / 3600; }
+function planetType(sub){ const i = planetSubs(W()).indexOf(sub); return i >= 0 && i < 8 ? PLANETS[i] : DWARF; }
+function buildCmap(){
+  U.cmap.clear();
+  const groups = (W().consts || {})[U.sub] || [], K = groups.length, base = hash(U.sub);
+  groups.forEach((g, k) => {
+    const ang = -Math.PI / 2 + 2 * Math.PI * k / Math.max(K, 1) + ((base % 100) / 100 - .5) * .6;
+    g.ids.forEach((id, i) => U.cmap.set(id, {ax:Math.cos(ang) * .56, ay:Math.sin(ang) * .5, i, n:g.ids.length}));
+  });
+}
+function mkStar(c){
+  const r = rng(hash(String(c.id))), cm = U.cmap.get(c.id);
+  let fx, fy;
+  if(cm){
+    const rr = .08 + .12 * Math.sqrt((cm.i + .5) / cm.n), an = cm.i * 2.39996 + (hash(U.sub) % 628) / 100;
+    fx = clamp(cm.ax + Math.cos(an) * rr, -.95, .95); fy = clamp(cm.ay + Math.sin(an) * rr * 1.25, -.92, .92);
+  } else {
+    fx = r() * 2 - 1; fy = r() * 2 - 1; const dd = Math.hypot(fx, fy);
+    if(dd < .55){ const k = (.55 + r() * .4) / (dd || 1); fx = clamp(fx * k, -1, 1); fy = clamp(fy * k, -1, 1); }
+  }
+  const g = spiralPt(r);
+  return {fx, fy, gd:g.d, ga:g.ang, ho:.17 + r() * .2, ha:r() * 6.283, size:1.7 + r() * 1.8, ph:r() * 6.283, sp:.6 + r() * 1.6, px:0, py:0, a:1, b:.4, sc:1, hid:false};
+}
+function relayout(){ W().concepts.forEach(c => { const st = U.stars.get(c.id); if(st){ const n = mkStar(c); st.fx = n.fx; st.fy = n.fy; } }); }
 function uniInit(){
   if(U.cv) return;
   U.cv = $('#uniCv'); U.ctx = U.cv.getContext('2d');
   U.rm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  U.view = uniPrefs.view === 'sub' && uniPrefs.sub ? 'sub' : 'solar'; U.sub = uniPrefs.sub || '';
+  if(U.view === 'sub') buildCmap();
   const r = rng(7);
   U.dust = Array.from({length:260}, () => ({x:r() * 2 - 1, y:r() * 2 - 1, a:.08 + r() * .4, s:.5 + r() * .9}));
   U.arms = Array.from({length:950}, () => { const p = spiralPt(r); return {d:p.d, ang:p.ang, a:.15 + r() * .6, s:.5 + r() * .9}; });
+  U.belt = Array.from({length:260}, () => ({a:r() * 2 - 1, o:r() + r() - 1, al:.15 + r() * .4, s:.6 + r() * 1.1}));
   U.disk = Array.from({length:750}, () => ({rr:1.35 + Math.pow(r(), 1.6) * 2.3, ang:r() * 6.283, red:r() < .18, a:.25 + r() * .6, s:.5 + r() * 1.1}));
   if(window.ResizeObserver) new ResizeObserver(uniResize).observe($('#uniBox')); else window.addEventListener('resize', uniResize);
   const cv = U.cv, pos = e => { const b = cv.getBoundingClientRect(); return {x:e.clientX - b.left, y:e.clientY - b.top}; };
@@ -1482,10 +1648,11 @@ function uniInit(){
   cv.addEventListener('pointermove', e => {
     const q = U.ptrs.get(e.pointerId); if(!q) return;
     const p = pos(e), dx = p.x - q.x, dy = p.y - q.y; q.x = p.x; q.y = p.y;
-    if(U.ptrs.size >= 2 && U.pinch){ const [a, b] = [...U.ptrs.values()]; setZoom(U.pinch.s * Math.hypot(a.x - b.x, a.y - b.y) / U.pinch.d); }
+    if(U.ptrs.size >= 2 && !U.pinch){ const [a, b] = [...U.ptrs.values()]; U.pinch = {d:Math.hypot(a.x - b.x, a.y - b.y) || 1, s:U.s}; }
+    if(U.ptrs.size >= 2 && U.pinch){ const [a, b] = [...U.ptrs.values()]; setZoom(U.pinch.s * Math.hypot(a.x - b.x, a.y - b.y) / U.pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2); }
     else if(U.ptrs.size === 1){
       if(Math.hypot(p.x - q.sx, p.y - q.sy) > 6) U.moved = true;
-      if(U.moved && U.s > 1){ U.ox += dx / U.s; U.oy += dy / U.s; clampPan(); }
+      if(U.moved && U.view === 'sub' && U.s > 1){ U.ox += dx / U.s; U.oy += dy / U.s; clampPan(); }
     }
   });
   const up = e => {
@@ -1494,155 +1661,615 @@ function uniInit(){
     U.ptrs.delete(e.pointerId); if(U.ptrs.size < 2) U.pinch = null;
   };
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
-  cv.addEventListener('wheel', e => { e.preventDefault(); setZoom(U.s * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015))); }, {passive:false});
+  cv.addEventListener('wheel', e => { e.preventDefault(); const p = pos(e); setZoom(U.s * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015)), p.x, p.y); }, {passive:false});
   ['gesturestart', 'gesturechange'].forEach(n => cv.addEventListener(n, e => e.preventDefault()));
   $('#uniCard').addEventListener('click', uniCardAct);
 }
-function setZoom(s){ U.s = clamp(s, .5, 3); if(U.s <= 1){ U.ox = 0; U.oy = 0; } clampPan(); }
+function nearestPlanet(x, y){
+  let best = null, bd = 1e9; if(x == null){ x = U.w / 2; y = U.h / 2; }
+  U.planets.forEach(p => { const d = Math.hypot(p.x - x, p.y - y); if(d < bd){ bd = d; best = p; } });
+  return best ? best.sub : null;
+}
+function setZoom(req, px, py){
+  if(performance.now() < U.lock) return;
+  if(U.view === 'solar'){
+    if(req > U.s && !U.focus) U.focus = nearestPlanet(px, py);
+    U.s = clamp(req, .75, 2);
+    if(U.s < 1.02) U.focus = null;
+    if(U.s >= 1.95 && U.focus) enterSub(U.focus);
+    return;
+  }
+  if(req < .5 && U.s <= .5){ U.over += .5 - req; if(U.over > .35){ goSolar(); return; } } else if(req >= .5) U.over = 0;
+  U.s = clamp(req, .5, 3); if(U.s <= 1){ U.ox = 0; U.oy = 0; } clampPan();
+}
 function clampPan(){ U.ox = clamp(U.ox, -U.w / 2, U.w / 2); U.oy = clamp(U.oy, -U.h / 2, U.h / 2); }
+function enterSub(sub){
+  U.view = 'sub'; U.sub = sub; U.s = 1; U.ox = U.oy = 0; U.over = 0; U.focus = null; U.sel = null; U.fade = 1; U.pinch = null; U.lock = performance.now() + 600;
+  U.stars.clear(); buildCmap();
+  uniPrefs.view = 'sub'; uniPrefs.sub = sub; store.set('uniPrefs', uniPrefs);
+  uniCard(); uniControls();
+}
+function goSolar(){
+  U.view = 'solar'; U.s = 1; U.ox = U.oy = 0; U.over = 0; U.focus = null; U.sel = null; U.fade = 1; U.cam = {x:0, y:0}; U.pinch = null; U.lock = performance.now() + 600;
+  uniPrefs.view = 'solar'; store.set('uniPrefs', uniPrefs);
+  uniCard(); uniControls();
+}
+function uniOpen(sub){
+  U.demo = null; U.tl = null;
+  uniPrefs.view = sub ? 'sub' : 'solar'; uniPrefs.sub = sub || uniPrefs.sub; store.set('uniPrefs', uniPrefs);
+  if(U.cv){ if(sub) enterSub(sub); else goSolar(); }
+  goTab('uni');
+}
 function uniResize(){
   if(!U.cv) return;
   const b = U.cv.getBoundingClientRect(); if(!b.width) return;
-  U.dpr = Math.min(window.devicePixelRatio || 1, 2); U.w = b.width; U.h = b.height;
+  U.dpr = Math.min(window.devicePixelRatio || 1, 2); U.w = b.width; U.h = b.height; U.k = Math.min(b.width, b.height) / 640;
   U.cv.width = Math.round(b.width * U.dpr); U.cv.height = Math.round(b.height * U.dpr);
 }
 function uniStart(){
   uniInit(); uniResize(); uniControls();
+  if(!U.demo){
+    const fresh = sessions.filter(s => s.at + s.sec * 1000 > uniPrefs.seenAt).slice(-6);
+    fresh.forEach(s => uniMeteor(s.sub));
+    uniPrefs.seenAt = Date.now(); store.set('uniPrefs', uniPrefs);
+  }
   if(U.on) return;
   U.on = true; U.last = 0; U.raf = requestAnimationFrame(uniFrame);
 }
 function uniStop(){ U.on = false; cancelAnimationFrame(U.raf); }
+function uniMeteor(sub){ U.meteors.push({sub, t:-U.meteors.length * .45, ang:Math.random() * 6.283}); }
 function uniFrame(ts){
   if(!U.on) return;
   const dt = Math.min(.05, U.last ? (ts - U.last) / 1000 : .016); U.last = ts;
   const sp = U.rm ? .15 : 1;
   U.t += dt; U.spin += dt * sp; U.rot += dt * .05 * sp;
-  try{ uniDraw(dt); }catch(e){ console.error(e); }
+  try{ if(U.tl) tlStep(dt); uniDraw(dt); }catch(e){ console.error(e); }
   U.raf = requestAnimationFrame(uniFrame);
 }
 function uniDraw(dt){
   const {ctx, w, h} = U; if(!ctx || !w) return;
   ctx.setTransform(U.dpr, 0, 0, U.dpr, 0, 0);
   ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#fff';
+  const v = U.view === 'sub' ? Math.max(U.s, 1) : U.s;
+  U.dust.forEach(d => { ctx.globalAlpha = d.a; ctx.fillRect(w / 2 + d.x * w * .52 * (.85 + .15 * v) + U.ox * .3, h / 2 + d.y * h * .52 * (.85 + .15 * v) + U.oy * .3, d.s, d.s); });
+  ctx.font = '12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  if(U.view === 'solar') drawSolar(dt); else drawSky(dt);
+  if(U.tl){
+    const p = clamp(U.tl.el / U.tl.dur, 0, 1);
+    ctx.globalAlpha = .9; ctx.fillStyle = '#fff'; ctx.textAlign = 'right'; ctx.font = '600 15px -apple-system,"Apple SD Gothic Neo",sans-serif';
+    lbl(dstr(U.tl.T), w - 14, 24); ctx.textAlign = 'left';
+    ctx.globalAlpha = .25; ctx.fillRect(14, h - 34, w - 28, 2); ctx.globalAlpha = .9; ctx.fillRect(14, h - 34, (w - 28) * p, 2);
+  }
+  if(U.fade > 0){ ctx.globalAlpha = U.fade; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h); U.fade = Math.max(0, U.fade - dt * 2.5); }
+  ctx.globalAlpha = 1;
+}
+function hud(text, empty){
+  const key = text + '|' + (empty || '');
+  if(key === U.hud) return; U.hud = key;
+  $('#uniCount').textContent = text;
+  $('#uniEmptyTxt').innerHTML = empty || ''; $('#uniEmpty').classList.toggle('show', !!empty);
+}
+// --- 태양계: 실제 태양계처럼 한쪽에 큰 태양, 바깥으로 갈수록 넓어지는 간격, 실제 크기 비율을 줄여서 표현 ---
+function paintSurface(g, t, cx, cy, R, r){
+  const band = (y, hh, col, a, wav) => {
+    g.globalAlpha = a; g.fillStyle = col; g.beginPath(); g.moveTo(cx - R, y);
+    for(let x = -R; x <= R; x += R / 14) g.lineTo(cx + x, y + Math.sin(x / R * 6 + y * .07) * wav);
+    for(let x = R; x >= -R; x -= R / 14) g.lineTo(cx + x, y + hh + Math.sin(x / R * 5 + y * .09) * wav);
+    g.closePath(); g.fill();
+  };
+  const blob = (x, y, rad, col, a, n) => { g.globalAlpha = a; g.fillStyle = col; for(let i = 0; i < n; i++){ g.beginPath(); g.arc(x + (r() - .5) * rad * 1.6, y + (r() - .5) * rad, rad * (.3 + r() * .5), 0, 6.283); g.fill(); } };
+  const ell = (x, y, rx, ry, col, a) => { g.globalAlpha = a; g.fillStyle = col; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 6.283); g.fill(); };
+  const pt = () => [cx + (r() * 2 - 1) * R, cy + (r() * 2 - 1) * R];
+  switch(t.n){
+    case '수성':
+      for(let i = 0; i < 14; i++){ const [x, y] = pt(); blob(x, y, R * .25, r() < .5 ? '#837f7a' : '#b3afa8', .35, 3); }
+      for(let i = 0; i < 45; i++){ const [x, y] = pt(), cr = R * (.03 + r() * .09); ell(x, y, cr, cr, '#6c6964', .55); ell(x - cr * .25, y - cr * .25, cr * .7, cr * .7, '#bdb9b2', .35); }
+      break;
+    case '금성':
+      for(let i = 0; i < 12; i++) band(cy - R + i * R * .19 + (r() - .5) * R * .1, R * .12, i % 2 ? '#f5e7c2' : '#c8a96c', .35, R * .07);
+      for(let i = 0; i < 10; i++){ const [x, y] = pt(); blob(x, y, R * .3, '#fff3d6', .18, 3); }
+      break;
+    case '지구':
+      for(let i = 0; i < 6; i++){ const [x, y] = pt(); blob(x, y, R * (.25 + r() * .25), '#4f7d3f', .95, 10); blob(x, y, R * .18, '#a08955', .55, 4); }
+      ell(cx, cy - R * .95, R * .75, R * .2, '#f2f6fa', .9); ell(cx, cy + R * .97, R * .7, R * .18, '#f2f6fa', .85);
+      for(let i = 0; i < 16; i++){ const y = cy - R + r() * 2 * R; band(y, R * .05, '#ffffff', .35 + r() * .2, R * .08); }
+      break;
+    case '화성':
+      for(let i = 0; i < 12; i++){ const [x, y] = pt(); blob(x, y, R * .28, '#7a3422', .45, 4); }
+      for(let i = 0; i < 8; i++){ const [x, y] = pt(); blob(x, y, R * .25, '#d78a62', .35, 3); }
+      ell(cx, cy - R * .9, R * .38, R * .14, '#fbf3ee', .9);
+      break;
+    case '목성': {
+      const cols = ['#e9dcc4', '#b98e66', '#efe4cf', '#9e7351', '#e3d2b4', '#c39b74', '#f0e6d3', '#a7805e', '#dfcfb2', '#b78f6a'];
+      cols.forEach((c, i) => band(cy - R + i * R * .2, R * .2, c, .9, R * .03));
+      for(let i = 0; i < 18; i++){ const y = cy - R + r() * 2 * R; band(y, R * .025, '#fff6e6', .35, R * .05); }
+      ell(cx + R * .32, cy + R * .3, R * .22, R * .12, '#b65a3c', .95); ell(cx + R * .32, cy + R * .3, R * .14, R * .07, '#cf7a57', .8);
+      break; }
+    case '토성': {
+      const cols = ['#ecdcb0', '#d3bb84', '#efe1ba', '#c7ab73', '#e6d4a6', '#d9c491', '#efe2bf', '#cdb47f'];
+      cols.forEach((c, i) => band(cy - R + i * R * .25, R * .25, c, .85, R * .02));
+      break; }
+    case '천왕성':
+      band(cy - R * .1, R * .25, '#b9e6ea', .4, R * .02); band(cy + R * .35, R * .18, '#8dc8d0', .35, R * .02);
+      break;
+    case '해왕성':
+      [-.7, -.2, .3, .7].forEach((o, i) => band(cy + o * R, R * .14, i % 2 ? '#2f4fa6' : '#5578d6', .5, R * .03));
+      ell(cx - R * .2, cy + R * .15, R * .2, R * .11, '#1d2e6b', .8); band(cy - R * .02, R * .03, '#e9f0ff', .55, R * .04);
+      break;
+    default:
+      for(let i = 0; i < 20; i++){ const [x, y] = pt(); blob(x, y, R * .2, r() < .5 ? '#6f6c68' : '#a9a5a0', .4, 2); }
+  }
+  g.globalAlpha = 1;
+}
+const SPR = new Map();
+function planetSprite(t, rb, vert){
+  const key = t.n + '|' + rb + '|' + (vert ? 1 : 0) + '|' + U.dpr;
+  let c = SPR.get(key); if(c) return c;
+  if(SPR.size > 60) SPR.clear();
+  const R = Math.max(4, rb * 2.2 * U.dpr), sz = Math.ceil(R * 2 + 4), cx = sz / 2, cy = sz / 2;
+  c = document.createElement('canvas'); c.width = c.height = sz;
+  const g = c.getContext('2d');
+  g.save(); g.beginPath(); g.arc(cx, cy, R, 0, 6.283); g.clip();
+  g.fillStyle = t.base; g.fillRect(0, 0, sz, sz);
+  paintSurface(g, t, cx, cy, R, rng(hash(t.n)));
+  const lx = vert ? 0 : -1, ly = vert ? -1 : 0;
+  const sh = g.createRadialGradient(cx + lx * R * .55, cy + ly * R * .55, R * .05, cx, cy, R * 1.3);
+  sh.addColorStop(0, 'rgba(255,255,255,.14)'); sh.addColorStop(.32, 'rgba(0,0,0,0)'); sh.addColorStop(.68, 'rgba(0,0,0,.5)'); sh.addColorStop(1, 'rgba(0,0,0,.94)');
+  g.fillStyle = sh; g.fillRect(0, 0, sz, sz);
+  g.restore();
+  c._R = R; SPR.set(key, c); return c;
+}
+function sunSprite(R){
+  const key = 'sun|' + Math.round(R) + '|' + U.dpr; let c = SPR.get(key); if(c) return c;
+  const RR = R * U.dpr, sz = Math.ceil(RR * 2 + 4), cx = sz / 2, r = rng(3);
+  c = document.createElement('canvas'); c.width = c.height = sz;
+  const g = c.getContext('2d');
+  const body = g.createRadialGradient(cx, cx, 0, cx, cx, RR);
+  body.addColorStop(0, '#fffdf2'); body.addColorStop(.55, '#ffe9a8'); body.addColorStop(.85, '#ffc35a'); body.addColorStop(1, '#f39a2e');
+  g.fillStyle = body; g.beginPath(); g.arc(cx, cx, RR, 0, 6.283); g.fill();
+  g.save(); g.beginPath(); g.arc(cx, cx, RR, 0, 6.283); g.clip();
+  for(let i = 0; i < 900; i++){ const a = r() * 6.283, d = Math.sqrt(r()) * RR; g.globalAlpha = .07; g.fillStyle = r() < .5 ? '#fff8e0' : '#e8892a'; g.beginPath(); g.arc(cx + Math.cos(a) * d, cx + Math.sin(a) * d, RR * (.008 + r() * .02), 0, 6.283); g.fill(); }
+  g.restore(); c._R = RR; SPR.set(key, c); return c;
+}
+function drawRings(x, y, r, back, L, t){
+  const {ctx} = U;
+  ctx.save(); ctx.translate(x, y);
+  if(t.ring){
+    ctx.rotate(-.2); ctx.scale(1, .3);
+    [[1.22, 1.45, '#9f8c66', .35], [1.45, 1.86, '#e4d5a8', .8], [1.95, 2.25, '#c7b588', .6]].forEach(([a, b, col, al]) => {
+      ctx.globalAlpha = al * (.35 + .65 * L); ctx.strokeStyle = col; ctx.lineWidth = (b - a) * r;
+      ctx.beginPath(); ctx.arc(0, 0, (a + b) / 2 * r, back ? Math.PI : 0, back ? 2 * Math.PI : Math.PI); ctx.stroke();
+    });
+  } else {
+    ctx.rotate(1.35); ctx.scale(1, .22);
+    ctx.globalAlpha = .55 * (.35 + .65 * L); ctx.strokeStyle = '#c9eef2'; ctx.lineWidth = r * .1;
+    ctx.beginPath(); ctx.arc(0, 0, r * 1.65, back ? Math.PI : 0, back ? 2 * Math.PI : Math.PI); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawSolar(dt){
+  U.safe = null;
+  const {ctx, w, h, k} = U, wd = W(), subs = planetSubs(wd), N = subs.length, z = U.s, T = nowT(), tday = fmt(new Date(T));
+  const vert = w < h * .9; U.vert = vert;
+  const len = vert ? h : w, cross = vert ? w : h, sunR = cross * .36;
+  const C = vert ? [w / 2, -sunR * .45] : [-sunR * .45, h / 2], c0 = vert ? C[1] : C[0];
+  const start = sunR * .55 + 26 * k, end = len - 20 * k;
+  // 행성 정보 (크기 = 실제 비율을 줄인 크기 × 공부 시간)
+  const pl = subs.map((sub, i) => {
+    const type = i < 8 ? PLANETS[i] : DWARF;
+    const sts = wd.concepts.filter(c => c.sub === sub).map(stateOf).filter(s => s.vis);
+    const health = sts.length ? sts.reduce((a, s) => a + (s.ok ? s.mem : .35), 0) / sts.length : .6;
+    const hrs = hoursOf(wd, sub, T), grow = .85 + .4 * clamp(Math.log1p(hrs) / Math.log1p(30), 0, 1);
+    const ex = (wd.exams || []).filter(e => e.sub === sub && e.date >= tday).sort((a, b) => a.date.localeCompare(b.date))[0];
+    return {sub, i, type, health, grow, fadeN:sts.filter(s => s.ok && s.mem < FADE).length, exam:ex, exDays:ex ? dayDiff(ex.date, T) : null};
+  });
+  let u = 18 * k;
+  const extOf = p => p.type.s * u * p.grow * (p.type.ring ? 2.25 : p.type.ring2 ? 1.7 : 1.2);
+  let sumExt = pl.reduce((s, p) => s + 2 * extOf(p), 0);
+  if(sumExt > (end - start) * .62) u *= (end - start) * .62 / sumExt;
+  sumExt = pl.reduce((s, p) => s + 2 * extOf(p), 0);
+  // 간격: 바깥으로 갈수록 넓게, 화성과 목성 사이(소행성대)는 특히 넓게
+  const wts = pl.map((p, i) => (i ? 1 + i * .12 : .7) + (p.i === 4 ? .6 : 0)), wsum = wts.reduce((a, b) => a + b, 0) || 1;
+  const free = Math.max(0, (end - start) - sumExt);
+  // 칸 너비가 너무 좁은 행성은 최소 너비를 보장하고, 넓은 칸에서 덜어와요
+  const total = end - start, nat = pl.map((p, i) => free * wts[i] / wsum + 2 * extOf(p)), minSlot = Math.min(92 * k, total / Math.max(N, 1));
+  const small = nat.map(v => v < minSlot), rest = total - small.filter(Boolean).length * minSlot, natBig = nat.reduce((t, v, i) => t + (small[i] ? 0 : v), 0) || 1;
+  const slot = nat.map((v, i) => small[i] ? minSlot : v * rest / natBig);
+  let a = start;
+  pl.forEach((p, i) => { p.pr = p.type.s * u * p.grow; p.ext = extOf(p); const gap = Math.max(4 * k, slot[i] - 2 * p.ext); a += gap; p.d = a + p.ext - c0; a += 2 * p.ext; p.slot = slot[i]; });
+  const crowded = pl.some(p => p.slot < 88 * k);
+  pl.forEach(p => {
+    const amp = Math.min(.1, cross * .22 / p.d), th = amp * Math.sin(U.spin * .06 / Math.sqrt(p.i + 1) + (hash(p.sub) % 628) / 100);
+    p.amp = amp;
+    p.X = vert ? C[0] + p.d * Math.sin(th) : C[0] + p.d * Math.cos(th);
+    p.Y = vert ? C[1] + p.d * Math.cos(th) : C[1] + p.d * Math.sin(th);
+  });
+  // 카메라 (벌리면 그 행성으로 다가가요)
+  const f = U.focus ? clamp((U.s - 1) / .95, 0, 1) : 0, fp = pl.find(p => p.sub === U.focus), kk = Math.min(1, dt * 6);
+  U.cam.x += ((fp ? (fp.X - w / 2) * f : 0) - U.cam.x) * kk; U.cam.y += ((fp ? (fp.Y - h / 2) * f : 0) - U.cam.y) * kk;
+  const S = (X, Y) => [w / 2 + (X - w / 2 - U.cam.x) * z, h / 2 + (Y - h / 2 - U.cam.y) * z];
+  // 태양 = 나: 항상 밝게
+  const [sx, sy] = S(C[0], C[1]); U.sunS = [sx, sy];
+  const SR = sunR * z, pulse = 1 + (U.rm ? 0 : .025 * Math.sin(U.t * 1.5));
+  let g = ctx.createRadialGradient(sx, sy, SR * .9, sx, sy, SR * 1.9 * pulse);
+  g.addColorStop(0, 'rgba(255,214,140,.45)'); g.addColorStop(.35, 'rgba(255,170,80,.12)'); g.addColorStop(1, 'rgba(255,150,60,0)');
+  ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sx, sy, SR * 1.9 * pulse, 0, 6.283); ctx.fill();
+  const ss = sunSprite(sunR); ctx.drawImage(ss, sx - SR * ss.width / (2 * ss._R), sy - SR * ss.height / (2 * ss._R), SR * ss.width / ss._R, SR * ss.height / ss._R);
+  const [lx, ly] = vert ? S(C[0], C[1] + sunR * .78) : S(C[0] + sunR * .42, C[1]);
+  ctx.globalAlpha = .75; ctx.fillStyle = '#7a4a10'; ctx.textAlign = 'center'; ctx.font = '600 14px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif'; ctx.fillText('나', lx, ly + 5); ctx.textAlign = 'left';
+  // 궤도
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1;
+  pl.forEach(p => { ctx.globalAlpha = .1; const base = vert ? Math.PI / 2 : 0, span = p.amp * 2.6; ctx.beginPath(); ctx.arc(sx, sy, p.d * z, base - span, base + span); ctx.stroke(); });
+  // 소행성대 (화성과 목성 사이)
+  const mars = pl.find(p => p.i === 3), jup = pl.find(p => p.i === 4);
+  if(mars && jup){
+    const mid = (mars.d + mars.ext + jup.d - jup.ext) / 2, wid = (jup.d - jup.ext) - (mars.d + mars.ext);
+    ctx.fillStyle = '#b9b3aa';
+    U.belt.forEach(b => { const an = (vert ? Math.PI / 2 : 0) + b.a * jup.amp * 2.4 + U.spin * .004, rr = mid + b.o * wid * .32, [bx, by] = S(C[0] + Math.cos(an) * rr, C[1] + Math.sin(an) * rr); ctx.globalAlpha = b.al; ctx.fillRect(bx, by, b.s * z, b.s * z); });
+  }
+  U.planets = [];
+  pl.forEach((p, i) => drawPlanet(p, S, z, crowded && i % 2 === 1));
+  // 유성 = 집중 1회 완료
+  U.meteors = U.meteors.filter(m => {
+    m.t += dt; if(m.t < 0) return true;
+    const p = U.planets.find(x => x.sub === m.sub); if(!p || m.t > 1.8) return false;
+    const Lm = 200 * k, e = Math.min(1, m.t / 1.1), ee = e * e, x0 = p.x + Math.cos(m.ang) * Lm, y0 = p.y + Math.sin(m.ang) * Lm;
+    if(m.t < 1.1){
+      const x = x0 + (p.x - x0) * ee, y = y0 + (p.y - y0) * ee, tx = x + Math.cos(m.ang) * 36 * k, ty = y + Math.sin(m.ang) * 36 * k;
+      const gr = ctx.createLinearGradient(x, y, tx, ty); gr.addColorStop(0, 'rgba(255,255,255,.95)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.globalAlpha = 1; ctx.strokeStyle = gr; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke();
+    } else { const q = (m.t - 1.1) / .7; ctx.globalAlpha = 1 - q; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 4 + q * 22, 0, 6.283); ctx.stroke(); }
+    return true;
+  });
+  ctx.globalAlpha = 1;
+  const fadeAll = pl.reduce((s, p) => s + p.fadeN, 0);
+  hud((U.demo ? '예시 우주 · ' : '') + (U.tl ? '타임랩스 · ' : '') + (N ? `과목 행성 ${N}개` + (fadeAll ? ` · 흐려지는 별 ${fadeAll}개` : '') : ''),
+    N ? '' : '아직 행성이 없어요.<br>시간표에 과목을 넣거나 퀴즈를 만들면 과목이 행성이 돼요.');
+}
+function drawPlanet(p, S, z, labelUp){
+  const {ctx, k} = U, [x, y] = S(p.X, p.Y), r = p.pr * z, t = p.type, L = .3 + .7 * p.health;
+  if(t.ring || t.ring2) drawRings(x, y, r, true, L, t);
+  if(t.atm){ const a = ctx.createRadialGradient(x, y, r * .92, x, y, r * 1.32); a.addColorStop(0, `rgba(${t.atm},${.4 * L})`); a.addColorStop(1, `rgba(${t.atm},0)`); ctx.globalAlpha = 1; ctx.fillStyle = a; ctx.beginPath(); ctx.arc(x, y, r * 1.32, 0, 6.283); ctx.fill(); }
+  const spr = planetSprite(t, Math.round(p.pr), U.vert), sc = r / spr._R;
+  ctx.globalAlpha = 1; ctx.drawImage(spr, x - spr.width * sc / 2, y - spr.height * sc / 2, spr.width * sc, spr.height * sc);
+  if(L < .99){ ctx.globalAlpha = (1 - L) * .75; ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(x, y, r + .5, 0, 6.283); ctx.fill(); }
+  if(t.ring || t.ring2) drawRings(x, y, r, false, L, t);
+  if(t.moon){ const a = U.spin * .9, mx = x + Math.cos(a) * r * 1.9, my = y + Math.sin(a) * r * .7; ctx.globalAlpha = Math.sin(a) < 0 && Math.hypot(mx - x, my - y) < r ? 0 : .85 * L; ctx.fillStyle = '#d6d3cf'; ctx.beginPath(); ctx.arc(mx, my, Math.max(1.5, r * .22), 0, 6.283); ctx.fill(); }
+  // 혜성 = 다가오는 시험
+  if(p.exam && p.exDays <= 30){
+    const [sx, sy] = U.sunS;
+    let dx = x - sx, dy = y - sy; const dl = Math.hypot(dx, dy) || 1; dx /= dl; dy /= dl;
+    const side = labelUp ? 1 : -1, dist = r * (t.ring ? .9 : 1.25) + (8 + p.exDays * 2.4) * k * z;
+    const hx = U.vert ? x - side * dist : x - dist * .35, hy = U.vert ? y - dist * .35 : y + side * dist, tl = 30 * k * z, tx = hx + dx * tl, ty = hy + dy * tl;
+    const c = p.exDays <= 3 ? '229,72,60' : '255,255,255', gr = ctx.createLinearGradient(hx, hy, tx, ty);
+    gr.addColorStop(0, `rgba(${c},.9)`); gr.addColorStop(1, `rgba(${c},0)`);
+    ctx.globalAlpha = 1; ctx.strokeStyle = gr; ctx.lineWidth = 2.6 * k * z; ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(tx, ty); ctx.stroke();
+    ctx.fillStyle = `rgb(${c})`; ctx.beginPath(); ctx.arc(hx, hy, 2.6 * k * z, 0, 6.283); ctx.fill();
+    ctx.font = '600 11px -apple-system,"Apple SD Gothic Neo",sans-serif'; ctx.textAlign = 'center'; lbl('시험 ' + (p.exDays === 0 ? 'D-DAY' : 'D-' + p.exDays), hx, U.vert ? hy - 8 : hy + (side > 0 ? 16 : -8)); ctx.textAlign = 'left';
+  }
+  // 이름표
+  const extR = r * (t.ring ? 1.25 : 1);
+  const lines = [[p.sub, '600 13px', '#fff', .95], [`${t.n} · 기억 ${P(p.health)}`, '11px', '#fff', .55]];
+  if(p.fadeN) lines.push([`흐려지는 별 ${p.fadeN}`, '11px', '#e5483c', .95]);
+  if(U.vert){
+    ctx.textAlign = 'left'; const lx = x + r * (t.ring ? 2.3 : 1.3) + 10, ly = y - (lines.length - 1) * 7;
+    lines.forEach(([tx, ft, col, al], i) => { ctx.globalAlpha = al; ctx.fillStyle = col; ctx.font = ft + ' -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif'; lbl(tx, lx, ly + i * 14 + 4); });
+  } else {
+    ctx.textAlign = 'center';
+    const y0 = labelUp ? y - extR - 12 - (lines.length - 1) * 14 : y + extR + 18;
+    let half = 0; lines.forEach(([tx, ft]) => { ctx.font = ft + ' -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif'; half = Math.max(half, ctx.measureText(tx).width / 2); });
+    const lxC = clamp(x, half + 6, U.w - half - 6);
+    lines.forEach(([tx, ft, col, al], i) => { ctx.globalAlpha = al; ctx.fillStyle = col; ctx.font = ft + ' -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif'; lbl(tx, lxC, y0 + i * 14); });
+  }
+  ctx.textAlign = 'left'; ctx.font = '12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  U.planets.push({sub:p.sub, x, y, r:r * (t.ring ? 1.4 : 1)});
+}
+// --- 블랙홀: 그림자 · 광자 고리 · 중력렌즈로 휜 원반 · 도플러로 한쪽이 더 밝은 강착원반 ---
+const BH = new Map();
+function bhCol(t){
+  const s = [[255, 250, 240], [255, 218, 160], [255, 160, 90], [210, 78, 42], [115, 28, 20]];
+  const x = clamp(t, 0, 1) * (s.length - 1), i = Math.min(s.length - 2, Math.floor(x)), f = x - i;
+  return s[i].map((v, j) => Math.round(v + (s[i + 1][j] - v) * f));
+}
+const BH_TILT = -.06, BH_SQ = .17, BH_R0 = 1.55, BH_R1 = 6.6;
+function bhSprites(rbq){
+  const key = rbq + '|' + U.dpr; let o = BH.get(key); if(o) return o;
+  if(BH.size > 10) BH.clear();
+  const rb = rbq * U.dpr, size = Math.ceil(rb * BH_R1 * 2.1), c = size / 2;
+  const mk = () => { const cv = document.createElement('canvas'); cv.width = cv.height = size; const g = cv.getContext('2d'); g.globalCompositeOperation = 'lighter'; return [cv, g]; };
+  const [back, gb] = mk(), [front, gf] = mk(), [lens, gl] = mk(), steps = 56;
+  // 각도에 따라 밝기가 바뀌는 선 (가까워지는 왼쪽이 더 밝아요: 도플러 효과)
+  const paint = (g, col, alphaAt) => {
+    if(g.createConicGradient){
+      const cg = g.createConicGradient(0, c, c);
+      for(let i = 0; i <= 48; i++){ const a = i / 48 * 2 * Math.PI; cg.addColorStop(i / 48, `rgba(${col},${Math.min(1, alphaAt(a))})`); }
+      return cg;
+    }
+    return `rgba(${col},${Math.min(1, alphaAt(Math.PI))})`;
+  };
+  for(let k = 0; k < steps; k++){
+    const t = k / (steps - 1), rr = (BH_R0 + (BH_R1 - BH_R0) * Math.pow(t, 1.3)) * rb, col = bhCol(t * .92).join(','), base = .4 * Math.pow(1 - t, 1.5) + .035;
+    const lw = (BH_R1 - BH_R0) * rb / steps * 2.2, st = paint(gb, col, a => base * (1 + .55 * -Math.cos(a)));
+    [[gb, Math.PI, 2 * Math.PI, .8], [gf, 0, Math.PI, 1]].forEach(([g, a0, a1, mul]) => {
+      g.globalAlpha = mul; g.strokeStyle = g === gb ? st : paint(gf, col, a => base * (1 + .55 * -Math.cos(a))); g.lineWidth = lw;
+      g.beginPath(); g.ellipse(c, c, rr, rr * BH_SQ, BH_TILT, a0, a1); g.stroke();
+    });
+  }
+  // 블랙홀 뒤쪽 원반이 중력렌즈로 휘어 그림자 위아래를 감싸는 고리
+  for(let k = 0; k < 34; k++){
+    const t = k / 33, rr = (1.04 + .85 * t) * rb, col = bhCol(.05 + t * .65).join(','), base = .75 * Math.pow(1 - t, 2);
+    gl.strokeStyle = paint(gl, col, a => base * (1 + .65 * -Math.cos(a)) * (.68 - .32 * Math.sin(a))); gl.lineWidth = .85 / 33 * rb * 2.2;
+    gl.beginPath(); gl.arc(c, c, rr, 0, 2 * Math.PI); gl.stroke();
+  }
+  o = {back, front, lens, size}; BH.set(key, o); return o;
+}
+function drawBlackHole(hx, hy, rb, glow){
+  const {ctx} = U, q8 = Math.max(8, Math.round(rb / 8) * 8), sp = bhSprites(q8), dw = sp.size * rb / (q8 * U.dpr), x0 = hx - dw / 2, y0 = hy - dw / 2;
+  // 넓게 퍼지는 빛
+  const g = ctx.createRadialGradient(hx, hy, rb, hx, hy, rb * 9);
+  g.addColorStop(0, `rgba(255,196,130,${.17 * glow})`); g.addColorStop(.3, `rgba(220,95,55,${.06 * glow})`); g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.globalAlpha = 1; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, hy, rb * 9, 0, 6.283); ctx.fill();
+  const streaks = front => {
+    const n = Math.min(U.disk.length, 260);
+    for(let i = 0; i < n; i++){
+      const p = U.disk[i], rr = 1.65 + (p.rr - 1.35) / 2.3 * 4.6, an = p.ang + U.spin * 1.6 / Math.pow(rr, 1.5), sn = Math.sin(an);
+      if((sn >= 0) !== front) continue;
+      const t = (rr - 1.65) / 4.6, [cr, cg, cb] = bhCol(t * .9), al = p.a * .32 * (1 + .55 * -Math.cos(an)) * (1 - t * .6) * glow;
+      if(al < .02) continue;
+      ctx.globalAlpha = Math.min(1, al); ctx.strokeStyle = `rgb(${cr},${cg},${cb})`; ctx.lineWidth = Math.max(.6, rb * .014 * p.s);
+      ctx.beginPath(); ctx.ellipse(hx, hy, rr * rb, rr * rb * BH_SQ, BH_TILT, an, an + .1 + p.s * .06); ctx.stroke();
+    }
+  };
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalAlpha = glow; ctx.drawImage(sp.back, x0, y0, dw, dw);
+  streaks(false);
+  ctx.globalAlpha = glow; ctx.drawImage(sp.lens, x0, y0, dw, dw);
+  ctx.globalCompositeOperation = 'source-over';
+  // 그림자 (빛도 빠져나오지 못하는 곳)
+  ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(hx, hy, rb, 0, 6.283); ctx.fill();
+  // 광자 고리
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.strokeStyle = 'rgba(255,242,228,.95)'; ctx.lineWidth = Math.max(1, rb * .028); ctx.shadowColor = 'rgba(255,170,110,.9)'; ctx.shadowBlur = rb * .18;
+  ctx.beginPath(); ctx.arc(hx, hy, rb * 1.02, 0, 6.283); ctx.stroke(); ctx.shadowBlur = 0;
+  ctx.globalAlpha = glow; ctx.drawImage(sp.front, x0, y0, dw, dw);
+  streaks(true);
+  ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+}
+// --- 실제 나선은하: 노란 중심부(팽대부) · 푸른 나선팔 · 먼지띠 · 붉은 성운 ---
+let GAL = null;
+function galaxySprite(){
+  if(GAL) return GAL;
+  const N = 1024, c = N / 2, Rs = c * .96, r = rng(21), cv = document.createElement('canvas'); cv.width = cv.height = N;
+  const g = cv.getContext('2d'), gauss = () => (r() + r() + r() - 1.5) / 1.5;
+  let gr = g.createRadialGradient(c, c, 0, c, c, Rs);
+  gr.addColorStop(0, 'rgba(255,236,205,.6)'); gr.addColorStop(.2, 'rgba(240,225,210,.28)'); gr.addColorStop(.55, 'rgba(160,180,240,.12)'); gr.addColorStop(1, 'rgba(120,140,220,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, N, N);
+  const armPt = (k, t, spread) => { const th = k * Math.PI + t * 4.4 + .3, rr = Rs * (.07 + .9 * t), w = Rs * (.025 + .1 * t) * spread; return [c + Math.cos(th) * rr + gauss() * w, c + Math.sin(th) * rr + gauss() * w, th, rr]; };
+  // 팔 사이 흐린 별
+  g.globalCompositeOperation = 'lighter';
+  for(let i = 0; i < 3500; i++){ const a = r() * 6.283, d = Math.pow(r(), .7) * Rs; g.globalAlpha = .08 + r() * .2; g.fillStyle = '#dfe6ff'; g.fillRect(c + Math.cos(a) * d, c + Math.sin(a) * d, 1.2, 1.2); }
+  // 나선팔: 젊고 푸른 별
+  for(let i = 0; i < 14000; i++){
+    const k = r() < .8 ? Math.floor(r() * 2) : 2 + Math.floor(r() * 2), t = Math.pow(r(), .8), [x, y] = armPt(k % 2 + (k > 1 ? .5 : 0), t, k > 1 ? 1.6 : 1);
+    const blue = r() < .7; g.globalAlpha = (k > 1 ? .12 : .25) + r() * .45 * (1 - t * .5); g.fillStyle = blue ? '#c6d6ff' : '#fff6ea';
+    const s = .8 + r() * 1.4; g.fillRect(x, y, s, s);
+  }
+  // 성단의 부드러운 빛
+  for(let i = 0; i < 260; i++){
+    const k = Math.floor(r() * 2), t = .15 + r() * .8, [x, y] = armPt(k, t, .6), rad = 4 + r() * 10;
+    const sg = g.createRadialGradient(x, y, 0, x, y, rad); sg.addColorStop(0, 'rgba(200,215,255,.35)'); sg.addColorStop(1, 'rgba(200,215,255,0)');
+    g.globalAlpha = 1; g.fillStyle = sg; g.beginPath(); g.arc(x, y, rad, 0, 6.283); g.fill();
+  }
+  // 붉은 성운 (별이 태어나는 곳)
+  for(let i = 0; i < 90; i++){
+    const k = Math.floor(r() * 2), t = .2 + r() * .7, [x, y] = armPt(k, t, .5), rad = 2 + r() * 4;
+    g.globalAlpha = .55 + r() * .35; g.fillStyle = '#ff7f96'; g.beginPath(); g.arc(x, y, rad, 0, 6.283); g.fill();
+  }
+  // 먼지띠 (팔 안쪽을 어둡게)
+  g.globalCompositeOperation = 'source-over';
+  for(let i = 0; i < 1600; i++){
+    const k = Math.floor(r() * 2), t = .08 + Math.pow(r(), .9) * .75, th = k * Math.PI + t * 4.4 + .3 - .22, rr = Rs * (.07 + .9 * t) * .97, w = Rs * (.008 + .025 * t);
+    const x = c + Math.cos(th) * rr + gauss() * w, y = c + Math.sin(th) * rr + gauss() * w;
+    g.globalAlpha = .05 + r() * .07; g.fillStyle = '#1a0f08'; g.beginPath(); g.arc(x, y, 3 + r() * 6, 0, 6.283); g.fill();
+  }
+  // 중심부 (늙고 노란 별이 빽빽한 팽대부)
+  g.globalCompositeOperation = 'lighter'; g.globalAlpha = 1;
+  gr = g.createRadialGradient(c, c, 0, c, c, Rs * .28);
+  gr.addColorStop(0, 'rgba(255,250,235,1)'); gr.addColorStop(.12, 'rgba(255,236,200,.85)'); gr.addColorStop(.45, 'rgba(255,214,160,.28)'); gr.addColorStop(1, 'rgba(255,200,150,0)');
+  g.fillStyle = gr; g.beginPath(); g.arc(c, c, Rs * .28, 0, 6.283); g.fill();
+  for(let i = 0; i < 1800; i++){ const a = r() * 6.283, d = Math.abs(gauss()) * Rs * .16; g.globalAlpha = .2 + r() * .4; g.fillStyle = '#ffe2b0'; g.fillRect(c + Math.cos(a) * d, c + Math.sin(a) * d, 1.2, 1.2); }
+  GAL = cv; return cv;
+}
+function drawGalaxy(gx, gy, Rg, g){
+  const {ctx} = U, sp = galaxySprite();
+  ctx.save(); ctx.translate(gx, gy); ctx.scale(1, .6); ctx.rotate(U.rot * .5);
+  ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = .35 + .65 * g;
+  ctx.drawImage(sp, -Rg, -Rg, Rg * 2, Rg * 2);
+  ctx.restore(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+}
+// 글씨는 항상 읽히게: 검은 테두리를 두르고, 블랙홀·은하 중심의 안전지대 밖으로 밀어내요
+function lbl(t, x, y){
+  const {ctx} = U, a = ctx.globalAlpha, st = ctx.fillStyle;
+  ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,.9)'; ctx.globalAlpha = Math.min(1, a + .2);
+  ctx.strokeText(t, x, y); ctx.globalAlpha = a; ctx.fillStyle = st; ctx.fillText(t, x, y);
+}
+function safePos(x, y){
+  const z = U.safe; if(!z) return [x, y];
+  const dx = (x - z.x) / z.rx, dy = (y - z.y) / z.ry, d = Math.hypot(dx, dy);
+  if(d >= 1) return [x, y];
+  if(d < .001) return [x, z.y - z.ry - 8];
+  return [z.x + dx / d * (z.rx + 8), z.y + dy / d * (z.ry + 8)];
+}
+// --- 과목 하늘 ---
+function drawSky(dt){
+  const {ctx, w, h} = U, wd = W();
   const R = Math.min(w, h) * .46, v = Math.max(U.s, 1), m = U.s < 1 ? (1 - U.s) / .5 : 0;
   const ax = (w / 2) / R * .9, ay = (h / 2) / R * .86, cx = w / 2 + U.ox * v, cy = h / 2 + U.oy * v;
   const S = (x, y) => [cx + x * R * v, cy + y * R * v];
-  const list = uniList(), total = list.length, okN = list.filter(c => c.ok).length, q = total ? okN / total : 0;
+  const list = wd.concepts.filter(c => c.sub === U.sub), sts = list.map(stateOf);
+  const visN = sts.filter(s => s.vis).length, strongN = sts.filter(s => s.vis && s.ok && s.mem >= FADE).length, fadeN = sts.filter(s => s.vis && s.ok && s.mem < FADE).length;
+  const q = visN ? sts.reduce((a, s) => a + (s.vis && s.ok ? s.mem : 0), 0) / visN : 0;
   const hole = uniPrefs.theme === 'hole';
-  // 배경 먼지 별
-  ctx.fillStyle = '#fff';
-  U.dust.forEach(d => { ctx.globalAlpha = d.a; ctx.fillRect(w / 2 + d.x * w * .52 * (.85 + .15 * v) + U.ox * .3, h / 2 + d.y * h * .52 * (.85 + .15 * v) + U.oy * .3, d.s, d.s); });
   if(!hole){
-    // 하얀 은하: 이해한 개념이 많을수록, 오므릴수록 밝아져요
-    const g = Math.max(m, q * .85, .06), [gx, gy] = S(0, 0), gr = R * v * (.16 + .2 * g);
-    const grd = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
-    grd.addColorStop(0, `rgba(255,255,255,${.22 + .6 * g})`); grd.addColorStop(.3, `rgba(255,255,255,${.06 + .18 * g})`); grd.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.globalAlpha = 1; ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(gx, gy, gr, 0, 6.283); ctx.fill();
-    ctx.fillStyle = '#fff';
-    U.arms.forEach(p => { const an = galAng(p.ang, p.d), [x, y] = S(p.d * Math.cos(an), p.d * Math.sin(an) * .6), z = p.s * (.7 + .3 * v); ctx.globalAlpha = p.a * g; ctx.fillRect(x, y, z, z); });
+    const g = Math.max(m, q * .85, .06), [gx, gy] = S(0, 0);
+    drawGalaxy(gx, gy, R * v * .62, g);
+    U.safe = {x:gx, y:gy, rx:R * v * .14, ry:R * v * .1};
   } else {
-    // 블랙홀: 흡수한 개념이 많을수록 커지고, 오므릴수록 원반이 밝아져요
-    const rb = R * v * (.07 + .07 * q), [hx, hy] = S(0, 0), glow = .35 + .65 * Math.max(m, q);
-    const grd = ctx.createRadialGradient(hx, hy, rb * .8, hx, hy, rb * 5);
-    grd.addColorStop(0, `rgba(255,255,255,${.12 * glow})`); grd.addColorStop(.4, `rgba(200,40,30,${.08 * glow})`); grd.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.globalAlpha = 1; ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(hx, hy, rb * 5, 0, 6.283); ctx.fill();
-    const disk = front => U.disk.forEach(p => {
-      const an = p.ang + U.spin * .9 / p.rr, sn = Math.sin(an); if((sn > 0) !== front) return;
-      const z = p.s * (.7 + .3 * v); ctx.globalAlpha = p.a * glow * (front ? 1 : .6); ctx.fillStyle = p.red ? '#e5483c' : '#fff';
-      ctx.fillRect(hx + Math.cos(an) * p.rr * rb, hy + sn * p.rr * rb * .32, z, z);
-    });
-    disk(false);
-    ctx.globalAlpha = 1; ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(hx, hy, rb, 0, 6.283); ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.5; ctx.shadowColor = 'rgba(255,70,50,.75)'; ctx.shadowBlur = 14;
-    ctx.beginPath(); ctx.arc(hx, hy, rb * 1.06, 0, 6.283); ctx.stroke(); ctx.shadowBlur = 0;
-    disk(true);
+    const [hx, hy] = S(0, 0);
+    U.bh = {x:hx, y:hy, r:R * v * (.11 + .05 * q)};
+    U.safe = {x:hx, y:hy, rx:U.bh.r * 3.2, ry:U.bh.r * 1.7};
+    drawBlackHole(hx, hy, U.bh.r, .55 + .45 * Math.max(m, q));
   }
-  // 개념 별
-  const k = 1 - Math.exp(-dt * 2.2), labelA = clamp((v - 1.4) * 2, 0, 1) * .75;
-  U.drawn = []; ctx.font = '12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
-  list.forEach(c => {
-    let st = U.stars.get(c.id); const fresh = !st; if(fresh){ st = mkStar(c); U.stars.set(c.id, st); }
-    const fxW = st.fx * ax, fyW = st.fy * ay, ga = galAng(st.ga, st.gd), gxW = st.gd * Math.cos(ga), gyW = st.gd * Math.sin(ga) * .6;
+  // 1) 별 위치 갱신
+  const k = 1 - Math.exp(-dt * 2.2), pos = new Map();
+  list.forEach((c, i) => {
+    const s = sts[i]; let st = U.stars.get(c.id);
+    if(!s.vis){ if(st) st.hid = true; return; }
+    const fresh = !st; if(fresh){ st = mkStar(c); U.stars.set(c.id, st); }
+    const strong = s.ok && s.mem >= FADE, bright = s.ok ? .45 + .55 * s.mem : .4;
+    const fxW = st.fx * ax, fyW = st.fy * ay, gd = strong ? st.gd * .6 : st.gd, ga = galAng(st.ga, st.gd), gxW = gd * Math.cos(ga), gyW = gd * Math.sin(ga) * .6;
     let tx, ty, ta = 1, ts = 1;
-    if(!hole){
-      if(c.ok){ tx = gxW; ty = gyW; ts = .85; }
-      else { tx = fxW + (gxW - fxW) * m * .92; ty = fyW + (gyW - fyW) * m * .92; }
-    } else {
-      const ha = st.ha + U.spin * .5 / st.ho, ox = Math.cos(ha) * st.ho, oy = Math.sin(ha) * st.ho * .35;
-      if(c.ok){ tx = 0; ty = 0; ta = 0; ts = .1; }
-      else { tx = fxW + (ox - fxW) * m; ty = fyW + (oy - fyW) * m; }
-    }
+    if(!hole){ tx = fxW + (gxW - fxW) * m * .95; ty = fyW + (gyW - fyW) * m * .95; }
+    else if(strong){ tx = 0; ty = 0; ta = 0; ts = .1; }
+    else { const ha = st.ha + U.spin * .5 / st.ho, ox = Math.cos(ha) * st.ho, oy = Math.sin(ha) * st.ho * .35; tx = fxW + (ox - fxW) * m; ty = fyW + (oy - fyW) * m; }
     const just = U.justOk.has(c.id);
     if(fresh){
-      if(just || U.newIds.has(c.id)){ st.px = fxW; st.py = fyW; if(!just) st.sc = 0; }
-      else { st.px = tx; st.py = ty; st.a = ta; st.sc = ts; }
+      if(just){ st.px = fxW; st.py = fyW; st.b = .4; }
+      else if(U.newIds.has(c.id)){ st.px = fxW; st.py = fyW; st.sc = 0; }
+      else { st.px = tx; st.py = ty; st.a = ta; st.sc = ts; st.b = bright; }
     }
+    if(st.hid){ st.hid = false; st.px = tx; st.py = ty; st.sc = 0; st.a = 1; st.b = bright; }
     if(just) U.flash.push({id:c.id, t:0});
     U.justOk.delete(c.id); U.newIds.delete(c.id);
-    st.px += (tx - st.px) * k; st.py += (ty - st.py) * k;
-    st.a += (ta - st.a) * k * (hole ? .55 : 1); st.sc += (ts - st.sc) * k;
+    st.px += (tx - st.px) * k; st.py += (ty - st.py) * k; st.a += (ta - st.a) * k * (hole ? .55 : 1); st.sc += (ts - st.sc) * k; st.b += (bright - st.b) * k;
     const [sx, sy] = S(st.px, st.py);
+    pos.set(c.id, {c, s, st, sx, sy, strong, fs:S(fxW, fyW)});
+  });
+  // 2) 별자리 선과 이름
+  const groups = (wd.consts || {})[U.sub] || [], lineK = 1 - m;
+  groups.forEach(g => {
+    const mem = g.ids.map(id => pos.get(id)).filter(Boolean); if(mem.length < 2) return;
+    const complete = mem.length === g.ids.length && mem.every(p => p.strong);
+    g.links.forEach(([a, b]) => {
+      const pa = pos.get(a), pb = pos.get(b); if(!pa || !pb) return;
+      const al = (complete ? .6 : pa.strong && pb.strong ? .4 : .13) * Math.min(pa.st.a, pb.st.a) * lineK; if(al < .02) return;
+      ctx.globalAlpha = al; ctx.strokeStyle = '#fff'; ctx.lineWidth = complete ? 1.4 : 1;
+      ctx.beginPath(); ctx.moveTo(pa.sx, pa.sy); ctx.lineTo(pb.sx, pb.sy); ctx.stroke();
+    });
+    const fs = g.ids.map(id => pos.get(id)).filter(Boolean).map(p => p.fs);
+    let nx = fs.reduce((s, p) => s + p[0], 0) / fs.length, ny = Math.max(48, Math.min(...fs.map(p => p[1])) - 16);
+    [nx, ny] = safePos(nx, ny);
+    const nameK = clamp(1 - m / .3, 0, 1); if(nameK <= 0) return;
+    ctx.globalAlpha = (complete ? .95 : .7) * nameK; ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+    ctx.font = (complete ? '600 ' : '') + '12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+    lbl((complete ? '✦ ' : '') + g.name, nx, ny); ctx.textAlign = 'left';
+  });
+  // 3) 별
+  const labelA = clamp((v - 1.4) * 2, 0, 1) * .75;
+  ctx.font = '12px -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif';
+  U.drawn = [];
+  pos.forEach(({c, s, st, sx, sy}) => {
     if(sx < -30 || sy < -30 || sx > w + 30 || sy > h + 30) return;
-    const tw = c.ok || U.rm ? 1 : .6 + .4 * Math.sin(U.t * st.sp + st.ph), al = st.a * tw, rad = st.size * st.sc * (.75 + .25 * v);
+    const tw = (s.ok && s.mem >= FADE) || U.rm ? 1 : .65 + .35 * Math.sin(U.t * st.sp + st.ph), al = st.a * tw;
+    const rad = st.size * st.sc * (.75 + .25 * v) * (.75 + .5 * st.b);
     if(al < .02 || rad < .05) return;
+    if(hole && U.bh && sy < U.bh.y + U.bh.r * .2 && Math.hypot(sx - U.bh.x, sy - U.bh.y) < U.bh.r) return;
     ctx.fillStyle = '#fff';
-    ctx.globalAlpha = al * .16; ctx.beginPath(); ctx.arc(sx, sy, rad * 3.2, 0, 6.283); ctx.fill();
-    ctx.globalAlpha = al; ctx.beginPath(); ctx.arc(sx, sy, rad, 0, 6.283); ctx.fill();
-    if(!c.ok && st.size > 3){
+    ctx.globalAlpha = al * st.b * .3; ctx.beginPath(); ctx.arc(sx, sy, rad * 3.2, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = al * (.35 + .65 * st.b); ctx.beginPath(); ctx.arc(sx, sy, rad, 0, 6.283); ctx.fill();
+    if(st.b > .85 && st.size > 3){
       ctx.globalAlpha = al * .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = .8; ctx.beginPath();
       ctx.moveTo(sx - rad * 4, sy); ctx.lineTo(sx + rad * 4, sy); ctx.moveTo(sx, sy - rad * 4); ctx.lineTo(sx, sy + rad * 4); ctx.stroke();
     }
-    if(U.sel === c.id){ ctx.globalAlpha = 1; ctx.strokeStyle = hole ? '#e5483c' : '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(sx, sy, rad + 8, 0, 6.283); ctx.stroke(); }
-    if(labelA > 0 && st.a > .3){ ctx.globalAlpha = labelA; ctx.fillStyle = '#fff'; ctx.fillText(c.name, sx + rad + 6, sy + 4); }
+    if(s.ok && s.mem < FADE){ ctx.globalAlpha = al * .7; ctx.strokeStyle = '#e5483c'; ctx.lineWidth = 1; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.arc(sx, sy, rad + 5, 0, 6.283); ctx.stroke(); ctx.setLineDash([]); }
+    if(U.sel === c.id){ ctx.globalAlpha = 1; ctx.strokeStyle = hole ? '#e5483c' : '#fff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(sx, sy, rad + 9, 0, 6.283); ctx.stroke(); }
+    if(labelA > 0 && st.a > .3){ const [lx2, ly2] = safePos(sx + rad + 6, sy + 4); ctx.globalAlpha = Math.max(labelA, .85 * clamp((v - 1.4) * 2, 0, 1)); ctx.fillStyle = '#fff'; lbl(c.name, lx2, ly2); }
     U.drawn.push({id:c.id, x:sx, y:sy});
   });
-  // 이해한 순간 반짝임
   U.flash = U.flash.filter(f => {
-    f.t += dt; const st = U.stars.get(f.id); if(!st || f.t > 1.4) return false;
-    const [x, y] = S(st.px, st.py); ctx.globalAlpha = 1 - f.t / 1.4; ctx.strokeStyle = hole ? '#e5483c' : '#fff'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(x, y, 4 + f.t * 34, 0, 6.283); ctx.stroke(); return true;
+    f.t += dt; const p = pos.get(f.id); if(!p || f.t > 1.4) return false;
+    ctx.globalAlpha = 1 - f.t / 1.4; ctx.strokeStyle = hole ? '#e5483c' : '#fff'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(p.sx, p.sy, 4 + f.t * 34, 0, 6.283); ctx.stroke(); return true;
   });
   ctx.globalAlpha = 1;
-  const txt = (U.demo ? '예시 우주 · ' : '') + (total ? `${hole ? '블랙홀에 흡수된' : '은하에 합쳐진'} 개념 ${okN} / ${total}` : '');
-  if(txt !== U.countTxt){ U.countTxt = txt; $('#uniCount').textContent = txt; $('#uniEmpty').classList.toggle('show', !total); }
+  hud((U.demo ? '예시 우주 · ' : '') + (U.tl ? '타임랩스 · ' : '') + `${U.sub} · ${planetType(U.sub).n}` + (visN ? `  ·  ${hole ? '흡수된' : '빛나는'} 별 ${strongN} / ${visN}` + (fadeN ? ` · 흐려지는 별 ${fadeN}` : '') : ''),
+    list.length ? '' : '이 행성 하늘엔 아직 별이 없어요.<br>PDF 문제나 강의 퀴즈를 만들면 개념이 별로 떠올라요.');
 }
+// --- 타임랩스 ---
+function tlStart(){
+  if(U.tl){ U.tl = null; U.justOk.clear(); uniControls(); return; }
+  const wd = W(), times = [];
+  wd.concepts.forEach(c => { if(c.at) times.push(c.at); }); wd.sessions.forEach(s => times.push(s.at));
+  Object.keys(wd.log).forEach(k => times.push(new Date(k + 'T00:00:00').getTime()));
+  const t1 = Date.now(), t0 = times.length ? Math.min(...times) : t1;
+  if(t1 - t0 < DAY){ $('#uniMsg').textContent = '기록이 하루 이상 쌓이면 타임랩스를 볼 수 있어요. 예시 우주에서 먼저 볼 수 있어요.'; return; }
+  U.justOk.clear(); U.flash = []; U.meteors = []; U.stars.clear();
+  U.tl = {t0, t1, T:t0, el:0, dur:12, evs:buildEvents(wd), i:0, map:new Map(), met:wd.sessions.slice().sort((a, b) => a.at - b.at), mi:0};
+  $('#uniMsg').textContent = `${dstr(t0)}부터 오늘까지 우주가 자라온 과정을 12초로 보여줘요.`;
+  uniControls();
+}
+function tlStep(dt){
+  const tl = U.tl; tl.el += dt; tl.T = tl.t0 + (tl.t1 - tl.t0) * clamp(tl.el / tl.dur, 0, 1);
+  while(tl.i < tl.evs.length && tl.evs[tl.i].t <= tl.T){
+    const ev = tl.evs[tl.i++];
+    ev.list.forEach(x => { const s = tl.map.get(x.id) || {ok:false, st:3, rev:0, okAt:0}, was = s.ok && memAt(s, ev.t) >= FADE; learn(s, x.good, ev.t); tl.map.set(x.id, s); if(x.good && !was && U.view === 'sub') U.justOk.add(x.id); });
+  }
+  while(tl.mi < tl.met.length && tl.met[tl.mi].at <= tl.T){ const s = tl.met[tl.mi++]; if(U.view === 'solar' && U.meteors.length < 6) U.meteors.push({sub:s.sub, t:0, ang:Math.random() * 6.283}); }
+  if(tl.el > tl.dur + 1.5){ U.tl = null; U.justOk.clear(); U.stars.clear(); uniControls(); }
+}
+// --- 터치 · 카드 ---
 function uniTap(x, y){
+  if(U.view === 'solar'){
+    const p = U.planets.find(p => Math.hypot(p.x - x, p.y - y) < p.r + 18);
+    if(p) enterSub(p.sub);
+    return;
+  }
   let best = null, bd = 26;
   U.drawn.forEach(d => { const dd = Math.hypot(d.x - x, d.y - y); if(dd < bd){ bd = dd; best = d; } });
   U.sel = best ? best.id : null; uniCard();
 }
 function uniCard(){
-  const c = uniList().find(x => x.id === U.sel), el = $('#uniCard');
+  const c = U.view === 'sub' ? W().concepts.find(x => x.id === U.sel) : null, el = $('#uniCard');
   if(!c){ el.classList.remove('show'); return; }
-  el.innerHTML = `<b style="font-size:16px">${esc(c.name)}</b><p style="font-size:12px;color:#aaa;margin:2px 0 8px">${esc(c.sub)} · ${c.ok ? '이해함' : '아직'} · 맞힘 ${c.c || 0} · 틀림 ${c.w || 0}</p><p style="font-size:13px;line-height:1.6">${esc(c.desc || '설명이 없어요.')}</p><div class="row" style="margin:12px 0 0">${c.ok ? '<button class="btn ghost" data-u="no">다시 공부할래요</button>' : '<button class="btn" data-u="ok">이해했어요</button>'}<button class="btn ghost" data-u="del">삭제</button><button class="btn ghost" data-u="x">닫기</button></div>`;
+  const mem = memOf(c), fadeIn = c.ok ? Math.ceil(((c.rev || c.okAt || Date.now()) + (c.st || 3) * Math.LN2 * DAY - Date.now()) / DAY) : 0;
+  const note = !c.ok ? '아직 이해하지 못한 별이에요.' : mem < FADE ? '지금 흐려지는 중이에요. 복습하면 다시 밝아지고 더 오래 기억돼요.' : `기억 ${P(mem)} · 약 ${Math.max(1, fadeIn)}일 뒤부터 흐려져요.`;
+  el.innerHTML = `<b style="font-size:16px">${esc(c.name)}</b><p style="font-size:12px;color:#aaa;margin:2px 0 8px">${esc(c.sub)} · 맞힘 ${c.c || 0} · 틀림 ${c.w || 0}</p><p style="font-size:12px;color:${c.ok && mem < FADE ? '#ff8a80' : '#ccc'};margin-bottom:8px">${note}</p><p style="font-size:13px;line-height:1.6">${esc(c.desc || '설명이 없어요.')}</p><div class="row" style="margin:12px 0 0">${c.ok && mem >= FADE ? '<button class="btn ghost" data-u="no">다시 공부할래요</button>' : '<button class="btn" data-u="ok">이해했어요</button>'}<button class="btn ghost" data-u="del">삭제</button><button class="btn ghost" data-u="x">닫기</button></div>`;
   el.classList.add('show');
 }
 function uniCardAct(e){
   const b = e.target.closest('[data-u]'); if(!b) return;
-  const arr = U.demo || concepts, c = arr.find(x => x.id === U.sel), act = b.dataset.u;
-  if(c && act === 'ok'){ c.ok = true; c.okAt = Date.now(); U.justOk.add(c.id); }
-  if(c && act === 'no'){ c.ok = false; c.okAt = 0; }
+  const wd = W(), c = wd.concepts.find(x => x.id === U.sel), act = b.dataset.u;
+  if(c && (act === 'ok' || act === 'no')){
+    const good = act === 'ok'; learn(c, good, Date.now()); if(good) U.justOk.add(c.id);
+    if(!U.demo) logManual(c, good);
+  }
   if(c && act === 'del'){
     if(!confirm(`'${c.name}' 별을 지울까요?`)) return;
-    arr.splice(arr.indexOf(c), 1); U.stars.delete(c.id); U.sel = null;
+    wd.concepts.splice(wd.concepts.indexOf(c), 1); U.stars.delete(c.id); U.sel = null;
+    const gs = (wd.consts || {})[c.sub];
+    if(gs){ gs.forEach(g => { g.ids = g.ids.filter(id => id !== c.id); g.links = g.links.filter(l => !l.includes(c.id)); }); wd.consts[c.sub] = gs.filter(g => g.ids.length >= 2); if(!U.demo) store.set('consts', consts); buildCmap(); }
   }
   if(act === 'x') U.sel = null;
   if(!U.demo) saveC();
-  uniCard(); uniControls();
+  uniCard(); render();
 }
 function uniControls(){
+  const sub = U.view === 'sub';
+  ['#uniBack', '#uniTheme', '#uniLink', '#uniAdd'].forEach(id => $(id).style.display = sub ? '' : 'none');
   document.querySelectorAll('#uniTheme button').forEach(b => b.classList.toggle('on', b.dataset.th === uniPrefs.theme));
-  const subs = [...new Set((U.demo || concepts).map(c => c.sub))];
-  if(uniPrefs.sub && !subs.includes(uniPrefs.sub)) uniPrefs.sub = '';
-  $('#uniSub').innerHTML = '<option value="">전체 과목</option>' + subs.map(s => `<option value="${esc(s)}"${s === uniPrefs.sub ? ' selected' : ''}>${esc(s)}</option>`).join('');
   $('#uniDemo').textContent = U.demo ? '내 우주로 돌아가기' : '예시 우주 보기';
-  U.countTxt = null;
+  $('#uniTL').textContent = U.tl ? '타임랩스 멈추기' : '타임랩스';
+  $('#uniHint').textContent = sub
+    ? '오므리거나 휠을 내리면 별이 모여 은하가 되고, 더 오므리면 태양계로 돌아가요 · 벌리면 확대 · 별을 누르면 설명'
+    : '행성(과목)을 누르거나, 행성 쪽으로 벌리거나 휠을 올리면 그 과목 하늘로 들어가요';
+  U.hud = null;
 }
-function toggleUniDemo(){ U.demo = U.demo ? null : demoConcepts(); U.sel = null; U.stars.clear(); U.s = 1; U.ox = U.oy = 0; uniCard(); uniControls(); }
+function toggleUniDemo(){ U.demo = U.demo ? null : demoWorld(); U.tl = null; U.stars.clear(); U.meteors = []; goSolar(); if(U.demo) U.demo.sessions.slice(-4).forEach(s => uniMeteor(s.sub)); }
 
 // ===== 연결 =====
 function initEngine(){
-  ['#pdfQuiz', '#recQuizBox'].forEach(id => $(id).addEventListener('click', quizClick));
+  ['#pdfQuiz', '#recQuizBox', '#uniQuiz'].forEach(id => $(id).addEventListener('click', quizClick));
   $('#pdfSaved').addEventListener('click', quizListClick($('#pdfQuiz')));
   $('#recQuizSaved').addEventListener('click', quizListClick($('#recQuizBox')));
   $('#recQuiz').onclick = () => {
@@ -1664,24 +2291,25 @@ function initEngine(){
     }
   };
   // 분석
-  $('#anDemo').onclick = () => { anDemo = anDemo ? null : demoAnalysis(); drawAnalysis(); };
+  $('#anDemo').onclick = () => { anDemo = anDemo ? null : demoWorld(); drawAnalysis(); };
   $('#anAI').onclick = async () => {
     const btn = $('#anAI'), msg = $('#anAIMsg'); btn.disabled = true; msg.textContent = 'AI가 기록을 살펴보는 중이에요...'; $('#anAIOut').textContent = '';
-    try{ const d = await callAI({task:'insight', text:(anDemo ? '(예시 데이터)\n' : '') + anSummaryText(anDemo || realSrc())}); $('#anAIOut').textContent = d.text; msg.textContent = ''; }
+    try{ const d = await callAI({task:'insight', text:(anDemo ? '(예시 데이터)\n' : '') + anSummaryText(anDemo ? Object.assign({}, anDemo, {attempts:anDemo.attempts.filter(a => !a.manual)}) : realSrc())}); $('#anAIOut').textContent = d.text; msg.textContent = ''; }
     catch(e){ msg.textContent = '실패: ' + e.message; }
     finally{ btn.disabled = false; }
   };
   // 우주
+  $('#uniBack').onclick = goSolar;
   $('#uniTheme').onclick = e => { const b = e.target.closest('button'); if(!b) return; uniPrefs.theme = b.dataset.th; store.set('uniPrefs', uniPrefs); uniControls(); };
-  $('#uniSub').onchange = () => { uniPrefs.sub = $('#uniSub').value; store.set('uniPrefs', uniPrefs); U.sel = null; uniCard(); U.countTxt = null; };
-  $('#uniReset').onclick = () => { U.s = 1; U.ox = U.oy = 0; };
+  $('#uniReview').onclick = reviewQuiz;
+  $('#uniLink').onclick = () => linkStars(U.sub, false);
+  $('#uniTL').onclick = tlStart;
+  $('#uniReset').onclick = () => { U.s = 1; U.ox = U.oy = 0; U.focus = null; U.over = 0; };
   $('#uniDemo').onclick = $('#uniDemo2').onclick = toggleUniDemo;
   $('#uniAdd').onclick = () => {
     const name = prompt('개념 이름 (예: 반감기)'); if(!name || !name.trim()) return;
-    const sub = uniPrefs.sub || prompt('과목', prefs.subject || '') || '';
-    if(U.demo){ U.demo.push({id:'demo-' + uid(), name:name.trim(), sub:subjOf(sub), desc:'', c:0, w:0, ok:false}); }
-    else addConcepts([{name:name.trim(), desc:''}], sub);
-    uniControls();
+    if(U.demo){ U.demo.concepts.push({id:'demo-' + uid(), name:name.trim(), sub:U.sub, desc:'', c:0, w:0, ok:false, st:3, rev:0, okAt:0, at:Date.now()}); }
+    else addConcepts([{name:name.trim(), desc:''}], U.sub);
   };
   window.onTab = t => {
     if(t === 'uni') uniStart(); else uniStop();
