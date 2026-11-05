@@ -145,6 +145,22 @@
   .mp-pos button.on{background:#fff;color:#111}
   .auth-btn{margin-left:auto;align-self:center;border:1px solid #777;background:transparent;color:#fff;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;max-width:45vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .auth-btn.on{background:#fff;color:#111;border-color:#fff}
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
+  .chip{flex:none;border:1px solid var(--line);background:#fff;border-radius:16px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .chip.on{background:var(--dark);color:#fff;border-color:var(--dark)}
+  .vk{list-style:none;padding:0;margin:8px 0 0}
+  .vk li{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--soft);font-size:15px}
+  .vk li.empty{display:block;color:var(--sub);font-size:14px}
+  .vk .vw{font-weight:600;word-break:break-word}
+  .vk .vm{word-break:break-word}
+  .vk.hide-m .vm:not(.show),.vk.hide-w .vw:not(.show){filter:blur(7px);cursor:pointer;user-select:none;-webkit-user-select:none}
+  .vk .ops{display:flex;gap:2px}
+  .vk input{width:100%}
+  .note{border-bottom:1px solid var(--soft);padding:8px 0}
+  .note:last-child{border:0}
+  .note summary{cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:14px}
+  .note summary span{color:var(--sub);font-size:12px;flex:none}
+  .sh{font-size:15px;margin:20px 0 8px}
   .soon{color:var(--sub);font-size:14px}
 </style>
 </head>
@@ -154,9 +170,10 @@
   <button data-t="tt" class="on">시간표</button>
   <button data-t="cal">달력</button>
   <button data-t="tm">타이머</button>
+  <button data-t="vocab">단어</button>
   <button data-t="lk">링크 모음</button>
   <button data-t="rec">강의 정리</button>
-  <button data-t="pdf">PDF 요약</button>
+  <button data-t="pdf">PDF</button>
 </nav>
 <main>
 
@@ -226,27 +243,52 @@
   <h2>강의 정리</h2>
   <div class="card">
     <div class="row">
-      <input id="recSubject" placeholder="과목명 (복습 일정 제목에 쓰여요)">
+      <input id="recSubject" placeholder="과목명 (저장 제목과 복습 일정에 쓰여요)">
       <button class="btn" id="recBtn">녹음 시작</button>
     </div>
     <textarea id="recText" placeholder="녹음하면 여기에 글자로 나와요. 직접 붙여넣거나 고쳐 써도 돼요."></textarea>
-    <div class="row" style="margin-top:8px"><button class="btn" id="recGo">AI로 정리</button><button class="btn ghost" id="recRev" style="display:none">복습 일정 등록</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="recGo">AI로 정리</button><button class="btn ghost" id="recSave" style="display:none">저장</button><button class="btn ghost" id="recRev" style="display:none">복습 일정 등록</button></div>
     <p class="soon" id="recMsg"></p>
     <div class="out" id="recOut"></div>
   </div>
+  <h3 class="sh">저장한 강의 정리</h3>
+  <div class="card" id="recSaved"></div>
 </section>
 
 <section id="pdf">
-  <h2>PDF 요약 · 문제</h2>
+  <h2>PDF</h2>
   <div class="card">
     <div class="row">
-      <input id="pdfSubject" placeholder="과목명 (복습 일정 제목에 쓰여요)">
+      <input id="pdfSubject" placeholder="과목명 (저장 제목과 복습 일정에 쓰여요)">
       <input id="pdfFile" type="file" accept="application/pdf">
-      <button class="btn" id="pdfGo">요약·문제 만들기</button>
-      <button class="btn ghost" id="pdfRev" style="display:none">복습 일정 등록</button>
     </div>
-    <p class="soon" id="pdfMsg">PDF는 3MB 이하만 올릴 수 있어요.</p>
+    <p class="soon" id="pdfFileMsg">PDF는 3MB 이하만 돼요. 한 번 고르면 요약·문제·개념을 모두 만들 수 있어요.</p>
+    <div class="seg" id="pdfTabs"><button data-k="summary" class="on">PDF 요약</button><button data-k="quiz">PDF 문제</button><button data-k="concept">PDF 개념</button></div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="pdfGo">요약 만들기</button><button class="btn ghost" id="pdfSave" style="display:none">저장</button><button class="btn ghost" id="pdfRev" style="display:none">복습 일정 등록</button></div>
+    <p class="soon" id="pdfMsg"></p>
     <div class="out" id="pdfOut"></div>
+  </div>
+  <h3 class="sh" id="pdfSavedTitle">저장한 PDF 요약</h3>
+  <div class="card" id="pdfSaved"></div>
+</section>
+
+<section id="vocab">
+  <h2>단어</h2>
+  <div class="card">
+    <div class="chips" id="vkChips"></div>
+    <div class="row">
+      <input id="vkWord" placeholder="단어 (영어, 일본어, 한글 등)">
+      <input id="vkMean" placeholder="뜻">
+      <button class="btn" id="vkAdd">추가</button>
+    </div>
+    <div class="row" style="align-items:center">
+      <div class="seg" id="vkMode"><button data-v="all" class="on">전체 보기</button><button data-v="hide">뜻 가리기</button><button data-v="hideW">단어 가리기</button></div>
+      <button class="btn ghost" id="vkShuffle">섞기</button>
+      <button class="btn ghost" id="vkRename">목록 이름 변경</button>
+      <button class="btn ghost" id="vkDelList">목록 삭제</button>
+      <span class="soon" id="vkCount"></span>
+    </div>
+    <ul class="vk" id="vkWords"></ul>
   </div>
 </section>
 
@@ -479,14 +521,49 @@ function addReview(name){
   store.set('events', events); drawCal();
   alert('내일, 3일 뒤, 7일 뒤에 복습 일정을 달력에 넣었어요.');
 }
+// ---------- 저장 · 강의 정리 · PDF ----------
+const readB64 = f => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result.split(',')[1]); r.readAsDataURL(f); });
+const KIND_NAME = {lecture:'강의 정리', summary:'PDF 요약', quiz:'PDF 문제', concept:'PDF 개념'};
+const GO_TXT = {summary:'요약 만들기', quiz:'문제 만들기', concept:'개념 정리하기'};
+let notes = store.get('notes', []);
+let pdfKind = 'summary', pdfBusy = false;
+const outs = {summary:'', quiz:'', concept:''};
+function saveNote(kind, title, text){ notes.unshift({id:Date.now(), kind, title, text, at:fmt(new Date())}); store.set('notes', notes); drawNotes(); }
+const noteHTML = n => `<details class="note"><summary><b>${esc(n.title)}</b><span>${esc(n.at.replace(/-/g, '.'))}</span></summary><div class="out">${esc(n.text)}</div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-cp="${n.id}">복사</button><button class="btn ghost" data-del="${n.id}">삭제</button></div></details>`;
+function drawNotes(){
+  const fill = (el, kind) => { const l = notes.filter(n => n.kind === kind); el.innerHTML = l.length ? l.map(noteHTML).join('') : '<p class="empty">저장한 내용이 없어요.</p>'; };
+  fill($('#recSaved'), 'lecture'); fill($('#pdfSaved'), pdfKind);
+  $('#pdfSavedTitle').textContent = '저장한 ' + KIND_NAME[pdfKind];
+}
+['#recSaved', '#pdfSaved'].forEach(sel => $(sel).onclick = async e => {
+  const cp = e.target.closest('[data-cp]'), del = e.target.closest('[data-del]');
+  if(cp){ const n = notes.find(x => x.id === +cp.dataset.cp); try{ await navigator.clipboard.writeText(n.text); cp.textContent = '복사됨'; }catch(x){ cp.textContent = '복사 실패'; } }
+  if(del && confirm('이 저장 내용을 삭제할까요?')){ notes = notes.filter(x => x.id !== +del.dataset.del); store.set('notes', notes); drawNotes(); }
+});
 // PDF
+function showPdf(){
+  document.querySelectorAll('#pdfTabs button').forEach(b => b.classList.toggle('on', b.dataset.k === pdfKind));
+  $('#pdfGo').textContent = outs[pdfKind] ? '다시 만들기' : GO_TXT[pdfKind];
+  $('#pdfOut').textContent = outs[pdfKind]; $('#pdfMsg').textContent = '';
+  $('#pdfSave').style.display = $('#pdfRev').style.display = outs[pdfKind] ? '' : 'none';
+  drawNotes();
+}
+$('#pdfTabs').onclick = e => { const b = e.target.closest('button'); if(!b || pdfBusy) return; pdfKind = b.dataset.k; showPdf(); };
+$('#pdfFile').onchange = () => { outs.summary = outs.quiz = outs.concept = ''; showPdf(); };
 $('#pdfGo').onclick = async () => {
-  const f = $('#pdfFile').files[0];
-  if(!f){ $('#pdfMsg').textContent = 'PDF 파일을 먼저 골라주세요.'; return; }
-  if(f.size > 3 * 1024 * 1024){ $('#pdfMsg').textContent = '3MB가 넘어요. 페이지를 나눠서 올려주세요.'; return; }
-  const b64 = await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result.split(',')[1]); r.readAsDataURL(f); });
-  const done = await askAI({task:'pdf', pdf:b64}, $('#pdfMsg'), $('#pdfOut'), $('#pdfGo'));
-  $('#pdfRev').style.display = done ? '' : 'none';
+  const f = $('#pdfFile').files[0], msg = $('#pdfMsg');
+  if(!f){ msg.textContent = 'PDF 파일을 먼저 골라주세요.'; return; }
+  if(f.size > 3 * 1024 * 1024){ msg.textContent = '3MB가 넘어요. 페이지를 나눠서 올려주세요.'; return; }
+  const k = pdfKind; pdfBusy = true;
+  const b64 = await readB64(f);
+  const ok = await askAI({task:'pdf_' + k, pdf:b64}, msg, $('#pdfOut'), $('#pdfGo'));
+  pdfBusy = false;
+  if(ok){ outs[k] = $('#pdfOut').textContent; showPdf(); }
+};
+$('#pdfSave').onclick = () => {
+  const f = $('#pdfFile').files[0], sub = $('#pdfSubject').value.trim();
+  saveNote(pdfKind, (sub || '과목 없음') + (f ? ' · ' + f.name.replace(/\.pdf$/i, '') : ''), outs[pdfKind]);
+  $('#pdfMsg').textContent = '저장했어요. 아래 저장 목록에서 볼 수 있어요.';
 };
 $('#pdfRev').onclick = () => addReview($('#pdfSubject').value.trim());
 // 강의 녹음
@@ -504,10 +581,89 @@ $('#recBtn').onclick = () => {
 $('#recGo').onclick = async () => {
   const t = $('#recText').value.trim();
   if(!t){ $('#recMsg').textContent = '정리할 글이 없어요. 녹음하거나 붙여넣어 주세요.'; return; }
-  const done = await askAI({task:'lecture', text:t}, $('#recMsg'), $('#recOut'), $('#recGo'));
-  $('#recRev').style.display = done ? '' : 'none';
+  const ok = await askAI({task:'lecture', text:t}, $('#recMsg'), $('#recOut'), $('#recGo'));
+  $('#recSave').style.display = $('#recRev').style.display = ok ? '' : 'none';
+};
+$('#recSave').onclick = () => {
+  saveNote('lecture', ($('#recSubject').value.trim() || '제목 없음'), $('#recOut').textContent);
+  $('#recMsg').textContent = '저장했어요. 아래 저장 목록에서 볼 수 있어요.';
 };
 $('#recRev').onclick = () => addReview($('#recSubject').value.trim());
+showPdf();
+
+// ---------- 단어 ----------
+let vocab = store.get('vocab', null) || {lists:[{id:1, name:'Day 1', words:[]}], cur:1};
+let vkMode = 'all', vkOrder = null, vkEdit = null; const vkShown = new Set();
+const saveVocab = () => store.set('vocab', vocab);
+const vkCur = () => vocab.lists.find(l => l.id === vocab.cur) || vocab.lists[0];
+function drawVocab(){
+  const l = vkCur(); vocab.cur = l.id;
+  $('#vkChips').innerHTML = vocab.lists.map(x => `<button class="chip${x.id === l.id ? ' on' : ''}" data-id="${x.id}">${esc(x.name)} (${x.words.length})</button>`).join('') + '<button class="chip" data-new="1">+ 새 목록</button>';
+  document.querySelectorAll('#vkMode button').forEach(b => b.classList.toggle('on', b.dataset.v === vkMode));
+  $('#vkShuffle').textContent = vkOrder ? '원래 순서' : '섞기';
+  const ws = l.words.slice(); if(vkOrder) ws.sort((a, b) => vkOrder.indexOf(a.id) - vkOrder.indexOf(b.id));
+  const ul = $('#vkWords'); ul.className = 'vk' + (vkMode === 'hide' ? ' hide-m' : vkMode === 'hideW' ? ' hide-w' : '');
+  ul.innerHTML = ws.length ? ws.map(w => vkEdit === w.id
+    ? `<li data-id="${w.id}"><input class="ew" value="${esc(w.w)}"><input class="em" value="${esc(w.m)}"><span class="ops"><button class="x" data-act="ok" aria-label="저장">✓</button><button class="x" data-act="no" aria-label="취소">↩</button></span></li>`
+    : `<li data-id="${w.id}"><span class="vw${vkShown.has('w' + w.id) ? ' show' : ''}" data-r="w">${esc(w.w)}</span><span class="vm${vkShown.has('m' + w.id) ? ' show' : ''}" data-r="m">${esc(w.m)}</span><span class="ops"><button class="x" data-act="edit" aria-label="수정">✎</button><button class="x" data-act="del" aria-label="삭제">×</button></span></li>`
+  ).join('') : '<li class="empty">단어를 추가해보세요.</li>';
+  $('#vkCount').textContent = l.words.length + '개';
+}
+$('#vkChips').onclick = e => {
+  const b = e.target.closest('.chip'); if(!b) return;
+  if(b.dataset.new){
+    const name = prompt('목록 이름 (예: Day 2)', 'Day ' + (vocab.lists.length + 1));
+    if(!name || !name.trim()) return;
+    const l = {id:Date.now(), name:name.trim(), words:[]}; vocab.lists.push(l); vocab.cur = l.id;
+  } else vocab.cur = +b.dataset.id;
+  vkOrder = null; vkEdit = null; vkShown.clear(); saveVocab(); drawVocab();
+};
+$('#vkRename').onclick = () => {
+  const l = vkCur(), name = prompt('목록 이름', l.name);
+  if(name && name.trim()){ l.name = name.trim(); saveVocab(); drawVocab(); }
+};
+$('#vkDelList').onclick = () => {
+  const l = vkCur();
+  if(!confirm(`'${l.name}' 목록과 안의 단어 ${l.words.length}개가 삭제돼요. 계속할까요?`)) return;
+  vocab.lists = vocab.lists.filter(x => x.id !== l.id);
+  if(!vocab.lists.length) vocab.lists.push({id:Date.now(), name:'Day 1', words:[]});
+  vocab.cur = vocab.lists[0].id; vkOrder = null; vkEdit = null; saveVocab(); drawVocab();
+};
+function addWord(){
+  const w = $('#vkWord').value.trim(), m = $('#vkMean').value.trim();
+  if(!w){ $('#vkWord').focus(); return; }
+  vkCur().words.push({id:Date.now(), w, m}); vkOrder = null; saveVocab();
+  $('#vkWord').value = ''; $('#vkMean').value = ''; drawVocab(); $('#vkWord').focus();
+}
+$('#vkAdd').onclick = addWord;
+$('#vkWord').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); $('#vkMean').focus(); } });
+$('#vkMean').addEventListener('keydown', e => { if(e.key === 'Enter') addWord(); });
+$('#vkMode').onclick = e => { const b = e.target.closest('button'); if(!b) return; vkMode = b.dataset.v; vkShown.clear(); drawVocab(); };
+$('#vkShuffle').onclick = () => {
+  if(vkOrder) vkOrder = null;
+  else { vkOrder = vkCur().words.map(w => w.id); for(let i = vkOrder.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i + 1)); [vkOrder[i], vkOrder[j]] = [vkOrder[j], vkOrder[i]]; } }
+  drawVocab();
+};
+$('#vkWords').onclick = e => {
+  const li = e.target.closest('li[data-id]'); if(!li) return;
+  const id = +li.dataset.id, l = vkCur(), act = e.target.closest('[data-act]');
+  if(act){
+    if(act.dataset.act === 'del'){ l.words = l.words.filter(x => x.id !== id); vkOrder = null; saveVocab(); }
+    else if(act.dataset.act === 'edit') vkEdit = id;
+    else if(act.dataset.act === 'no') vkEdit = null;
+    else if(act.dataset.act === 'ok'){
+      const w = li.querySelector('.ew').value.trim(), m = li.querySelector('.em').value.trim();
+      if(w){ const x = l.words.find(v => v.id === id); x.w = w; x.m = m; saveVocab(); }
+      vkEdit = null;
+    }
+    drawVocab(); return;
+  }
+  const r = e.target.closest('[data-r]');
+  if(r && ((vkMode === 'hide' && r.dataset.r === 'm') || (vkMode === 'hideW' && r.dataset.r === 'w'))){
+    const k = r.dataset.r + id; if(vkShown.has(k)) vkShown.delete(k); else vkShown.add(k); drawVocab();
+  }
+};
+drawVocab();
 
 // ---------- 공부 기록 · 타이머 ----------
 let studyLog = store.get('study', {});            // { '2026-11-05': { '약리학': 초 } }
@@ -773,8 +929,8 @@ function initMusic(){
 initMusic();
 
 // ---------- 계정 · 동기화 ----------
-const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'tmPrefs', 'music'];
-const CORE_KEYS = ['tt2', 'events', 'links', 'study'];
+const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'tmPrefs', 'music'];
+const CORE_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab'];
 let acct = store.get('acct', null);             // {id, token, at}
 let authMode = 'login', pushTimer = null, ver = 0, lastSnap = null, syncText = '';
 const collect = () => { const d = {}; SYNC_KEYS.forEach(k => { const v = store.get(k, null); if(v !== null) d[k] = v; }); return d; };
