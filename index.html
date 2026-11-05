@@ -70,6 +70,21 @@
   textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:14px;font-family:inherit;resize:vertical}
   .out{white-space:pre-wrap;font-size:14px;line-height:1.7;margin-top:12px}
   .rec-on{background:#b00020;border-color:#b00020}
+  .tmn{font-size:14px;display:flex;align-items:center;gap:6px}
+  .tmn input{width:64px;flex:none}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .seg button.on{background:var(--dark);color:#fff}
+  .tm-box{border-radius:12px;padding:20px;text-align:center;background:var(--tb);color:var(--tf)}
+  .th-light{--tb:#fff;--tf:#111;border:1px solid var(--line)}
+  .th-dark{--tb:#111;--tf:#fff}
+  .th-red{--tb:#111;--tf:#e53935}
+  .tm-top{font-size:14px;margin-bottom:12px;letter-spacing:.3px}
+  .digits{font-size:clamp(44px,13vw,110px);font-weight:700;font-variant-numeric:tabular-nums;font-family:"SF Mono",Menlo,Consolas,monospace;line-height:1.15;padding:12px 0}
+  .tm-foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;font-weight:600;min-height:36px}
+  #tmRight{font-size:32px}
+  .ev.st{background:#111;color:#fff;border-left-color:#111}
+  .studyline{font-size:13px;color:var(--sub);margin-bottom:8px}
   .soon{color:var(--sub);font-size:14px}
 </style>
 </head>
@@ -78,6 +93,7 @@
 <nav id="tabs">
   <button data-t="tt" class="on">시간표</button>
   <button data-t="cal">달력</button>
+  <button data-t="tm">타이머</button>
   <button data-t="lk">링크 모음</button>
   <button data-t="rec">강의 정리</button>
   <button data-t="pdf">PDF 요약</button>
@@ -99,13 +115,38 @@
       <button class="btn ghost" id="next" aria-label="다음 달">›</button>
     </div>
     <div class="grid" id="grid"></div>
-    <h3 style="font-size:15px;margin:20px 0 8px" id="selLabel"></h3>
+    <h3 style="font-size:15px;margin:20px 0 4px" id="selLabel"></h3>
+    <p class="studyline" id="selStudy"></p>
     <div class="row">
       <input id="evText" placeholder="일정 내용 (예: 중간고사, 과제 마감)">
       <input id="evTime" type="time" style="flex:0 0 120px">
       <button class="btn" id="evAdd">추가</button>
     </div>
     <ul class="list" id="evList"></ul>
+  </div>
+</section>
+
+<section id="tm">
+  <h2>타이머</h2>
+  <div class="card">
+    <div class="row">
+      <input id="tmSubject" list="subjList" placeholder="과목 (시간표 과목 선택 또는 직접 입력)">
+      <label class="tmn">집중 <input id="tmFocus" type="number" min="1" max="180" value="60"> 분</label>
+      <label class="tmn">휴식 <input id="tmBreak" type="number" min="1" max="60" value="10"> 분</label>
+      <datalist id="subjList"></datalist>
+    </div>
+    <div class="row">
+      <div class="seg" id="tmView"><button data-v="dial">원형</button><button data-v="digit">디지털</button></div>
+      <div class="seg" id="tmTheme"><button data-th="light">화이트</button><button data-th="dark">블랙</button><button data-th="red">레드</button></div>
+    </div>
+    <div class="tm-box th-light" id="tmBox">
+      <div class="tm-top" id="tmTop"></div>
+      <div id="tmMain"></div>
+      <div class="tm-foot"><span id="tmSub"></span><span id="tmRight"></span></div>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="btn" id="tmGo">시작</button><button class="btn ghost" id="tmReset">처음으로</button><button class="btn ghost" id="tmSkip">집중/휴식 전환</button></div>
+    <p class="soon" id="tmMsg"></p>
+    <p class="soon">집중 시간만 공부 시간으로 기록되고, 달력에 날짜별로 표시돼요. 타이머가 도는 동안은 이 페이지를 열어두세요.</p>
   </div>
 </section>
 
@@ -183,6 +224,8 @@ $('#tabs').addEventListener('click', e => {
   const b = e.target.closest('button'); if(!b) return;
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.t));
+  if(b.dataset.t === 'cal') drawCal();
+  if(b.dataset.t === 'tm') render();
 });
 
 // ---------- 시간표 ----------
@@ -215,6 +258,7 @@ function drawTT(){
     ).join('') + '</div>';
   });
   $('#ttb').innerHTML = h;
+  drawSubj();
 }
 function openDlg(id, day, start, end){
   editId = id;
@@ -254,7 +298,7 @@ let view = new Date(today.getFullYear(), today.getMonth(), 1);
 let sel = fmt(today);
 function fmt(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function drawCal(){
-  $('#monthLabel').textContent = view.getFullYear() + '년 ' + (view.getMonth()+1) + '월';
+  $('#monthLabel').innerHTML = view.getFullYear() + '년 ' + (view.getMonth()+1) + '월 <small style="font-weight:400;color:var(--sub)">· 공부 ' + fmtDur(monthTotal(view.getFullYear() + '-' + String(view.getMonth()+1).padStart(2,'0'))) + '</small>';
   let h = ['일','월','화','수','목','금','토'].map(d => `<div class="dow">${d}</div>`).join('');
   const start = new Date(view.getFullYear(), view.getMonth(), 1 - view.getDay());
   for(let i = 0; i < 42; i++){
@@ -262,13 +306,16 @@ function drawCal(){
     const cls = ['day', d.getMonth() !== view.getMonth() ? 'other' : '', k === fmt(today) ? 'today' : '', k === sel ? 'sel' : ''].join(' ');
     const evs = (events[k] || []).slice(0, 2).map(e => `<span class="ev">${esc(e.t)}</span>`).join('');
     const more = (events[k] || []).length > 2 ? `<span class="ev">+${events[k].length - 2}</span>` : '';
-    h += `<div class="${cls}" data-d="${k}"><span class="n">${d.getDate()}</span>${evs}${more}</div>`;
+    const st = dayTotal(k), stTag = st >= 60 ? `<span class="ev st">⏱ ${fmtShort(st)}</span>` : '';
+    h += `<div class="${cls}" data-d="${k}"><span class="n">${d.getDate()}</span>${stTag}${evs}${more}</div>`;
   }
   $('#grid').innerHTML = h;
   drawEvList();
 }
 function drawEvList(){
   $('#selLabel').textContent = sel.replace(/-/g, '.') + ' 일정';
+  const sd = studyLog[sel] || {}, tot = dayTotal(sel);
+  $('#selStudy').textContent = tot >= 60 ? '공부 시간 ' + fmtDur(tot) + ' (' + Object.keys(sd).map(n => n + ' ' + fmtDur(sd[n])).join(' · ') + ')' : '기록된 공부 시간이 없어요.';
   const list = (events[sel] || []).map((e, i) => ({...e, i})).sort((a, b) => (a.time || '99').localeCompare(b.time || '99'));
   $('#evList').innerHTML = list.length
     ? list.map(e => `<li><span>${e.time ? esc(e.time) + '  ' : ''}${esc(e.t)}</span><button class="x" data-i="${e.i}" aria-label="삭제">×</button></li>`).join('')
@@ -361,6 +408,104 @@ $('#recGo').onclick = async () => {
 };
 $('#recRev').onclick = () => addReview($('#recSubject').value.trim());
 
+// ---------- 공부 기록 · 타이머 ----------
+let studyLog = store.get('study', {});            // { '2026-11-05': { '약리학': 초 } }
+let prefs = Object.assign({view:'dial', theme:'light', focus:60, brk:10, subject:''}, store.get('tmPrefs', {}));
+const dayTotal = k => Object.values(studyLog[k] || {}).reduce((a, b) => a + b, 0);
+const monthTotal = pre => Object.keys(studyLog).filter(k => k.startsWith(pre)).reduce((a, k) => a + dayTotal(k), 0);
+function fmtDur(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return h ? h + '시간' + (m ? ' ' + m + '분' : '') : m + '분'; }
+function fmtShort(s){ s = Math.round(s); const h = Math.floor(s/3600), m = Math.floor(s%3600/60); return h ? h + 'h' + (m ? m + 'm' : '') : m + 'm'; }
+function drawSubj(){ $('#subjList').innerHTML = [...new Set(tt.map(x => x.name))].map(n => `<option value="${esc(n)}">`).join(''); }
+
+let tm = {mode:'focus', running:false, endAt:0, last:0, remain:0};
+let timerId = null, lastSave = 0, ac = null, wl = null;
+const dur = () => (tm.mode === 'focus' ? prefs.focus : prefs.brk) * 60000;
+function saveStudy(force){ if(force || Date.now() - lastSave > 5000){ store.set('study', studyLog); lastSave = Date.now(); } }
+function addStudy(sec){
+  if(sec <= 0 || tm.mode !== 'focus') return;
+  const k = fmt(new Date()), n = prefs.subject || '과목 없음';
+  const d = studyLog[k] = studyLog[k] || {}; d[n] = (d[n] || 0) + sec; saveStudy();
+}
+function unlockAudio(){ try{ ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); }catch(e){} }
+function beep(){
+  try{ [0, .3, .6].forEach(t => { const o = ac.createOscillator(), g = ac.createGain(); o.connect(g); g.connect(ac.destination); o.frequency.value = 880; g.gain.value = .2; o.start(ac.currentTime + t); o.stop(ac.currentTime + t + .18); }); }catch(e){}
+  try{ if(navigator.vibrate) navigator.vibrate([200, 100, 200]); }catch(e){}
+}
+async function lock(){ try{ if('wakeLock' in navigator) wl = await navigator.wakeLock.request('screen'); }catch(e){} }
+function unlock(){ try{ if(wl) wl.release(); }catch(e){} wl = null; }
+
+function tick(){
+  if(!tm.running) return;
+  const now = Date.now();
+  if(now >= tm.endAt){ addStudy((tm.endAt - tm.last)/1000); finish(); return; }
+  addStudy((now - tm.last)/1000); tm.last = now; tm.remain = tm.endAt - now; render();
+}
+function start(){
+  unlockAudio(); tm.running = true; tm.last = Date.now(); tm.endAt = tm.last + tm.remain;
+  clearInterval(timerId); timerId = setInterval(tick, 250); lock(); $('#tmMsg').textContent = ''; render();
+}
+function pause(){
+  if(!tm.running) return;
+  const now = Date.now(); addStudy((Math.min(now, tm.endAt) - tm.last)/1000);
+  tm.remain = Math.max(tm.endAt - now, 0); tm.running = false; clearInterval(timerId); unlock(); saveStudy(true); render();
+}
+function finish(){
+  const was = tm.mode; tm.running = false; clearInterval(timerId); unlock(); saveStudy(true);
+  tm.mode = was === 'focus' ? 'break' : 'focus'; tm.remain = dur();
+  $('#tmMsg').textContent = was === 'focus' ? '집중 끝! 쉬는 시간을 시작해보세요.' : '휴식 끝! 다시 집중해볼까요?';
+  beep(); render(); drawCal();
+}
+function reset(){ pause(); tm.remain = dur(); render(); }
+function skip(){ const run = tm.running; pause(); tm.mode = tm.mode === 'focus' ? 'break' : 'focus'; tm.remain = dur(); render(); if(run) start(); }
+
+function dialSVG(){
+  const c = 170; let t = '';
+  for(let i = 0; i < 60; i++){
+    const a = i*6*Math.PI/180, big = i % 5 === 0, r1 = big ? 126 : 128, r2 = big ? 142 : 136;
+    t += `<line x1="${c + r1*Math.sin(a)}" y1="${c - r1*Math.cos(a)}" x2="${c + r2*Math.sin(a)}" y2="${c - r2*Math.cos(a)}" stroke="currentColor" stroke-width="${big ? 2.5 : 1.2}" opacity="${big ? 1 : .35}"/>`;
+    if(big) t += `<text x="${c + 158*Math.sin(a)}" y="${c - 158*Math.cos(a) + 5}" text-anchor="middle" font-size="14" font-weight="600" fill="currentColor">${i}</text>`;
+  }
+  return `<svg viewBox="0 0 340 340" style="color:var(--tf);width:min(100%,380px);height:auto" role="img" aria-label="남은 시간"><path id="tmWedge" fill="currentColor"/>${t}</svg>`;
+}
+function wedge(f){
+  const el = $('#tmWedge'); if(!el) return;
+  const c = 170, R = 118;
+  if(f <= 0) el.setAttribute('d', '');
+  else if(f >= .9999) el.setAttribute('d', `M${c} ${c - R}A${R} ${R} 0 1 1 ${c} ${c + R}A${R} ${R} 0 1 1 ${c} ${c - R}Z`);
+  else { const th = f*2*Math.PI; el.setAttribute('d', `M${c} ${c}L${c} ${c - R}A${R} ${R} 0 ${th > Math.PI ? 1 : 0} 1 ${c + R*Math.sin(th)} ${c - R*Math.cos(th)}Z`); }
+}
+function dateLabel(){ const d = new Date(); return d.getFullYear() + '. ' + (d.getMonth()+1) + '. ' + d.getDate() + '. (' + '일월화수목금토'[d.getDay()] + ')'; }
+function render(){
+  const rm = Math.max(tm.remain, 0);
+  $('#tmTop').textContent = dateLabel() + '  ·  오늘 ' + fmtDur(dayTotal(fmt(new Date())));
+  $('#tmSub').textContent = '● ' + (prefs.subject || '과목 없음') + ' · ' + (tm.mode === 'focus' ? '집중' : '휴식');
+  if(prefs.view === 'dial'){ wedge(Math.min(rm/3600000, 1)); $('#tmRight').textContent = Math.ceil(rm/60000); }
+  else { const s = Math.ceil(rm/1000), p = n => String(n).padStart(2, '0'); $('#tmDigits').textContent = p(Math.floor(s/3600)) + ':' + p(Math.floor(s%3600/60)) + ':' + p(s%60); $('#tmRight').textContent = ''; }
+  $('#tmGo').textContent = tm.running ? '일시정지' : (rm < dur() ? '계속' : '시작');
+}
+function applyPrefs(){
+  $('#tmBox').className = 'tm-box th-' + prefs.theme;
+  document.querySelectorAll('#tmView button').forEach(b => b.classList.toggle('on', b.dataset.v === prefs.view));
+  document.querySelectorAll('#tmTheme button').forEach(b => b.classList.toggle('on', b.dataset.th === prefs.theme));
+  $('#tmMain').innerHTML = prefs.view === 'dial' ? dialSVG() : '<div class="digits" id="tmDigits"></div>';
+  store.set('tmPrefs', prefs);
+}
+$('#tmView').onclick = e => { const b = e.target.closest('button'); if(!b) return; prefs.view = b.dataset.v; applyPrefs(); render(); };
+$('#tmTheme').onclick = e => { const b = e.target.closest('button'); if(!b) return; prefs.theme = b.dataset.th; applyPrefs(); render(); };
+$('#tmSubject').oninput = () => { prefs.subject = $('#tmSubject').value.trim(); store.set('tmPrefs', prefs); render(); };
+['tmFocus', 'tmBreak'].forEach(id => $('#' + id).onchange = () => {
+  const f = Math.min(Math.max(+$('#tmFocus').value || 60, 1), 180), b = Math.min(Math.max(+$('#tmBreak').value || 10, 1), 60);
+  prefs.focus = f; prefs.brk = b; $('#tmFocus').value = f; $('#tmBreak').value = b; store.set('tmPrefs', prefs);
+  if(!tm.running){ tm.remain = dur(); render(); }
+});
+$('#tmGo').onclick = () => tm.running ? pause() : start();
+$('#tmReset').onclick = reset;
+$('#tmSkip').onclick = skip;
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible'){ if(tm.running) lock(); } else saveStudy(true); });
+window.addEventListener('pagehide', () => saveStudy(true));
+function initTimer(){ $('#tmSubject').value = prefs.subject; $('#tmFocus').value = prefs.focus; $('#tmBreak').value = prefs.brk; tm.remain = dur(); applyPrefs(); render(); }
+
+initTimer();
 drawTT(); drawCal(); drawLinks();
 </script>
 </body>
