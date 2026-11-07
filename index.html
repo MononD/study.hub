@@ -241,6 +241,10 @@
   @keyframes wig{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
   @media(prefers-reduced-motion:reduce){body.nav-editing #tabs button[data-t]{animation:none}}
   .soon{color:var(--sub);font-size:14px}
+  .cpick{display:grid;grid-template-columns:repeat(6,28px);gap:8px;align-items:center}
+  .cpick button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer}
+  .cpick button.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--card) inset}
+  .ev.cc{border-left-width:4px}
   /* 정리본 · 테이프 */
   .sn-drop{border:2px dashed var(--line);border-radius:8px;padding:22px;text-align:center;color:var(--sub);font-size:14px;cursor:pointer;margin:12px 0}
   .sn-drop.over{border-color:var(--ink);color:var(--ink)}
@@ -291,7 +295,7 @@
   #tpColorDlg{width:min(420px,92vw)}
   .tp-pen{margin-bottom:16px}
   .tp-pen h4{font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-  .tp-pal{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .tp-pal{display:grid;grid-template-columns:repeat(6,30px);gap:8px;align-items:center}
   .tp-pal button{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid transparent}
   .tp-pal button.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--card) inset}
   .tp-pal label{font-size:12px;color:var(--sub);display:flex;align-items:center;gap:4px;cursor:pointer}
@@ -342,6 +346,7 @@
       <input id="evTime" type="time" style="flex:0 0 120px">
       <button class="btn" id="evAdd">추가</button>
     </div>
+    <div class="cpick" id="evColor" style="margin:-6px 0 14px" aria-label="일정 색"></div>
     <ul class="list" id="evList"></ul>
   </div>
   <h3 class="sh">시험 기간 학습 계획</h3>
@@ -435,7 +440,7 @@
       <ul class="memo-list" id="mmList"></ul>
     </div>
     <div class="card">
-      <div class="row" style="align-items:center;margin-bottom:8px"><select id="mmSub" aria-label="과목"></select><span class="soon" id="mmInfo"></span><button class="btn ghost" id="mmDel" style="margin-left:auto">삭제</button></div>
+      <div class="row" style="align-items:center;margin-bottom:8px"><select id="mmSub" aria-label="분류"></select><span class="soon" id="mmInfo"></span><button class="btn ghost" id="mmDel" style="margin-left:auto">삭제</button></div>
       <textarea id="mmText" placeholder="여기에 바로 적으면 저장돼요. 첫 줄이 제목이 돼요."></textarea>
     </div>
   </div>
@@ -541,7 +546,7 @@
       <input id="pdfFile" type="file" accept="application/pdf">
     </div>
     <p class="soon" id="pdfFileMsg">PDF는 3MB 이하만 돼요. 한 번 고르면 요약·문제·개념을 모두 만들 수 있어요.</p>
-    <div class="seg" id="pdfTabs"><button data-k="summary" class="on">PDF 요약</button><button data-k="quiz">PDF 문제</button><button data-k="concept">PDF 개념</button></div>
+    <div class="seg" id="pdfTabs"><button data-k="summary" class="on">PDF 요약</button><button data-k="quiz">PDF 문제</button><button data-k="concept">PDF 개념</button><button data-k="tape">PDF 정리본</button></div>
     <div class="row" style="margin-top:12px"><button class="btn" id="pdfGo">요약 만들기</button><button class="btn ghost" id="pdfSave" style="display:none">저장</button><button class="btn ghost" id="pdfRev" style="display:none">복습 일정 등록</button></div>
     <p class="soon" id="pdfMsg"></p>
     <div class="out" id="pdfOut"></div>
@@ -624,6 +629,7 @@
       <div style="flex:1"><label for="dStart">시작</label><select id="dStart"></select></div>
       <div style="flex:1"><label for="dEnd">끝</label><select id="dEnd"></select></div>
     </div>
+    <label>색</label><div class="cpick" id="dColor"></div>
     <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
       <button type="button" class="btn ghost" id="dDel">지우기</button>
       <button type="button" class="btn ghost" id="dCancel">취소</button>
@@ -681,13 +687,31 @@ function opts(sel, from, to, val){
   sel.innerHTML = h;
 }
 $('#dDay').innerHTML = days.map((d, i) => `<option value="${i}">${d}요일</option>`).join('');
+// 색 고르기 (시간표·달력 공용)
+// 라이트 그레이시 · 뮤트톤 11색 (두 줄)
+const PALETTE = [['빨강', '#d4a5a5'], ['주황', '#dfb899'], ['노랑', '#e3d49c'], ['초록', '#adc4a4'], ['파랑', '#a5bdd4'], ['남색', '#9ea7c4'],
+                 ['보라', '#b9aacb'], ['핑크', '#dcb3c3'], ['회색', '#c9c9c6'], ['진회색', '#8e8e8b'], ['검정', '#3b3b3b']];
+const COLORS = PALETTE.map(x => x[1]);
+const colorName = c => (PALETTE.find(x => x[1] === c) || [c])[0];
+const inkOn = c => { const n = parseInt(c.slice(1), 16), l = (0.299 * (n >> 16) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255; return l > .55 ? '#222' : '#fff'; };
+const shade = (c, k) => { const n = parseInt(c.slice(1), 16), f = v => Math.round(v * k).toString(16).padStart(2, '0'); return '#' + f(n >> 16) + f(n >> 8 & 255) + f(n & 255); };
+function drawPick(box, v){
+  box.dataset.v = v;
+  box.innerHTML = PALETTE.map(([nm, c]) => `<button type="button" data-c="${c}" style="background:${c}" class="${v === c ? 'sel' : ''}" aria-label="${nm}" title="${nm}"></button>`).join('');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.cpick button'); if(!b) return;
+  const box = b.parentElement, off = box.dataset.v === b.dataset.c;   // 같은 색을 다시 누르면 선택 해제(기본 색)
+  box.dataset.v = off ? '' : b.dataset.c;
+  box.querySelectorAll('button').forEach(x => x.classList.toggle('sel', !off && x === b));
+});
 function drawTT(){
   $('#tth').innerHTML = '<div class="th"></div>' + days.map(d => `<div class="th">${d}</div>`).join('');
   let times = ''; for(let m = T0 + 60; m < T1; m += 60) times += `<div class="tl" style="top:${(m - T0)/30*H}px">${tl(m)}</div>`;
   let h = `<div class="tcol">${times}</div>`;
   days.forEach((d, i) => {
     h += `<div class="tcol" data-d="${i}">` + tt.filter(x => x.day === i).map(x =>
-      `<div class="blk" data-id="${x.id}" style="top:${(x.start - T0)/30*H}px;height:${(x.end - x.start)/30*H - 2}px">${esc(x.name)}${x.room ? `<small>${esc(x.room)}</small>` : ''}</div>`
+      `<div class="blk" data-id="${x.id}" style="${x.color ? `background:${x.color};color:${inkOn(x.color)};` : ''}top:${(x.start - T0)/30*H}px;height:${(x.end - x.start)/30*H - 2}px">${esc(x.name)}${x.room ? `<small>${esc(x.room)}</small>` : ''}</div>`
     ).join('') + '</div>';
   });
   $('#ttb').innerHTML = h;
@@ -701,6 +725,7 @@ function openDlg(id, day, start, end){
   opts($('#dStart'), T0, T1 - 30, x.start || start);
   opts($('#dEnd'), T0 + 30, T1, x.end || end);
   $('#dDel').style.display = id ? '' : 'none';
+  drawPick($('#dColor'), x.color || '');
   $('#dlg').showModal(); $('#dName').focus();
 }
 $('#ttAdd').onclick = () => openDlg(null, 0, 9*60, 11*60);
@@ -717,7 +742,7 @@ $('#dSave').onclick = () => {
   if(!name){ $('#dName').focus(); return; }
   if(en <= s){ alert('끝나는 시간이 시작 시간보다 늦어야 해요.'); return; }
   if(tt.some(x => x.id !== editId && x.day === day && x.start < en && x.end > s)){ alert('같은 요일에 겹치는 수업이 있어요.'); return; }
-  const item = {id:editId || Date.now(), day, start:s, end:en, name, room:$('#dRoom').value.trim()};
+  const item = {id:editId || Date.now(), day, start:s, end:en, name, room:$('#dRoom').value.trim(), color:$('#dColor').dataset.v || ''};
   tt = editId ? tt.map(x => x.id === editId ? item : x) : tt.concat(item);
   store.set('tt2', tt); drawTT(); $('#dlg').close();
 };
@@ -737,7 +762,7 @@ function drawCal(){
   for(let i = 0; i < 42; i++){
     const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i), k = fmt(d);
     const cls = ['day', d.getMonth() !== view.getMonth() ? 'other' : '', k === fmt(today) ? 'today' : '', k === sel ? 'sel' : ''].join(' ');
-    const evs = (events[k] || []).slice().sort((a, b) => (b.kind === 'exam') - (a.kind === 'exam')).slice(0, 2).map(e => `<span class="ev${e.kind === 'exam' ? ' ex' : e.kind === 'plan' ? ' pl' : ''}">${esc(e.t)}</span>`).join('');
+    const evs = (events[k] || []).slice().sort((a, b) => (b.kind === 'exam') - (a.kind === 'exam')).slice(0, 2).map(e => `<span class="ev${e.kind === 'exam' ? ' ex' : e.kind === 'plan' ? ' pl' : ''}${e.c ? ' cc' : ''}"${e.c ? ` style="border-left-color:${shade(e.c, .72)};background:${e.c};color:${inkOn(e.c)}"` : ''}>${esc(e.t)}</span>`).join('');
     const more = (events[k] || []).length > 2 ? `<span class="ev">+${events[k].length - 2}</span>` : '';
     const st = dayTotal(k), stTag = st >= 60 ? `<span class="ev st">⏱ ${fmtShort(st)}</span>` : '';
     h += `<div class="${cls}" data-d="${k}"><span class="n">${d.getDate()}</span>${stTag}${evs}${more}</div>`;
@@ -751,7 +776,7 @@ function drawEvList(){
   $('#selStudy').textContent = tot >= 60 ? '공부 시간 ' + fmtDur(tot) + ' (' + Object.keys(sd).map(n => n + ' ' + fmtDur(sd[n])).join(' · ') + ')' : '기록된 공부 시간이 없어요.';
   const list = (events[sel] || []).map((e, i) => ({...e, i})).sort((a, b) => (a.time || '99').localeCompare(b.time || '99'));
   $('#evList').innerHTML = list.length
-    ? list.map(e => `<li><span>${e.time ? esc(e.time) + '  ' : ''}${e.kind === 'exam' ? '<b>[시험]</b> ' : e.kind === 'plan' ? '<b>[계획]</b> ' : ''}${esc(e.t)}</span><button class="x" data-i="${e.i}" aria-label="삭제">×</button></li>`).join('')
+    ? list.map(e => `<li><span>${e.c ? `<i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${e.c};margin-right:6px"></i>` : ''}${e.time ? esc(e.time) + '  ' : ''}${e.kind === 'exam' ? '<b>[시험]</b> ' : e.kind === 'plan' ? '<b>[계획]</b> ' : ''}${esc(e.t)}</span><button class="x" data-i="${e.i}" aria-label="삭제">×</button></li>`).join('')
     : '<li class="empty">이 날짜에 일정이 없어요.</li>';
 }
 $('#grid').addEventListener('click', e => {
@@ -762,9 +787,11 @@ $('#prev').onclick = () => { view = new Date(view.getFullYear(), view.getMonth()
 $('#next').onclick = () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); drawCal(); };
 $('#evAdd').onclick = () => {
   const t = $('#evText').value.trim(); if(!t) return;
-  (events[sel] = events[sel] || []).push({t, time:$('#evTime').value});
+  const c = $('#evColor').dataset.v || '';
+  (events[sel] = events[sel] || []).push(c ? {t, time:$('#evTime').value, c} : {t, time:$('#evTime').value});
   store.set('events', events); $('#evText').value = ''; $('#evTime').value = ''; drawCal();
 };
+drawPick($('#evColor'), '');
 $('#evText').addEventListener('keydown', e => { if(e.key === 'Enter') $('#evAdd').click(); });
 $('#evList').addEventListener('click', e => {
   const b = e.target.closest('.x'); if(!b) return;
@@ -813,8 +840,8 @@ function addReview(name){
 }
 // ---------- 저장 · 강의 정리 · PDF ----------
 const readB64 = f => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result.split(',')[1]); r.readAsDataURL(f); });
-const KIND_NAME = {lecture:'강의 정리', summary:'PDF 요약', quiz:'PDF 문제', concept:'PDF 개념'};
-const GO_TXT = {summary:'요약 만들기', quiz:'채점 퀴즈 만들기', concept:'개념 정리하기'};
+const KIND_NAME = {lecture:'강의 정리', summary:'PDF 요약', quiz:'PDF 문제', concept:'PDF 개념', tape:'PDF 정리본'};
+const GO_TXT = {summary:'요약 만들기', quiz:'채점 퀴즈 만들기', concept:'개념 정리하기', tape:'정리본 만들고 테이프로 열기'};
 let notes = store.get('notes', []);
 let pdfKind = 'summary', pdfBusy = false;
 const outs = {summary:'', quiz:'', concept:''};
@@ -823,7 +850,9 @@ const noteHTML = n => `<details class="note"><summary><b>${esc(n.title)}</b><spa
 function drawNotes(){
   const fill = (el, kind) => { const l = notes.filter(n => n.kind === kind); el.innerHTML = l.length ? l.map(noteHTML).join('') : '<p class="empty">저장한 내용이 없어요.</p>'; };
   fill($('#recSaved'), 'lecture');
-  if(pdfKind === 'quiz') $('#pdfSaved').innerHTML = quizListHTML('pdf'); else fill($('#pdfSaved'), pdfKind);
+  if(pdfKind === 'quiz') $('#pdfSaved').innerHTML = quizListHTML('pdf');
+  else if(pdfKind === 'tape') $('#pdfSaved').innerHTML = '<p class="empty">만든 정리본은 정리본·테이프 탭에 저장돼요.</p>';
+  else fill($('#pdfSaved'), pdfKind);
   $('#recQuizSaved').innerHTML = quizListHTML('lecture');
   $('#pdfSavedTitle').textContent = '저장한 ' + KIND_NAME[pdfKind];
 }
@@ -835,10 +864,11 @@ function drawNotes(){
 // PDF
 function showPdf(){
   document.querySelectorAll('#pdfTabs button').forEach(b => b.classList.toggle('on', b.dataset.k === pdfKind));
-  $('#pdfGo').textContent = outs[pdfKind] ? '다시 만들기' : GO_TXT[pdfKind];
+  $('#pdfGo').textContent = outs[pdfKind] && pdfKind !== 'tape' ? '다시 만들기' : GO_TXT[pdfKind];
   $('#pdfOut').textContent = outs[pdfKind]; $('#pdfMsg').textContent = '';
-  $('#pdfOut').style.display = pdfKind === 'quiz' ? 'none' : ''; $('#pdfQuiz').style.display = pdfKind === 'quiz' ? '' : 'none';
-  $('#pdfSave').style.display = $('#pdfRev').style.display = outs[pdfKind] ? '' : 'none';
+  $('#pdfOut').style.display = pdfKind === 'quiz' || pdfKind === 'tape' ? 'none' : ''; $('#pdfQuiz').style.display = pdfKind === 'quiz' ? '' : 'none';
+  $('#pdfSave').style.display = $('#pdfRev').style.display = outs[pdfKind] && pdfKind !== 'tape' ? '' : 'none';
+  if(pdfKind === 'tape') $('#pdfMsg').textContent = '보내주신 정리본 규칙으로 PDF를 압축 정리하고, 바로 테이프에서 외울 수 있게 열어요.';
   drawNotes();
 }
 $('#pdfTabs').onclick = e => { const b = e.target.closest('button'); if(!b || pdfBusy) return; pdfKind = b.dataset.k; showPdf(); };
@@ -851,6 +881,20 @@ $('#pdfGo').onclick = async () => {
     pdfBusy = true; const b64q = await readB64(f), sub = subjOf($('#pdfSubject').value);
     await makeQuiz({src:'pdf', sub, title:sub + ' · ' + f.name.replace(/\.pdf$/i, ''), payload:{task:'pdf_quiz', pdf:b64q}, box:$('#pdfQuiz'), msg, btn:$('#pdfGo')});
     pdfBusy = false; return;
+  }
+  if(pdfKind === 'tape'){
+    pdfBusy = true; const b = $('#pdfGo'); b.disabled = true; b.textContent = '정리하는 중… (1~2분)';
+    msg.textContent = 'AI가 정리본을 만드는 중이에요. 분량이 많으면 1~2분 걸려요.';
+    try{
+      const name = f.name.replace(/\.pdf$/i, ''), sub = $('#pdfSubject').value.trim();
+      const r = await fetch('/api/claude', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({task:'note_pdf', pdf:await readB64(f), text:[sub, name].filter(Boolean).join(' / ')})});
+      const d = await r.json().catch(() => ({}));
+      if(!r.ok || !d.text) throw new Error(d.error || (r.status === 504 ? '시간이 너무 오래 걸렸어요. PDF를 나눠서 올려주세요.' : 'AI 호출에 실패했어요.'));
+      msg.textContent = '';
+      window.sumAdd(d.text.trim(), (sub ? sub + ' · ' : '') + name, sub, true);
+    }catch(e){ msg.textContent = '실패: ' + e.message; }
+    finally{ pdfBusy = false; b.disabled = false; b.textContent = GO_TXT.tape; }
+    return;
   }
   const k = pdfKind; pdfBusy = true;
   const b64 = await readB64(f);
@@ -2514,13 +2558,14 @@ function mmSubs(){ return [...new Set(tt.map(x => x.name).concat(concepts.map(c 
 function drawMemos(){
   const q = $('#mmSearch').value.trim().toLowerCase();
   const l = memos.slice().sort((a, b) => b.at - a.at).filter(m => !q || (m.text || '').toLowerCase().includes(q) || (m.sub || '').toLowerCase().includes(q));
-  $('#mmList').innerHTML = l.length ? l.map(m => `<li data-id="${m.id}" class="${m.id === mmCur ? 'on' : ''}"><b>${esc(mmTitle(m))}</b><span>${dstr(m.at)}${m.sub ? ' · ' + esc(m.sub) : ''} · ${esc(mmPreview(m))}</span></li>`).join('')
+  $('#mmList').innerHTML = l.length ? l.map(m => `<li data-id="${m.id}" class="${m.id === mmCur ? 'on' : ''}"><b>${esc(mmTitle(m))}</b><span>${dstr(m.at)} · ${m.sub ? esc(m.sub) : '일반'} · ${esc(mmPreview(m))}</span></li>`).join('')
     : `<li class="empty">${q ? '찾는 메모가 없어요.' : '아직 메모가 없어요. 오른쪽에 바로 적어보세요.'}</li>`;
 }
 function openMemo(id){
   mmCur = id; const m = memos.find(x => x.id === id);
   $('#mmText').value = m ? m.text : '';
-  $('#mmSub').innerHTML = '<option value="">과목 없음</option>' + mmSubs().map(x => `<option${m && m.sub === x ? ' selected' : ''}>${esc(x)}</option>`).join('');
+  const subs = mmSubs(); if(m && m.sub && !subs.includes(m.sub)) subs.push(m.sub);
+  $('#mmSub').innerHTML = '<option value="">일반 메모</option>' + (subs.length ? '<optgroup label="과목">' + subs.map(x => `<option${m && m.sub === x ? ' selected' : ''}>${esc(x)}</option>`).join('') + '</optgroup>' : '');
   $('#mmInfo').textContent = m ? '마지막 수정 ' + new Date(m.at).toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
   $('#mmDel').style.display = m ? '' : 'none';
   drawMemos();
@@ -2798,32 +2843,37 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
   $('#tpReset').onclick = () => { if(!confirm('내가 그은 밑줄을 모두 지울까요? AI 키워드는 남아요.')) return; tp().querySelectorAll('.hl,.hl2').forEach(unwrap); saveTape(); };
 
   // ── 형광펜 색 바꾸기 ──
-  const DEF = {hl:'#ffe94d', hl2:'#ff7a9a', kw:'#3d63d6'};
-  const PAL = ['#ffe94d', '#ffb347', '#ff7a9a', '#c58bff', '#6fa8ff', '#4fd1c5', '#7ddc6f', '#b0b0b0'];
+  const DEF = {hl:'#e3d49c', hl2:'#dcb3c3', kw:'#a5bdd4'};
+  const PAL = COLORS;
   const PENS = [['hl', '일반 밑줄'], ['hl2', '중요 밑줄'], ['kw', 'AI 키워드']];
   let colors = Object.assign({}, DEF, store.get('tapeColors', {}));
+  Object.keys(colors).forEach(k => { if(!COLORS.includes(colors[k])) colors[k] = DEF[k]; });   // 예전 색은 새 팔레트 기본값으로
   const rgba = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
   function applyColors(){
     const dark = document.documentElement.dataset.theme === 'dark', R = document.documentElement.style;
-    R.setProperty('--tp-hl', rgba(colors.hl, dark ? .38 : .6));
-    R.setProperty('--tp-hl2', rgba(colors.hl2, dark ? .42 : .55));
-    R.setProperty('--tp-kw', rgba(colors.kw, dark ? .25 : .14));
-    R.setProperty('--tp-kwline', colors.kw);
+    const al = (c, a) => inkOn(c) === '#fff' ? a * .4 : a;   // 진회색·검정은 글자가 보이게 옅게
+    R.setProperty('--tp-hl', rgba(colors.hl, al(colors.hl, dark ? .45 : .85)));
+    R.setProperty('--tp-hl2', rgba(colors.hl2, al(colors.hl2, dark ? .5 : .9)));
+    R.setProperty('--tp-kw', rgba(colors.kw, dark ? .3 : .4));
+    R.setProperty('--tp-kwline', dark ? colors.kw : shade(colors.kw, .62));
   }
   function drawPens(){
     $('#tpPens').innerHTML = PENS.map(([k, name]) => `<div class="tp-pen"><h4>${name} <span class="sn-doc"><span class="${k}">미리보기</span></span></h4><div class="tp-pal">
-      ${PAL.map(c => `<button type="button" data-pen="${k}" data-c="${c}" style="background:${c}" class="${colors[k] === c ? 'sel' : ''}" aria-label="${name} 색 ${c}"></button>`).join('')}
-      <label>직접<input type="color" data-pen="${k}" value="${colors[k]}"></label></div></div>`).join('');
+      ${PALETTE.map(([nm, c]) => `<button type="button" data-pen="${k}" data-c="${c}" style="background:${c}" class="${colors[k] === c ? 'sel' : ''}" aria-label="${name} ${nm}" title="${nm}"></button>`).join('')}
+      </div></div>`).join('');
   }
   function setPen(k, c){ colors[k] = c; store.set('tapeColors', colors); applyColors(); drawPens(); }
   $('#tpPens').addEventListener('click', e => { const b = e.target.closest('button[data-pen]'); if(b) setPen(b.dataset.pen, b.dataset.c); });
-  $('#tpPens').addEventListener('input', e => { if(e.target.type === 'color'){ colors[e.target.dataset.pen] = e.target.value; applyColors(); } });
-  $('#tpPens').addEventListener('change', e => { if(e.target.type === 'color') setPen(e.target.dataset.pen, e.target.value); });
   $('#tpColor').onclick = () => { drawPens(); $('#tpColorDlg').showModal(); };
   $('#tpColorClose').onclick = () => $('#tpColorDlg').close();
   $('#tpColorReset').onclick = () => { colors = Object.assign({}, DEF); store.set('tapeColors', colors); applyColors(); drawPens(); };
   new MutationObserver(applyColors).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 
+  window.sumAdd = (text, title, sub, toTape) => {
+    const n = {id: uid(), title: title || '정리본 ' + new Date().toLocaleDateString('ko-KR'), sub: sub || '', at: Date.now(), text, tape: null};
+    sumNotes.unshift(n); save(); cur = n.id;
+    if(toTape){ goTab('tape'); toast('정리본을 만들어 테이프로 열었어요'); } else show(n.id);
+  };
   applyColors(); drawThumbs(); drawSubs(); show(null);
   const prevOnTab = window.onTab;
   window.onTab = t => { if(prevOnTab) prevOnTab(t); if(t !== 'tape' && editing) setEdit(false, true); if(t === 'sum'){ drawSubs(); drawList(); } if(t === 'tape') openTape(cur); };
