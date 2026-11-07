@@ -241,6 +241,60 @@
   @keyframes wig{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
   @media(prefers-reduced-motion:reduce){body.nav-editing #tabs button[data-t]{animation:none}}
   .soon{color:var(--sub);font-size:14px}
+  /* 정리본 · 테이프 */
+  .sn-drop{border:2px dashed var(--line);border-radius:8px;padding:22px;text-align:center;color:var(--sub);font-size:14px;cursor:pointer;margin:12px 0}
+  .sn-drop.over{border-color:var(--ink);color:var(--ink)}
+  .sn-thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .sn-thumb{position:relative;width:86px;height:112px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--soft)}
+  .sn-thumb img{width:100%;height:100%;object-fit:cover}
+  .sn-thumb b{position:absolute;left:4px;top:4px;background:var(--dark);color:var(--on);font-size:11px;border-radius:4px;padding:0 5px}
+  .sn-thumb button{position:absolute;right:3px;top:3px;padding:0 6px;font-size:12px;line-height:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:4px;cursor:pointer}
+  .sn-spin{display:inline-block;width:14px;height:14px;border:2px solid var(--on);border-right-color:transparent;border-radius:50%;animation:snr .8s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes snr{to{transform:rotate(1turn)}}
+  .sn-list{display:grid;gap:8px}
+  .sn-item{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--card)}
+  .sn-item.cur{border-color:var(--ink)}
+  .sn-item .t{flex:1;min-width:0}
+  .sn-item .t strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sn-item .t span{font-size:12px;color:var(--sub)}
+  .sn-doc{font-size:15px;line-height:1.95;user-select:text;-webkit-user-select:text;word-break:keep-all;overflow-wrap:anywhere}
+  .sn-doc .ln{white-space:pre-wrap;min-height:.6em}
+  .sn-doc .h1{font-size:18px;font-weight:800;margin:16px 0 4px}
+  .sn-doc .h2{font-size:16px;font-weight:700;margin:12px 0 2px}
+  .sn-doc .h1:first-child,.sn-doc .h2:first-child{margin-top:0}
+  .sn-doc .mk{color:var(--bad);font-weight:700}
+  .sn-doc .cap{font-size:13px;font-weight:700;margin-top:10px;color:var(--sub)}
+  .sn-doc .tw{overflow-x:auto;margin:4px 0 10px}
+  .sn-doc table{border-collapse:collapse;font-size:14px;line-height:1.6;min-width:100%}
+  .sn-doc td{border:1px solid var(--line);padding:5px 8px;vertical-align:top}
+  .sn-doc tr:first-child td{background:var(--soft);font-weight:700}
+  .sn-doc .check{border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin-top:14px;background:var(--soft);font-size:14px}
+  .sn-doc .kw{background:var(--tp-kw);border-bottom:2px solid var(--tp-kwline);border-radius:3px;padding:0 2px;font-weight:600}
+  .sn-doc .hl{background:linear-gradient(transparent 45%,var(--tp-hl) 45%)}
+  .sn-doc .hl2{background:linear-gradient(transparent 38%,var(--tp-hl2) 38%);font-weight:600}
+  .sn-doc.mz-kw .kw:not(.peek),.sn-doc.mz-hl .hl:not(.peek),.sn-doc.mz-hl2 .hl2:not(.peek){color:transparent;background:var(--line);border-radius:4px;cursor:pointer;user-select:none;-webkit-user-select:none}
+  .sn-doc.mz-kw .kw:not(.peek) *,.sn-doc.mz-hl .hl:not(.peek) *,.sn-doc.mz-hl2 .hl2:not(.peek) *{color:transparent}
+  .sn-doc .peek{outline:2px dashed var(--sub);outline-offset:1px;border-radius:3px}
+  .tp-bar{position:sticky;top:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .tp-bar button,.tp-pal button{font-family:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:7px 11px}
+  .tp-bar button.on{background:var(--dark);color:var(--on);border-color:var(--dark)}
+  .tp-grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .tp-grp + .tp-grp{padding-left:10px;border-left:1px solid var(--line)}
+  .tp-lbl{font-size:12px;color:var(--sub);margin-right:2px}
+  .tp-sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}
+  .tp-count{font-size:12px;color:var(--sub);margin-left:auto}
+  .tp-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--sub);margin-top:10px}
+  #tpColorDlg{width:min(420px,92vw)}
+  .tp-pen{margin-bottom:16px}
+  .tp-pen h4{font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .tp-pal{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .tp-pal button{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid transparent}
+  .tp-pal button.sel{border-color:var(--ink);box-shadow:0 0 0 2px var(--card) inset}
+  .tp-pal label{font-size:12px;color:var(--sub);display:flex;align-items:center;gap:4px;cursor:pointer}
+  .tp-pal input[type=color]{width:30px;height:30px;padding:0;border:none;background:none;cursor:pointer}
+  .sn-toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--dark);color:var(--on);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;max-width:90vw;text-align:center}
+  .sn-toast.show{opacity:1}
+  @media (max-width:600px){ .tp-grp + .tp-grp{border-left:none;padding-left:0} .tp-count{width:100%;margin-left:0} }
 </style>
 </head>
 <body>
@@ -255,6 +309,8 @@
   <button data-t="vocab">단어</button>
   <button data-t="rec">강의 정리</button>
   <button data-t="pdf">PDF</button>
+  <button data-t="sum">정리본</button>
+  <button data-t="tape">테이프</button>
   <button data-t="lk">링크 모음</button>
   <button class="nav-edit" id="navEdit" aria-label="탭 순서 바꾸기">⇄ 순서</button>
 </nav>
@@ -379,6 +435,66 @@
       <textarea id="mmText" placeholder="여기에 바로 적으면 저장돼요. 첫 줄이 제목이 돼요."></textarea>
     </div>
   </div>
+</section>
+
+<section id="sum">
+  <h2>정리본</h2>
+  <p class="soon" style="margin:-8px 0 14px">책이나 필기 사진을 올리면 시험 대비 압축 정리본을 만들어요. 여러 장이면 올린 순서대로 이어서 정리해요.</p>
+  <div class="card" style="margin-bottom:14px">
+    <div class="row" style="margin-bottom:0">
+      <input id="snTitle" placeholder="제목 (예: 성인간호학 3장 상부호흡기)">
+      <select id="snSub" aria-label="과목"></select>
+    </div>
+    <div class="sn-drop" id="snDrop" tabindex="0" role="button">📷 책 사진 올리기 · 찍기<br><small>여기를 누르거나 사진을 끌어다 놓으세요 (최대 8장)</small></div>
+    <input type="file" id="snFile" accept="image/*" multiple hidden>
+    <div class="sn-thumbs" id="snThumbs"></div>
+    <div class="row" style="margin-bottom:0;align-items:center">
+      <button class="btn" id="snGo" disabled>정리본 만들기</button>
+      <span class="soon" id="snMsg"></span>
+    </div>
+  </div>
+  <div class="card" id="snView" hidden style="margin-bottom:14px">
+    <div class="row" style="align-items:center;margin-bottom:12px">
+      <strong id="snViewTitle" style="flex:1;font-size:16px;min-width:140px"></strong>
+      <button class="btn" id="snToTape">테이프로 외우기 →</button>
+      <button class="btn ghost" id="snCopy">한글/워드용 복사</button>
+      <button class="btn ghost" id="snDel">삭제</button>
+    </div>
+    <div class="sn-doc" id="snDoc"></div>
+  </div>
+  <h2 style="font-size:15px;margin-bottom:8px">저장된 정리본</h2>
+  <div class="sn-list" id="snList"></div>
+</section>
+
+<section id="tape">
+  <h2>테이프</h2>
+  <p class="soon" style="margin:-8px 0 14px">정리본 위에 내 방식대로 밑줄을 긋고, 키워드를 테이프로 가려서 외워요.</p>
+  <div class="row" style="margin-bottom:12px"><select id="tpPick" style="flex:1" aria-label="정리본 고르기"></select></div>
+  <div class="tp-bar" role="toolbar" aria-label="테이프 도구">
+    <div class="tp-grp">
+      <span class="tp-lbl">밑줄</span>
+      <button data-tool="hl"><span class="tp-sw" style="background:var(--tp-hl)"></span>일반</button>
+      <button data-tool="hl2"><span class="tp-sw" style="background:var(--tp-hl2)"></span>중요</button>
+      <button data-tool="erase">지우개</button>
+      <button id="tpColor">🎨 색</button>
+    </div>
+    <div class="tp-grp">
+      <span class="tp-lbl">가리기</span>
+      <button data-hide="kw">AI 키워드</button>
+      <button data-hide="hl2">중요</button>
+      <button data-hide="hl">일반</button>
+      <button id="tpReveal">가린 것 모두 보기</button>
+    </div>
+    <div class="tp-grp"><button id="tpReset">밑줄 초기화</button></div>
+    <span class="tp-count" id="tpCount"></span>
+  </div>
+  <div class="card"><div class="sn-doc" id="tpDoc"></div></div>
+  <div class="tp-legend">
+    <span><span class="tp-sw" style="background:var(--tp-kw);border-bottom:2px solid var(--tp-kwline)"></span>AI 키워드</span>
+    <span><span class="tp-sw" style="background:var(--tp-hl)"></span>일반 밑줄</span>
+    <span><span class="tp-sw" style="background:var(--tp-hl2)"></span>중요 밑줄</span>
+  </div>
+  <p class="soon" style="margin-top:10px">밑줄 버튼을 고르고 글자를 드래그(아이패드·폰은 길게 눌러 선택)하면 칠해져요. 같은 버튼을 다시 누르면 꺼져요. 가리기 중에는 회색 칸을 누르면 잠깐 보여요.</p>
 </section>
 
 <section id="lk">
@@ -510,6 +626,16 @@
     </div>
   </form>
 </dialog>
+
+<dialog id="tpColorDlg">
+  <h2 style="margin-bottom:14px">형광펜 색 바꾸기</h2>
+  <div id="tpPens"></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button type="button" class="btn ghost" id="tpColorReset">기본 색으로</button>
+    <button type="button" class="btn" id="tpColorClose">완료</button>
+  </div>
+</dialog>
+<div class="sn-toast" id="snToast"></div>
 
 <script>
 // ---------- 저장소 (브라우저 안에 저장) ----------
@@ -1096,8 +1222,8 @@ function initMusic(){
 initMusic();
 
 // ---------- 계정 · 동기화 ----------
-const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'consts', 'memos', 'uniPrefs', 'tmPrefs', 'music', 'navOrder'];
-const CORE_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'consts', 'memos'];
+const SYNC_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'consts', 'memos', 'sumNotes', 'uniPrefs', 'tmPrefs', 'music', 'navOrder', 'tapeColors'];
+const CORE_KEYS = ['tt2', 'events', 'links', 'study', 'notes', 'vocab', 'concepts', 'quizSets', 'attempts', 'sessions', 'exams', 'consts', 'memos', 'sumNotes'];
 let acct = store.get('acct', null);             // {id, token, at}
 let authMode = 'login', pushTimer = null, ver = 0, lastSnap = null, syncText = '';
 const collect = () => { const d = {}; SYNC_KEYS.forEach(k => { const v = store.get(k, null); if(v !== null) d[k] = v; }); return d; };
@@ -2418,6 +2544,236 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
   const prevOnTab = window.onTab;
   window.onTab = t => { prevOnTab(t); if(t === 'memo'){ const m = memos.find(x => x.id === mmCur); openMemo(m ? m.id : (memos.slice().sort((a, b) => b.at - a.at)[0] || {}).id || null); } };
 }
+
+// ---------- 정리본 · 테이프 ----------
+(function(){
+  let sumNotes = store.get('sumNotes', []);   // [{id, title, sub, at, text, tape}]
+  let cur = null, photos = [], tool = null;
+  const hide = {kw:false, hl:false, hl2:false};
+  const save = () => store.set('sumNotes', sumNotes);
+  const byId = id => sumNotes.find(n => n.id === id);
+  const tp = () => $('#tpDoc');
+  function toast(t){ const el = $('#snToast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 1800); }
+  function goTab(t){ const b = document.querySelector(`#tabs button[data-t="${t}"]`); if(b) b.click(); }
+
+  // 정리본 텍스트(프롬프트의 일반 텍스트 형식) → 화면
+  function inline(s){
+    return esc(s)
+      .replace(/\{\{(.+?)\}\}/g, '<span class="kw">$1</span>')
+      .replace(/※/g, '<span class="mk">※</span>')
+      .replace(/\[확인 필요\]/g, '<span class="mk">[확인 필요]</span>');
+  }
+  function draw(text){
+    const L = String(text).replace(/\r/g, '').split('\n');
+    let out = '', i = 0, inCheck = false;
+    while(i < L.length){
+      const line = L[i].replace(/\s+$/, '');
+      if(line.includes('\t') && (L[i + 1] || '').includes('\t')){   // 탭 줄이 이어지면 표
+        let rows = '';
+        while(i < L.length && L[i].includes('\t')){ rows += '<tr>' + L[i].trim().split('\t').map(c => `<td>${inline(c.trim())}</td>`).join('') + '</tr>'; i++; }
+        out += `<div class="tw"><table>${rows}</table></div>`;
+        continue;
+      }
+      const t = line.trim(), ind = line.match(/^[ 　]*/)[0].length;
+      const pad = ind ? ` style="padding-left:${Math.min(ind, 12) * .5}em"` : '';
+      if(t === '[빠진 내용 점검]'){ if(!inCheck) out += '<div class="check"><div class="h2">[빠진 내용 점검]</div>'; inCheck = true; }
+      else if(!t) out += '<div class="ln"></div>';
+      else if(/^(Chapter\s*\d+|제?\s*\d+\s*장[.\s]|\d+\s*절[.\s])/.test(t)) out += `<div class="h1">${inline(t)}</div>`;
+      else if(/^표\s*\d+[-–]\d+/.test(t)) out += `<div class="cap">${inline(t)}</div>`;
+      else if(!ind && /^\d+\.\s/.test(t)) out += `<div class="h2">${inline(t)}</div>`;
+      else out += `<div class="ln"${pad}>${inline(t)}</div>`;
+      i++;
+    }
+    return out + (inCheck ? '</div>' : '');
+  }
+  const plain = text => String(text).replace(/\{\{(.+?)\}\}/g, '$1');
+
+  // 사진: 긴 변 1600px JPEG로 줄여서 보내요
+  function shrink(file){
+    return new Promise((ok, no) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const k = Math.min(1, 1600 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        ok({url, data: c.toDataURL('image/jpeg', .82).split(',')[1]});
+      };
+      img.onerror = () => no(new Error('사진을 읽지 못했어요'));
+      img.src = url;
+    });
+  }
+  async function addFiles(fs){
+    for(const f of [...fs].filter(f => f.type.startsWith('image/'))){
+      if(photos.length >= 8){ toast('사진은 최대 8장까지예요'); break; }
+      try{ photos.push(await shrink(f)); }catch(e){ toast(e.message); }
+    }
+    drawThumbs();
+  }
+  function drawThumbs(){
+    $('#snThumbs').innerHTML = photos.map((p, i) => `<div class="sn-thumb"><img src="${p.url}" alt="사진 ${i + 1}"><b>${i + 1}</b><button data-rm="${i}" aria-label="사진 ${i + 1} 빼기">✕</button></div>`).join('');
+    $('#snGo').disabled = !photos.length;
+    const kb = photos.reduce((a, p) => a + p.data.length, 0) * .75 / 1024;
+    $('#snMsg').textContent = photos.length ? `사진 ${photos.length}장 · 약 ${kb < 1024 ? Math.round(kb) + 'KB' : (kb / 1024).toFixed(1) + 'MB'}` : '';
+  }
+  function drawSubs(){
+    const v = $('#snSub').value;
+    $('#snSub').innerHTML = '<option value="">과목 없음</option>' + mmSubs().map(x => `<option${x === v ? ' selected' : ''}>${esc(x)}</option>`).join('');
+  }
+  $('#snThumbs').onclick = e => { const b = e.target.closest('[data-rm]'); if(b){ URL.revokeObjectURL(photos[+b.dataset.rm].url); photos.splice(+b.dataset.rm, 1); drawThumbs(); } };
+  $('#snDrop').onclick = () => $('#snFile').click();
+  $('#snDrop').onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); $('#snFile').click(); } };
+  $('#snFile').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+  ['dragover', 'dragenter'].forEach(t => $('#snDrop').addEventListener(t, e => { e.preventDefault(); $('#snDrop').classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(t => $('#snDrop').addEventListener(t, e => { e.preventDefault(); $('#snDrop').classList.remove('over'); }));
+  $('#snDrop').addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+  $('#snGo').onclick = async () => {
+    if(!photos.length) return;
+    const b = $('#snGo'); b.disabled = true; b.innerHTML = '<span class="sn-spin"></span>정리하는 중… (1~2분)';
+    try{
+      const title = $('#snTitle').value.trim(), sub = $('#snSub').value;
+      const r = await fetch('/api/claude', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({task:'note_image', images: photos.map(p => p.data), text: [sub, title].filter(Boolean).join(' / ')})});
+      const d = await r.json().catch(() => ({}));
+      if(!r.ok || !d.text) throw new Error(d.error || (r.status === 504 ? '시간이 너무 오래 걸렸어요. 사진 수를 줄여서 다시 해보세요.' : 'AI 호출에 실패했어요.'));
+      const n = {id: uid(), title: title || '정리본 ' + new Date().toLocaleDateString('ko-KR'), sub, at: Date.now(), text: d.text.trim(), tape: null};
+      sumNotes.unshift(n); save();
+      photos.forEach(p => URL.revokeObjectURL(p.url)); photos = []; drawThumbs(); $('#snTitle').value = '';
+      show(n.id); toast('정리본을 만들었어요');
+    }catch(e){ toast(/fetch/i.test(e.message) ? '서버에 연결하지 못했어요' : e.message); }
+    finally{ b.disabled = !photos.length; b.textContent = '정리본 만들기'; }
+  };
+
+  function show(id){
+    const n = byId(id); if(n) cur = id;
+    $('#snView').hidden = !n;
+    if(n){ $('#snViewTitle').textContent = n.title; $('#snDoc').innerHTML = draw(n.text); }
+    drawList();
+  }
+  function drawList(){
+    $('#snList').innerHTML = sumNotes.length ? sumNotes.map(n => `<div class="sn-item${n.id === cur ? ' cur' : ''}"><div class="t"><strong>${esc(n.title)}</strong><span>${n.sub ? esc(n.sub) + ' · ' : ''}${new Date(n.at).toLocaleDateString('ko-KR')}${n.tape ? ' · 테이프 작업 중' : ''}</span></div>
+      <button class="btn ghost" data-open="${n.id}">보기</button><button class="btn ghost" data-tape="${n.id}">테이프</button></div>`).join('')
+      : '<p class="empty">아직 정리본이 없어요. 사진을 올려 만들어보세요.</p>';
+  }
+  $('#snList').onclick = e => {
+    const o = e.target.closest('[data-open]'), t = e.target.closest('[data-tape]');
+    if(o){ show(o.dataset.open); $('#snView').scrollIntoView({behavior:'smooth', block:'start'}); }
+    if(t){ cur = t.dataset.tape; goTab('tape'); }
+  };
+  $('#snToTape').onclick = () => goTab('tape');
+  $('#snCopy').onclick = async () => {
+    const n = byId(cur); if(!n) return;
+    try{ await navigator.clipboard.writeText(plain(n.text)); toast('복사했어요. 한글·워드에 붙여넣으세요'); }catch(e){ toast('복사하지 못했어요'); }
+  };
+  $('#snDel').onclick = () => {
+    const n = byId(cur); if(!n || !confirm(`'${n.title}' 정리본과 테이프 작업을 지울까요?`)) return;
+    sumNotes = sumNotes.filter(x => x.id !== n.id); save(); cur = null; show(null);
+  };
+
+  // ── 테이프 ──
+  function openTape(id){
+    if(!sumNotes.length){ $('#tpPick').innerHTML = '<option>정리본이 없어요</option>'; tp().innerHTML = '<p class="empty">정리본 탭에서 먼저 정리본을 만들어주세요.</p>'; count(); return; }
+    if(!byId(id)) id = sumNotes[0].id;
+    cur = id;
+    $('#tpPick').innerHTML = sumNotes.map(n => `<option value="${n.id}"${n.id === id ? ' selected' : ''}>${esc(n.title)}</option>`).join('');
+    const n = byId(id);
+    tp().innerHTML = n.tape || draw(n.text);
+    tp().querySelectorAll('.peek').forEach(x => x.classList.remove('peek'));
+    $('#tpReveal').textContent = '가린 것 모두 보기';
+    count();
+  }
+  $('#tpPick').onchange = e => openTape(e.target.value);
+  function saveTape(){ const n = byId(cur); if(!n) return; tp().querySelectorAll('.peek').forEach(x => x.classList.remove('peek')); n.tape = tp().innerHTML; save(); count(); }
+  function count(){ const q = s => tp().querySelectorAll(s).length; $('#tpCount').textContent = `키워드 ${q('.kw')} · 중요 ${q('.hl2')} · 일반 ${q('.hl')}`; }
+
+  function textNodesIn(range){
+    const out = [], w = document.createTreeWalker(tp(), NodeFilter.SHOW_TEXT, {acceptNode: n => range.intersectsNode(n) && n.nodeValue.trim() ? 1 : 2});
+    while(w.nextNode()) out.push(w.currentNode);
+    return out;
+  }
+  function unwrap(el){ const p = el.parentNode; while(el.firstChild) p.insertBefore(el.firstChild, el); p.removeChild(el); p.normalize(); }
+  function apply(range, cls){
+    textNodesIn(range).forEach(node => {
+      let s = 0, e = node.nodeValue.length;
+      if(node === range.startContainer) s = range.startOffset;
+      if(node === range.endContainer) e = range.endOffset;
+      if(e <= s) return;
+      const old = node.parentElement.closest('.hl,.hl2');
+      if(cls === 'erase'){ if(old) unwrap(old); return; }
+      if(old && old.classList.contains(cls)) return;
+      let target = node;
+      if(e < target.nodeValue.length) target.splitText(e);
+      if(s > 0) target = target.splitText(s);
+      const span = document.createElement('span'); span.className = cls;
+      target.parentNode.insertBefore(span, target); span.appendChild(target);
+    });
+  }
+  function onSelectEnd(){
+    if(!tool || !$('#tape').classList.contains('on')) return;
+    const sel = window.getSelection(); if(!sel.rangeCount || sel.isCollapsed) return;
+    const r = sel.getRangeAt(0); if(!tp().contains(r.commonAncestorContainer)) return;
+    apply(r, tool); sel.removeAllRanges(); saveTape();
+    toast(tool === 'erase' ? '밑줄을 지웠어요' : tool === 'hl2' ? '중요 밑줄을 그었어요' : '일반 밑줄을 그었어요');
+  }
+  document.addEventListener('mouseup', () => setTimeout(onSelectEnd, 0));
+  document.addEventListener('touchend', () => setTimeout(onSelectEnd, 350));
+
+  document.querySelectorAll('#tape [data-tool]').forEach(b => b.onclick = () => {
+    tool = tool === b.dataset.tool ? null : b.dataset.tool;
+    document.querySelectorAll('#tape [data-tool]').forEach(x => x.classList.toggle('on', x.dataset.tool === tool));
+    if(tool) toast(tool === 'erase' ? '지울 부분을 드래그하세요' : '칠할 부분을 드래그하세요');
+  });
+  document.querySelectorAll('#tape [data-hide]').forEach(b => b.onclick = () => {
+    const k = b.dataset.hide; hide[k] = !hide[k]; b.classList.toggle('on', hide[k]);
+    tp().classList.toggle('mz-' + k, hide[k]);
+    tp().querySelectorAll('.peek').forEach(x => x.classList.remove('peek'));
+    $('#tpReveal').textContent = '가린 것 모두 보기';
+  });
+  $('#tpReveal').onclick = () => {
+    const sel = Object.keys(hide).filter(k => hide[k]).map(k => '.' + k).join(',');
+    if(!sel) return toast('먼저 가릴 것을 골라주세요');
+    const any = tp().querySelector('.peek');
+    tp().querySelectorAll(sel).forEach(x => x.classList.toggle('peek', !any));
+    $('#tpReveal').textContent = any ? '가린 것 모두 보기' : '다시 가리기';
+  };
+  tp().addEventListener('click', e => {
+    if(tool) return;
+    const t = ['kw', 'hl2', 'hl'].filter(k => hide[k]).map(k => e.target.closest('.' + k)).find(Boolean);
+    if(t) t.classList.toggle('peek');
+  });
+  $('#tpReset').onclick = () => { if(!confirm('내가 그은 밑줄을 모두 지울까요? AI 키워드는 남아요.')) return; tp().querySelectorAll('.hl,.hl2').forEach(unwrap); saveTape(); };
+
+  // ── 형광펜 색 바꾸기 ──
+  const DEF = {hl:'#ffe94d', hl2:'#ff7a9a', kw:'#3d63d6'};
+  const PAL = ['#ffe94d', '#ffb347', '#ff7a9a', '#c58bff', '#6fa8ff', '#4fd1c5', '#7ddc6f', '#b0b0b0'];
+  const PENS = [['hl', '일반 밑줄'], ['hl2', '중요 밑줄'], ['kw', 'AI 키워드']];
+  let colors = Object.assign({}, DEF, store.get('tapeColors', {}));
+  const rgba = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${n >> 8 & 255},${n & 255},${a})`; };
+  function applyColors(){
+    const dark = document.documentElement.dataset.theme === 'dark', R = document.documentElement.style;
+    R.setProperty('--tp-hl', rgba(colors.hl, dark ? .38 : .6));
+    R.setProperty('--tp-hl2', rgba(colors.hl2, dark ? .42 : .55));
+    R.setProperty('--tp-kw', rgba(colors.kw, dark ? .25 : .14));
+    R.setProperty('--tp-kwline', colors.kw);
+  }
+  function drawPens(){
+    $('#tpPens').innerHTML = PENS.map(([k, name]) => `<div class="tp-pen"><h4>${name} <span class="sn-doc"><span class="${k}">미리보기</span></span></h4><div class="tp-pal">
+      ${PAL.map(c => `<button type="button" data-pen="${k}" data-c="${c}" style="background:${c}" class="${colors[k] === c ? 'sel' : ''}" aria-label="${name} 색 ${c}"></button>`).join('')}
+      <label>직접<input type="color" data-pen="${k}" value="${colors[k]}"></label></div></div>`).join('');
+  }
+  function setPen(k, c){ colors[k] = c; store.set('tapeColors', colors); applyColors(); drawPens(); }
+  $('#tpPens').addEventListener('click', e => { const b = e.target.closest('button[data-pen]'); if(b) setPen(b.dataset.pen, b.dataset.c); });
+  $('#tpPens').addEventListener('input', e => { if(e.target.type === 'color'){ colors[e.target.dataset.pen] = e.target.value; applyColors(); } });
+  $('#tpPens').addEventListener('change', e => { if(e.target.type === 'color') setPen(e.target.dataset.pen, e.target.value); });
+  $('#tpColor').onclick = () => { drawPens(); $('#tpColorDlg').showModal(); };
+  $('#tpColorClose').onclick = () => $('#tpColorDlg').close();
+  $('#tpColorReset').onclick = () => { colors = Object.assign({}, DEF); store.set('tapeColors', colors); applyColors(); drawPens(); };
+  new MutationObserver(applyColors).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+
+  applyColors(); drawThumbs(); drawSubs(); show(null);
+  const prevOnTab = window.onTab;
+  window.onTab = t => { if(prevOnTab) prevOnTab(t); if(t === 'sum'){ drawSubs(); drawList(); } if(t === 'tape') openTape(cur); };
+})();
 
 // ---------- 탭 순서 바꾸기 ----------
 function navTabs(){ return [...document.querySelectorAll('#tabs button[data-t]')]; }
