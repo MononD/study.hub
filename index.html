@@ -282,6 +282,10 @@
   .tp-grp + .tp-grp{padding-left:10px;border-left:1px solid var(--line)}
   .tp-lbl{font-size:12px;color:var(--sub);margin-right:2px}
   .tp-sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}
+  .sn-doc[contenteditable=true]{outline:2px dashed var(--sub);outline-offset:8px;border-radius:4px;cursor:text}
+  .sn-doc[contenteditable=true] .ln:empty::before{content:'\200b'}
+  .tp-editnote{font-size:13px;color:var(--ink);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:8px 12px;margin-bottom:12px}
+  .tp-bar.editing [data-tool],.tp-bar.editing [data-hide],.tp-bar.editing #tpReveal,.tp-bar.editing #tpReset{opacity:.35;pointer-events:none}
   .tp-count{font-size:12px;color:var(--sub);margin-left:auto}
   .tp-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--sub);margin-top:10px}
   #tpColorDlg{width:min(420px,92vw)}
@@ -485,9 +489,10 @@
       <button data-hide="hl">일반</button>
       <button id="tpReveal">가린 것 모두 보기</button>
     </div>
-    <div class="tp-grp"><button id="tpReset">밑줄 초기화</button></div>
+    <div class="tp-grp"><button id="tpEdit">✏️ 내용 편집</button><button id="tpEditCancel" hidden>취소</button><button id="tpReset">밑줄 초기화</button></div>
     <span class="tp-count" id="tpCount"></span>
   </div>
+  <p class="tp-editnote" id="tpEditNote" hidden>편집 중이에요. 키보드로 글자를 고치거나 지우고, Enter로 줄을 추가할 수 있어요. 다 고쳤으면 「✓ 편집 완료」를 누르세요.</p>
   <div class="card"><div class="sn-doc" id="tpDoc"></div></div>
   <div class="tp-legend">
     <span><span class="tp-sw" style="background:var(--tp-kw);border-bottom:2px solid var(--tp-kwline)"></span>AI 키워드</span>
@@ -2709,7 +2714,7 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
     });
   }
   function onSelectEnd(){
-    if(!tool || !$('#tape').classList.contains('on')) return;
+    if(!tool || editing || !$('#tape').classList.contains('on')) return;
     const sel = window.getSelection(); if(!sel.rangeCount || sel.isCollapsed) return;
     const r = sel.getRangeAt(0); if(!tp().contains(r.commonAncestorContainer)) return;
     apply(r, tool); sel.removeAllRanges(); saveTape();
@@ -2737,10 +2742,59 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
     $('#tpReveal').textContent = any ? '가린 것 모두 보기' : '다시 가리기';
   };
   tp().addEventListener('click', e => {
-    if(tool) return;
+    if(tool || editing) return;
     const t = ['kw', 'hl2', 'hl'].filter(k => hide[k]).map(k => e.target.closest('.' + k)).find(Boolean);
     if(t) t.classList.toggle('peek');
   });
+  // ── 내용 편집 (키보드로 고치기·지우기·추가) ──
+  let editing = false, snap = '';
+  function tapeToText(){   // 테이프 화면 → 정리본 텍스트 ({{키워드}} 유지)
+    const txt = el => [...el.childNodes].map(n => n.nodeType === 3 ? n.nodeValue : n.nodeName === 'BR' ? '' : n.classList && n.classList.contains('kw') ? '{{' + n.textContent + '}}' : txt(n)).join('');
+    const lines = [];
+    const block = el => {
+      if(el.classList.contains('tw')){ el.querySelectorAll('tr').forEach(tr => lines.push([...tr.children].map(td => txt(td).replace(/\t/g, ' ').trim()).join('\t'))); return; }
+      if(el.classList.contains('check')){ [...el.children].forEach(block); return; }
+      const m = /padding-left:\s*([\d.]+)em/.exec(el.getAttribute('style') || '');
+      lines.push(' '.repeat(m ? Math.round(+m[1] * 2) : 0) + txt(el).replace(/\n/g, ' ').replace(/\s+$/, ''));
+    };
+    [...tp().childNodes].forEach(n => { if(n.nodeType === 3){ if(n.nodeValue.trim()) lines.push(n.nodeValue.trim()); } else block(n); });
+    return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
+  function setEdit(on, keep){
+    const n = byId(cur); if(on && !n) return toast('편집할 정리본이 없어요');
+    editing = on;
+    if(on){
+      tool = null; document.querySelectorAll('#tape [data-tool]').forEach(x => x.classList.remove('on'));
+      Object.keys(hide).forEach(k => tp().classList.remove('mz-' + k));
+      tp().querySelectorAll('.peek').forEach(x => x.classList.remove('peek'));
+      snap = tp().innerHTML;
+      tp().contentEditable = 'true'; tp().focus();
+    } else {
+      tp().removeAttribute('contenteditable');
+      if(keep){
+        [...tp().querySelectorAll('.hl,.hl2,.kw')].forEach(x => { if(!x.textContent.trim()) x.remove(); });
+        n.text = tapeToText(); saveTape();
+        if(!$('#snView').hidden && cur === n.id) $('#snDoc').innerHTML = draw(n.text);
+        toast('고친 내용을 저장했어요');
+      } else { tp().innerHTML = snap; toast('편집을 취소했어요'); }
+      Object.keys(hide).forEach(k => tp().classList.toggle('mz-' + k, hide[k]));
+      count();
+    }
+    $('#tpEdit').textContent = on ? '✓ 편집 완료' : '✏️ 내용 편집';
+    $('#tpEdit').classList.toggle('on', on);
+    $('#tpEditCancel').hidden = !on; $('#tpEditNote').hidden = !on;
+    $('.tp-bar').classList.toggle('editing', on); $('#tpPick').disabled = on;
+  }
+  $('#tpEdit').onclick = () => setEdit(!editing, true);
+  $('#tpEditCancel').onclick = () => setEdit(false, false);
+  tp().addEventListener('paste', e => {   // 붙여넣기는 글자만
+    if(!editing) return; e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+  });
+  tp().addEventListener('keydown', e => { if(editing && e.key === 'Tab'){ e.preventDefault(); document.execCommand('insertText', false, '  '); } });
+  const prevOpen = openTape;
+  openTape = id => { if(editing) setEdit(false, true); prevOpen(id); };
+
   $('#tpReset').onclick = () => { if(!confirm('내가 그은 밑줄을 모두 지울까요? AI 키워드는 남아요.')) return; tp().querySelectorAll('.hl,.hl2').forEach(unwrap); saveTape(); };
 
   // ── 형광펜 색 바꾸기 ──
@@ -2772,7 +2826,7 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
 
   applyColors(); drawThumbs(); drawSubs(); show(null);
   const prevOnTab = window.onTab;
-  window.onTab = t => { if(prevOnTab) prevOnTab(t); if(t === 'sum'){ drawSubs(); drawList(); } if(t === 'tape') openTape(cur); };
+  window.onTab = t => { if(prevOnTab) prevOnTab(t); if(t !== 'tape' && editing) setEdit(false, true); if(t === 'sum'){ drawSubs(); drawList(); } if(t === 'tape') openTape(cur); };
 })();
 
 // ---------- 탭 순서 바꾸기 ----------
