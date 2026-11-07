@@ -135,6 +135,11 @@
   .mp-chev{border:0;background:none;color:#fff;width:28px;height:28px;padding:2px;cursor:pointer;transition:transform .3s}
   .mp.open .mp-chev{transform:rotate(180deg)}
   .mp-mini{display:flex;gap:4px}
+  .mp-x{border:0;background:none;color:#fff;opacity:.7;width:30px;height:30px;font-size:15px;cursor:pointer;flex:none;border-radius:50%}
+  .mp-x:hover{opacity:1;background:rgba(255,255,255,.12)}
+  .mp.off{display:none!important}
+  .music-btn{border:1px solid #777;background:transparent;color:#fff;border-radius:6px;width:34px;height:31px;font-size:15px;cursor:pointer;margin-left:auto;align-self:center;flex:none}
+  .music-btn:not([hidden]) + .theme-btn{margin-left:8px}
   .mp-mini button{border:0;background:none;color:#fff;width:34px;height:34px;padding:5px;cursor:pointer}
   .mp-mini svg,.mp-chev svg{width:100%;height:100%}
   .mp.open .mp-mini{display:none}
@@ -306,7 +311,7 @@
 </style>
 </head>
 <body>
-<header><h1 class="logo">Focuspace</h1><button class="theme-btn" id="themeBtn" aria-label="화면 테마 바꾸기"></button><button class="auth-btn" id="authBtn">로그인</button></header>
+<header><h1 class="logo">Focuspace</h1><button class="music-btn" id="musicBtn" aria-label="음악 플레이어 켜기" title="음악 플레이어 켜기" hidden>♪</button><button class="theme-btn" id="themeBtn" aria-label="화면 테마 바꾸기"></button><button class="auth-btn" id="authBtn">로그인</button></header>
 <nav id="tabs">
   <button data-t="uni">우주</button>
   <button data-t="tt">시간표</button>
@@ -597,6 +602,7 @@
     <button class="mp-chev" id="mpChev" aria-label="플레이어 열기/닫기"></button>
     <span class="t" id="mpBarTitle">재생 중이 아님</span>
     <span class="mp-mini"><button class="mp-prev" aria-label="이전 곡"></button><button class="mp-pp" aria-label="재생/일시정지"></button><button class="mp-next" aria-label="다음 곡"></button></span>
+    <button class="mp-x" id="mpClose" aria-label="음악 플레이어 끄기" title="플레이어 끄기">✕</button>
   </div>
 </div>
 
@@ -1226,17 +1232,26 @@ function initMusic(){
   document.querySelectorAll('.mp-prev').forEach(b => { b.innerHTML = IC.prev; b.onclick = prevTrack; });
   document.querySelectorAll('.mp-next').forEach(b => { b.innerHTML = IC.next; b.onclick = nextTrack; });
   document.querySelectorAll('.mp-pp').forEach(b => b.onclick = togglePlay);
+  // 플레이어 끄기·켜기 (끄면 음악도 멈춰요)
+  const setOff = off => {
+    music.off = off; saveMusic();
+    $('#mp').classList.toggle('off', off); $('#musicBtn').hidden = !off;
+    if(off){ $('#mp').classList.remove('open'); try{ if(loaded) yt.pauseVideo(); }catch(x){} wantPlay = false; }
+  };
+  $('#mpClose').onclick = e => { e.stopPropagation(); setOff(true); };
+  $('#musicBtn').onclick = () => setOff(false);
+  setOff(!!music.off);
   $('#mpVL').innerHTML = IC.vl; $('#mpVH').innerHTML = IC.vh; $('#mpChev').innerHTML = IC.chev;
   $('#mpVol').value = music.vol; $('#mpVol').style.setProperty('--p', music.vol + '%');
   $('#mpVol').oninput = e => { music.vol = +e.target.value; e.target.style.setProperty('--p', music.vol + '%'); saveMusic(); if(ytReady) yt.setVolume(music.vol); };
   $('#mpSeek').oninput = e => { seeking = true; e.target.style.setProperty('--p', e.target.value/10 + '%'); if(ytReady){ try{ $('#mpCur').textContent = tfmt(yt.getDuration()*e.target.value/1000); }catch(x){} } };
   $('#mpSeek').onchange = e => { if(ytReady && loaded){ try{ yt.seekTo(yt.getDuration()*e.target.value/1000, true); }catch(x){} } seeking = false; };
   $('#mpBar').onclick = e => {
-    if(Date.now() - lastDrag < 400 || e.target.closest('.mp-mini')) return;
+    if(Date.now() - lastDrag < 400 || e.target.closest('.mp-mini,.mp-x')) return;
     $('#mp').classList.toggle('open'); setTimeout(clampFree, 350);
   };
   $('#mpBar').addEventListener('pointerdown', e => {
-    if(e.target.closest('.mp-mini')) return;
+    if(e.target.closest('.mp-mini,.mp-x')) return;
     const r = $('#mp').getBoundingClientRect(); drag = {sx:e.clientX, sy:e.clientY, ox:r.left, oy:r.top, on:false};
     try{ $('#mpBar').setPointerCapture(e.pointerId); }catch(x){}
   });
