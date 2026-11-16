@@ -337,7 +337,8 @@
 </section>
 
 <section id="cal">
-  <h2>달력</h2>
+  <h2>달력 <button class="btn ghost ex-btn" id="calEx">예시 데이터로 보기</button></h2>
+  <div class="demo-bar" id="calExBar" hidden>예시 데이터예요. 분석 탭 예시와 같은 공부 기록·시험 일정이며, 내 일정은 바뀌지 않아요.</div>
   <div class="card">
     <div class="cal-head">
       <button class="btn ghost" id="prev" aria-label="이전 달">‹</button>
@@ -765,8 +766,27 @@ const today = new Date();
 let view = new Date(today.getFullYear(), today.getMonth(), 1);
 let sel = fmt(today);
 function fmt(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+// 예시 데이터 (분석 탭 예시와 같은 공부 기록·시험)
+let calEx = null;
+const calE = () => calEx ? calEx.events : events;
+const calLog = () => calEx ? calEx.log : studyLog;
+const calDay = k => Object.values(calLog()[k] || {}).reduce((a, b) => a + b, 0);
+function buildCalDemo(){
+  const w = demoWorld(), ev = {}, D = n => fmt(new Date(Date.now() + n * DAY));
+  const add = (n, t, time, extra) => (ev[D(n)] = ev[D(n)] || []).push(Object.assign({t, time}, extra || {}));
+  const plan = [[0, '약리학: 약동학 복습 (반감기·생체이용률·초회통과효과)'], [1, '약리학: 약력학 (작용제·길항제·치료지수)'], [2, '약리학: 심혈관약 (베타차단제·ACE 억제제·이뇨제)'], [3, '약리학: 틀린 개념 퀴즈 + 전체 훑기'],
+    [5, '생리학: 심장 (심박출량·전부하·후부하)'], [6, '생리학: 콩팥 (RAAS·삼투압·사구체여과율)'], [7, '생리학: 신경 (활동전위·시냅스·교감신경)'], [8, '생리학: 호흡 (가스교환·산염기 평형)'], [9, '생리학: 틀린 개념 집중 복습'], [10, '생리학: 전체 모의 퀴즈']];
+  plan.forEach(([n, t]) => add(n, t, '', {kind:'plan'}));
+  add(4, '약리학 기말고사', '10:00', {kind:'exam'}); add(11, '생리학 기말고사', '13:00', {kind:'exam'});
+  [[-12, '간호학개론 과제 제출', '23:59', '#d4a5a5'], [-8, '성인간호학 실습 오리엔테이션', '09:00', '#a5bdd4'], [-6, '스터디 모임', '19:00', '#adc4a4'], [-3, '해부학 쪽지시험', '10:00', '#e3d49c'],
+   [-1, '스터디 모임', '19:00', '#adc4a4'], [1, '성인간호학 사례보고서 마감', '23:59', '#d4a5a5'], [2, '동아리 회의', '18:00', '#b9aacb'], [6, '스터디 모임', '19:00', '#adc4a4'],
+   [8, '간호학개론 발표', '13:00', '#dfb899'], [14, '성인간호학 실습 시작', '08:30', '#a5bdd4']].forEach(([n, t, time, c]) => add(n, t, time, {c}));
+  [[-2, '복습: 생리학'], [1, '복습: 해부학'], [3, '복습: 간호학개론']].forEach(([n, t]) => add(n, t, '', {kind:'review'}));
+  return {events:ev, log:w.log, exams:w.exams.map((e, i) => Object.assign({}, e, {plan:{days:plan.filter(p => i ? p[0] > 4 : p[0] < 4)}}))};
+}
 function drawCal(){
-  $('#monthLabel').innerHTML = view.getFullYear() + '년 ' + (view.getMonth()+1) + '월 <small style="font-weight:400;color:var(--sub)">· 공부 ' + fmtDur(monthTotal(view.getFullYear() + '-' + String(view.getMonth()+1).padStart(2,'0'))) + '</small>';
+  const events = calE();
+  $('#monthLabel').innerHTML = view.getFullYear() + '년 ' + (view.getMonth()+1) + '월 <small style="font-weight:400;color:var(--sub)">· 공부 ' + fmtDur(Object.keys(calLog()).filter(k => k.startsWith(view.getFullYear() + '-' + String(view.getMonth()+1).padStart(2,'0'))).reduce((a, k) => a + calDay(k), 0)) + '</small>';
   let h = ['일','월','화','수','목','금','토'].map(d => `<div class="dow">${d}</div>`).join('');
   const start = new Date(view.getFullYear(), view.getMonth(), 1 - view.getDay());
   for(let i = 0; i < 42; i++){
@@ -774,7 +794,7 @@ function drawCal(){
     const cls = ['day', d.getMonth() !== view.getMonth() ? 'other' : '', k === fmt(today) ? 'today' : '', k === sel ? 'sel' : ''].join(' ');
     const evs = (events[k] || []).slice().sort((a, b) => (b.kind === 'exam') - (a.kind === 'exam')).slice(0, 2).map(e => `<span class="ev${e.kind === 'exam' ? ' ex' : e.kind === 'plan' ? ' pl' : ''}${e.c ? ' cc' : ''}"${e.c ? ` style="border-left-color:${shade(e.c, .72)};background:${e.c};color:${inkOn(e.c)}"` : ''}>${esc(e.t)}</span>`).join('');
     const more = (events[k] || []).length > 2 ? `<span class="ev">+${events[k].length - 2}</span>` : '';
-    const st = dayTotal(k), stTag = st >= 60 ? `<span class="ev st">⏱ ${fmtShort(st)}</span>` : '';
+    const st = calDay(k), stTag = st >= 60 ? `<span class="ev st">⏱ ${fmtShort(st)}</span>` : '';
     h += `<div class="${cls}" data-d="${k}"><span class="n">${d.getDate()}</span>${stTag}${evs}${more}</div>`;
   }
   $('#grid').innerHTML = h;
@@ -782,11 +802,11 @@ function drawCal(){
 }
 function drawEvList(){
   $('#selLabel').textContent = sel.replace(/-/g, '.') + ' 일정';
-  const sd = studyLog[sel] || {}, tot = dayTotal(sel);
+  const events = calE(), sd = calLog()[sel] || {}, tot = calDay(sel);
   $('#selStudy').textContent = tot >= 60 ? '공부 시간 ' + fmtDur(tot) + ' (' + Object.keys(sd).map(n => n + ' ' + fmtDur(sd[n])).join(' · ') + ')' : '기록된 공부 시간이 없어요.';
   const list = (events[sel] || []).map((e, i) => ({...e, i})).sort((a, b) => (a.time || '99').localeCompare(b.time || '99'));
   $('#evList').innerHTML = list.length
-    ? list.map(e => `<li><span>${e.c ? `<i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${e.c};margin-right:6px"></i>` : ''}${e.time ? esc(e.time) + '  ' : ''}${e.kind === 'exam' ? '<b>[시험]</b> ' : e.kind === 'plan' ? '<b>[계획]</b> ' : ''}${esc(e.t)}</span><button class="x" data-i="${e.i}" aria-label="삭제">×</button></li>`).join('')
+    ? list.map(e => `<li><span>${e.c ? `<i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${e.c};margin-right:6px"></i>` : ''}${e.time ? esc(e.time) + '  ' : ''}${e.kind === 'exam' ? '<b>[시험]</b> ' : e.kind === 'plan' ? '<b>[계획]</b> ' : ''}${esc(e.t)}</span>${calEx ? '' : `<button class="x" data-i="${e.i}" aria-label="삭제">×</button>`}</li>`).join('')
     : '<li class="empty">이 날짜에 일정이 없어요.</li>';
 }
 $('#grid').addEventListener('click', e => {
@@ -797,12 +817,20 @@ $('#prev').onclick = () => { view = new Date(view.getFullYear(), view.getMonth()
 $('#next').onclick = () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); drawCal(); };
 $('#evAdd').onclick = () => {
   const t = $('#evText').value.trim(); if(!t) return;
+  if(calEx){ alert('예시 데이터에는 일정을 추가할 수 없어요. 「내 기록으로 보기」를 누른 뒤 추가해주세요.'); return; }
   const c = $('#evColor').dataset.v || '';
   (events[sel] = events[sel] || []).push(c ? {t, time:$('#evTime').value, c} : {t, time:$('#evTime').value});
   store.set('events', events); $('#evText').value = ''; $('#evTime').value = ''; drawCal();
 };
 drawPick($('#evColor'), '');
 $('#evText').addEventListener('keydown', e => { if(e.key === 'Enter') $('#evAdd').click(); });
+$('#calEx').onclick = () => {
+  calEx = calEx ? null : buildCalDemo();
+  $('#calEx').textContent = calEx ? '내 기록으로 보기' : '예시 데이터로 보기';
+  $('#calExBar').hidden = !calEx;
+  view = new Date(today.getFullYear(), today.getMonth(), 1); sel = fmt(today);
+  drawCal(); drawExams();
+};
 $('#evList').addEventListener('click', e => {
   const b = e.target.closest('.x'); if(!b) return;
   events[sel].splice(+b.dataset.i, 1);
@@ -1696,7 +1724,12 @@ function applyPlan(){
   drawCal(); drawExams(); render();
 }
 function drawExams(){
-  const t0 = fmt(new Date()), l = exams.filter(e => e.date >= t0).sort((a, b) => a.date.localeCompare(b.date));
+  const t0 = fmt(new Date());
+  if(typeof calEx !== 'undefined' && calEx){
+    $('#exList').innerHTML = calEx.exams.map(e => `<li><span><b>${esc(e.sub)}</b> · ${dlabel(e.date)} · ${dday(e.date)}</span><span style="color:var(--sub);font-size:12px">AI 계획 ${e.plan.days.length}일</span></li>`).join('');
+    return;
+  }
+  const l = exams.filter(e => e.date >= t0).sort((a, b) => a.date.localeCompare(b.date));
   $('#exList').innerHTML = l.length ? l.map(e => `<li><span><b>${esc(e.sub)}</b> · ${dlabel(e.date)} · ${dday(e.date)}</span><span style="display:flex;gap:6px;align-items:center"><button class="btn ghost" data-re="${e.id}">다시 짜기</button><button class="x" data-del="${e.id}" aria-label="삭제">×</button></span></li>`).join('') : '<li class="empty">등록된 시험이 없어요.</li>';
 }
 
