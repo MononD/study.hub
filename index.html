@@ -229,6 +229,7 @@
   .an-tb th:first-child,.an-tb td:first-child{text-align:left}
   .an-tb th{color:var(--sub);font-weight:600}
   .ins{padding-left:18px;font-size:14px;line-height:1.7}
+  .ex-btn{float:right;font-size:12px;padding:4px 10px;font-weight:400}
   .demo-bar{background:var(--dark);color:var(--on);padding:8px 12px;border-radius:6px;font-size:13px;margin-bottom:12px}
   .memo{display:grid;grid-template-columns:270px 1fr;gap:12px;align-items:start}
   @media(max-width:720px){.memo{grid-template-columns:1fr}}
@@ -453,6 +454,7 @@
 
 <section id="sum">
   <h2>정리본</h2>
+  <div class="demo-bar" data-sumbar hidden>예시 데이터예요. 내 기록은 바뀌지 않아요.</div>
   <p class="soon" style="margin:-8px 0 14px">책이나 필기 사진을 올리면 시험 대비 압축 정리본을 만들어요. 여러 장이면 올린 순서대로 이어서 정리해요.</p>
   <div class="card" style="margin-bottom:14px">
     <div class="row" style="margin-bottom:0">
@@ -476,14 +478,16 @@
     </div>
     <div class="sn-doc" id="snDoc"></div>
   </div>
-  <h2 style="font-size:15px;margin-bottom:8px">저장된 정리본</h2>
+  <h2 style="font-size:15px;margin-bottom:8px">저장된 정리본 <button class="btn ghost ex-btn" data-sumex>예시 데이터로 보기</button></h2>
+  <div class="demo-bar" data-sumbar hidden>예시 데이터예요. 내 기록은 바뀌지 않아요.</div>
   <div class="sn-list" id="snList"></div>
 </section>
 
 <section id="tape">
   <h2>테이프</h2>
   <p class="soon" style="margin:-8px 0 14px">정리본 위에 내 방식대로 밑줄을 긋고, 키워드를 테이프로 가려서 외워요.</p>
-  <div class="row" style="margin-bottom:12px"><select id="tpPick" style="flex:1" aria-label="정리본 고르기"></select></div>
+  <div class="demo-bar" data-sumbar hidden>예시 데이터예요. 밑줄·가리기·편집을 마음껏 해봐도 내 기록은 바뀌지 않아요.</div>
+  <div class="row" style="margin-bottom:12px;align-items:center"><select id="tpPick" style="flex:1" aria-label="정리본 고르기"></select><button class="btn ghost" data-sumex>예시 데이터로 보기</button></div>
   <div class="tp-bar" role="toolbar" aria-label="테이프 도구">
     <div class="tp-grp">
       <span class="tp-lbl">밑줄</span>
@@ -537,7 +541,7 @@
     <div class="out" id="recOut"></div>
     <div id="recQuizBox"></div>
   </div>
-  <h3 class="sh">저장한 강의 정리</h3>
+  <h3 class="sh">저장한 강의 정리 <button class="btn ghost ex-btn" id="recEx">예시 데이터로 보기</button></h3>
   <div class="card" id="recSaved"></div>
   <h3 class="sh">강의 퀴즈</h3>
   <div class="card" id="recQuizSaved"></div>
@@ -557,7 +561,7 @@
     <div class="out" id="pdfOut"></div>
     <div id="pdfQuiz" style="display:none"></div>
   </div>
-  <h3 class="sh" id="pdfSavedTitle">저장한 PDF 요약</h3>
+  <h3 class="sh"><span id="pdfSavedTitle">저장한 PDF 요약</span> <button class="btn ghost ex-btn" id="pdfEx">예시 데이터로 보기</button></h3>
   <div class="card" id="pdfSaved"></div>
 </section>
 
@@ -844,6 +848,15 @@ function addReview(name){
   store.set('events', events); drawCal();
   alert('내일, 3일 뒤, 7일 뒤에 복습 일정을 달력에 넣었어요.');
 }
+// ---------- 예시 데이터 (심사·시연용, 내 기록은 바뀌지 않아요) ----------
+const DEMO_NOTES = [
+  {id:-1, kind:'summary', title:'성인간호학 상부호흡기계 · 성인간호학 2-2 호흡기능장애 기말고사 정리본', at:'2026-11-06', text:"[핵심 요약]\n상부호흡기계는 코에서 후두까지의 구간으로, 폐까지 공기를 전달하고 이산화탄소를 배출하는 통로입니다.\n코선반은 공기를 습하고 따뜻하게 하고, 후두개는 삼킬 때 후두를 막아 흡인을 막습니다.\n건강사정은 호소 증상 중심의 건강력과 시진, 촉진, 타진 순의 신체검진으로 하며, 후두경 검사 후에는 구역반사가 돌아올 때까지 금식합니다.\n기관절개는 상기도 폐색, 분비물 제거, 장기간 기계환기를 위해 하며, 절개 부위 간호, 흡인, 커프 관리가 핵심입니다.\n흡인은 분비물이 있을 때만 1회 10초 이내로 하고, 커프 압력은 20mmHg를 넘기지 않아야 합니다.\n기관내 삽관은 빠르고 상처가 없지만 오래 유지할 수 없어 응급상황에서 시행합니다.\n질환에서는 인플루엔자, 비염, 비용종, 비중격만곡, 비골절, 부비동염, 비출혈, 코 성형술을 다룹니다.\n알레르기성 비염 약물은 종류별 작용과 부작용, 교육 내용이 중요하고, 부비동염은 수분섭취와 증기흡입 등 간호가 핵심입니다.\n\n[목차별 정리]\n1. 구조와 기능\n코, 부비동, 인두, 후두로 구성됩니다. 부비동은 전두동, 사골동, 접형동, 상악동이며 분비물은 비강으로 흐릅니다. 후두는 9개의 연골로 이루어져 있고 갑상연골(아담의 사과), 윤상연골, 성대와 성문이 있습니다.\n\n2. 건강사정\n증상의 시기, 기간, 정도, 완화 및 악화 요인을 질문합니다. 코는 시진과 촉진 후 비경을 사용하고, 인두는 설압자로 목젖의 위치를 확인합니다. 전두동과 상악동은 촉진과 타진으로 압통과 부종을 검사합니다.\n\n3. 임상진단검사\n세균배양은 멸균 면봉으로 코나 인후의 검체를 채취합니다. 후두경 검사는 검사 전 안정제 투여와 금식을 하고, 검사 후 구역반사가 돌아오면 물부터 섭취하게 합니다.\n\n4. 기관절개와 관의 유형\n윤상연골 아래 2~3번째 또는 3~4번째 기관륜을 절개해 누공을 만듭니다. 일반 관은 외관, 닫개, 내관으로 구성되고 커프는 흡인과 공기 누출을 막습니다. 구멍 뚫린 관이나 의사소통 가능 관, Passy-Muir 밸브를 쓰면 말을 할 수 있습니다.\n\n5. 절개 부위 간호와 흡인 간호\n분비물이 있으면 먼저 흡인한 뒤 드레싱을 제거하고, 젖은 드레싱은 감염 원인이므로 자주 교환합니다. 고정 끈은 손가락 하나가 들어갈 정도로 고정하고, 피부 간호는 하루 3번 또는 필요할 때 합니다. 흡인 전에는 100% 산소를 공급하고, 심박동수가 40회 이상 변하거나 부정맥이 생기거나 SpO₂가 90% 이하로 떨어지면 중단합니다.\n\n6. 커프 관리와 관이 빠졌을 때\n커프는 기도를 막을 최소한의 양으로 팽창시키고 압력은 매일 측정합니다. 관이 빠지면 즉시 교체하며, 유치봉합 실이나 지혈겸자로 구멍을 넓히고 단개를 넣은 튜브를 45° 각도로 삽입합니다. 교환이 안 되면 반좌위를 취하게 하고, 호흡이 정지하면 누공을 멸균 드레싱으로 막고 백 밸브 마스크로 환기합니다.\n\n7. 제거, 연하, 언어, 영양 간호\n환자가 환기와 분비물 배출을 충분히 할 수 있으면 제거하고, 누공은 폐쇄 드레싱으로 막습니다. 흡인 위험이 있으면 식사 중에도 커프를 수축시키지 않습니다. 흡인 사정은 푸른색 물 30mL를 삼키게 해서 합니다. 언어장애에는 필담, 단어카드, 인공 후두를 제공하고, 영양은 고열량, 고단백의 진한 음식으로 공급합니다.\n\n8. 기관내 삽관\n앙와위에서 머리를 약간 젖히고 후두경을 왼손으로 잡아 구강 우측으로 넣습니다."},
+  {id:-2, kind:'lecture', title:'성인간호학 · 호흡계 건강사정', at:'2026-11-07', text:"[한 줄 요약]\n호흡계 건강사정은 위험요인(호흡계 질환·가족력·환경 및 직업·흡연·예방접종)과 주요 증상(호흡곤란·기침·가래·객혈)을 순서대로 확인하는 과정입니다.\n\n[핵심 내용]\n1. 호흡 조절 수용체\n말초화학수용체는 대동맥소체와 경동맥소체에 있으며, 동맥혈 산소분압이 떨어지면 호흡중추를 자극합니다. COPD 환자는 낮은 산소농도 상태에 적응되어 있어 고농도 산소를 투여하면 호흡이 억제될 수 있으므로 주의합니다. 압력수용기는 혈압이 급격히 오르면 호흡중추를 일시적으로 억압합니다.\n\n2. 건강력\n호흡기 질환 병력, 사용 중인 약물, 입원 경험, 가족력, 환경과 직업, 흡연(pack/year), 예방접종 여부를 확인합니다.\n\n3. 주요 증상\n호흡곤란은 빠른 호흡이나 과다호흡과 구별하며, Borg 척도나 시각아날로그 척도(VAS)로 정도를 사정합니다. 가래는 양, 색깔, 농도, 냄새를 확인하고, 악취가 나면 감염 진행을 의미합니다. 객혈은 붉은색이고 알칼리성이며, 위장관 출혈인 토혈은 산성입니다.\n\n[중요 용어]\n말초화학수용체: 대동맥소체·경동맥소체에 있으며 산소분압 저하에 반응\npack/year: 1일 흡연량과 흡연 기간으로 계산하는 연간 흡연량\n발작야간호흡곤란: 밤에 자다가 갑자기 호흡곤란으로 깨는 것\n객혈: 기도 내 혈액이 기침과 함께 외부로 배출되는 것\n\n[복습 퀴즈]\n1. 동맥혈 산소분압이 떨어질 때 반응하는 수용체는? → 말초화학수용체\n2. 말초화학수용체가 있는 두 곳은? → 대동맥소체, 경동맥소체\n3. COPD 환자에게 고농도 산소 투여를 피하는 이유는? → 호흡억제\n4. 호흡곤란 정도를 사정하는 도구 두 가지는? → Borg 척도, 시각아날로그 척도(VAS)\n5. 객혈과 토혈을 pH로 구분하면? → 객혈 알칼리, 토혈 산성"}
+];
+// 정리본·테이프 예시: ⟦일반 밑줄⟧ ⟪중요 밑줄⟫
+const DEMO_SUM = {title:'하부호흡기계', sub:'성인간호학', at:new Date('2026-11-07T21:00:00').getTime(), raw:"③ {{말초화학수용체}}\n  CO2 농도↑ → 화학수용체 자극 → 호흡수↑·{{과다환기}}\n  ⟦위치 : {{대동맥소체}}(aortic body) / {{경동맥소체}}(carotid body)⟧\n  명칭 : {{peripheral chemoreceptor}}\n  작용 : 동맥혈 {{산소분압}}↓ 시 반응 → 호흡중추 자극 ※\n  ⟦저산소혈증 → 말초화학수용체 자극 → 호흡중추 자극 → 환기↑⟧\n  ⟪(메모) COPD 환자 : 낮은 산소농도 상태⟫\n  ⟪(메모) 고농도 산소 투여 → 산소분압↑ → 호흡억제 ∴ COPD 환자 고농도 산소 투여 금지 ※ [손글씨 일부 확인 필요]⟫\n  {{압력수용기}}(baroreceptor)\n    위치 : 대동맥동(aortic sinus) / 경동맥동(carotid sinus)\n    작용 : 혈압 급격한 상승 반응 → 호흡중추 일시적 억압 → 호흡 느리고 얕아짐\n\n2. {{건강사정}}\n\n1) {{건강력}}\n\n(1) {{호흡계 질환의 위험요인}}\n\n① {{호흡계 질환}}\n  {{병력}}\n    확인 : 감기·인후통·부비동 문제·알레르기 및 유발인자·{{천식}}·폐렴·결핵 등 호흡기 문제 경험 여부 ※\n  {{약물}}\n    확인 : 항히스타민제·기관지확장제·스테로이드·기침완화제·항생제·산소 사용 여부\n    수집 : 사용 이유·약명·용량·사용 빈도·사용 기간·효과·부작용\n    추가 확인 : 가정용 산소요법 / 인공호흡기 사용 / 분무기 통한 약물투여 여부\n  {{입원 경험}}\n    ⟦확인 : 호흡기 문제로 입원 경험 여부 ※⟧\n    수집 : 입원 시기·치료방법·현재 상황\n\n② {{가족력}}\n  확인 : {{천식}}·{{폐기종}}·{{낭성섬유증}}⟪(cystic fibrosis) 등 가족력 ※⟫\n  ⟪확인 : 유전성 경향 ※⟫\n\n③ {{환경 및 직업}}\n  대기오염·작업환경 등 → {{폐암}}·직업성 폐질환·폐결핵 발생에 영향\n  확인 필요 요인으로 사정\n\n④ {{흡연}}\n  ⟪확인 : 현재와 과거의 흡연 습관·정도 ※⟫\n  조사 : 1일 흡연량·흡연 기간·연간 흡연량({{pack/year}})\n  담배 종류 : 여송연·파이프 흡연·씹는 담배·연기가 없는 담배·전자담배\n  ⟦간접흡연 노출 여부 확인 중요⟧\n  금연 위해 사용한 처방약·비처방약·민간요법 등 경험 확인\n\n⑤ {{예방접종}}\n  확인 : 유행성 감기 / {{폐렴구균성 폐렴}} 예방접종 여부\n  유행성 감기 : 매년 접종 [일부 가려져 확인 필요]\n  폐렴구균 폐렴 예방접종 : 65세 [일부 가려져 확인 필요] 노인·만성 심혈관 질환·만성 폐질환·당뇨병 대상 권장 [일부 가려져 확인 필요]\n\n(2) {{호흡계 질환 증상}}\n\n① {{호흡곤란}}\n  정의 : 호흡기 질환 환자에게 흔히 관찰 + 불편감 동반\n  ⟪구별 : 빠른 호흡·과다호흡 ≠ 호흡곤란 ※⟫\n  확인 : 종류·정도·기간·시작 시간·급/만성 여부·유발요인·악화요인·완화요인\n  확인 : 활동·운동으로 악화 여부·관련 자세 등\n  ⟪정도 사정 도구 : {{Borg 척도}} / {{시각아날로그 척도}}(visual analog scale; VAS) ※⟫\n\n표 18-1 호흡곤란 척도(시각아날로그 척도)\n척도\t점수\t내용\nVAS\t10\t극도의 호흡곤란-최악으로 숨이 참\nVAS\t0\t호흡곤란 없음, 숨차지 않음\nBorg\t0\t전혀 없음\nBorg\t0.5\t거의 없음\nBorg\t1\t아주 경함\nBorg\t2\t경함\nBorg\t3\t중등도\nBorg\t4\t약간 심함\nBorg\t5\t심함\nBorg\t6\t-\nBorg\t7\t아주 심함\nBorg\t8\t-\nBorg\t9\t거의 극도로 심함\nBorg\t10\t극도로 심함\n\n  호흡곤란 유형\n    - {{운동성호흡곤란}}(exertional dyspnea)\n    - {{호기호흡곤란}}(expiratory dyspnea)\n    - {{흡기호흡곤란}}(inspiratory dyspnea)\n    - {{비만호흡곤란}}(liparodyspnea)\n    - {{야간호흡곤란}}(nocturnal dyspnea)\n    - {{기립호흡곤란}}(orthostatic dyspnea)\n    - {{발작호흡곤란}}(paroxysmal dyspnea)\n    - {{발작야간호흡곤란}}(paroxysmal nocturnal dyspnea)\n      (메모) 폐부종, 밤에 자다가 갑자기 호흡곤란으로 깨는 것\n\n② {{기침, 가래 및 객혈}}\n  {{기침}}\n    호흡기계질환 환자에게 흔히 나타나는 증상\n    ⟦기전 : 기침반사 → 이물질 기도 밖 배출 → 폐 흡인 방지 = 방어 작용 ※⟧\n    확인 : 급/만성/발작성 여부·빈도·기침의 유형·정도·유발요인·악화요인·완화요인\n  {{가래}}\n    가래 동반 기침 시 확인 : 양·색깔·농도·냄새\n    정상 가래 : 맑거나 약간 흰색 ※ / 냄새 없음 ※\n    가래색 변화 → 감염 유무·비정상 기관지 분비물 존재 파악\n    악취 가래 → 감염 진행 의미 ※\n  {{객혈}}(hemoptysis)\n    정의 : 기도 내 혈액이 기침과 함께 외부로 배출\n    특성 : {{붉은색}}·{{알칼리}} ※\n    의미 : 호흡계 출혈\n    (메모) 토혈 : 위장관에서의 출혈·산성 [손글씨 일부 확인 필요]\n\n  기침 유형\n    - {{개기침}}(barking cough)\n    - {{마른기침}}(dry cough)\n      (메모) 가래가 없는 건조하고 깔깔한 소리의 기침\n    - {{잦은 마른기침}}(hacking cough)\n    - {{생산성 젖은기침}}(productive cough, wet cough)\n      (메모) 가래 동반 / 축축하고 끈끈한 소리 [손글씨 확인 필요]\n\n  비정상 양상 가래\n    - {{혈액착색가래}}(blood stained sputum)\n    - {{혈액흔적가래}}(blood tinged sputum)\n    - {{혈성가래}}·피가래(bloody sputum)\n    - {{둥근덩이가래}}(globular sputum)\n      (메모) 가래 모양이 둥근 덩어리\n    - {{녹색가래}}(green sputum)\n    - {{고름가래}}(purulent sputum)\n    - {{쇠녹가래}}(rusty sputum)\n      (메모) 쇠가 녹슨 것처럼 갈색 [손글씨 확인 필요]\n\n③ {{천명}}\n  정의 : 기도 좁아짐 / 폐쇄 →"};
+const EX = {rec:false, pdf:false};
+const exBar = '<div class="demo-bar">예시 데이터예요. 내 기록은 바뀌지 않아요.</div>';
 // ---------- 저장 · 강의 정리 · PDF ----------
 const readB64 = f => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result.split(',')[1]); r.readAsDataURL(f); });
 const KIND_NAME = {lecture:'강의 정리', summary:'PDF 요약', quiz:'PDF 문제', concept:'PDF 개념', tape:'PDF 정리본'};
@@ -852,21 +865,28 @@ let notes = store.get('notes', []);
 let pdfKind = 'summary', pdfBusy = false;
 const outs = {summary:'', quiz:'', concept:''};
 function saveNote(kind, title, text){ notes.unshift({id:Date.now(), kind, title, text, at:fmt(new Date())}); store.set('notes', notes); drawNotes(); }
-const noteHTML = n => `<details class="note"><summary><b>${esc(n.title)}</b><span>${esc(n.at.replace(/-/g, '.'))}</span></summary><div class="out">${esc(n.text)}</div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-cp="${n.id}">복사</button><button class="btn ghost" data-del="${n.id}">삭제</button></div></details>`;
+const noteHTML = (n, ex) => `<details class="note"${ex ? ' open' : ''}><summary><b>${esc(n.title)}</b><span>${esc(n.at.replace(/-/g, '.'))}</span></summary><div class="out">${esc(n.text)}</div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-cp="${n.id}">복사</button>${ex ? '' : `<button class="btn ghost" data-del="${n.id}">삭제</button>`}</div></details>`;
 function drawNotes(){
-  const fill = (el, kind) => { const l = notes.filter(n => n.kind === kind); el.innerHTML = l.length ? l.map(noteHTML).join('') : '<p class="empty">저장한 내용이 없어요.</p>'; };
-  fill($('#recSaved'), 'lecture');
+  const fill = (el, kind, ex) => {
+    const l = (ex ? DEMO_NOTES : notes).filter(n => n.kind === kind);
+    el.innerHTML = (ex ? exBar : '') + (l.length ? l.map(n => noteHTML(n, ex)).join('') : `<p class="empty">${ex ? '이 항목의 예시는 PDF 요약에 있어요.' : '저장한 내용이 없어요.'}</p>`);
+  };
+  fill($('#recSaved'), 'lecture', EX.rec);
+  $('#recEx').textContent = EX.rec ? '내 기록으로 보기' : '예시 데이터로 보기';
+  $('#pdfEx').textContent = EX.pdf ? '내 기록으로 보기' : '예시 데이터로 보기';
   if(pdfKind === 'quiz') $('#pdfSaved').innerHTML = quizListHTML('pdf');
   else if(pdfKind === 'tape') $('#pdfSaved').innerHTML = '<p class="empty">만든 정리본은 정리본·테이프 탭에 저장돼요.</p>';
-  else fill($('#pdfSaved'), pdfKind);
+  else fill($('#pdfSaved'), pdfKind, EX.pdf);
   $('#recQuizSaved').innerHTML = quizListHTML('lecture');
   $('#pdfSavedTitle').textContent = '저장한 ' + KIND_NAME[pdfKind];
 }
 ['#recSaved', '#pdfSaved'].forEach(sel => $(sel).onclick = async e => {
   const cp = e.target.closest('[data-cp]'), del = e.target.closest('[data-del]');
-  if(cp){ const n = notes.find(x => x.id === +cp.dataset.cp); try{ await navigator.clipboard.writeText(n.text); cp.textContent = '복사됨'; }catch(x){ cp.textContent = '복사 실패'; } }
+  if(cp){ const n = notes.concat(DEMO_NOTES).find(x => x.id === +cp.dataset.cp); try{ await navigator.clipboard.writeText(n.text); cp.textContent = '복사됨'; }catch(x){ cp.textContent = '복사 실패'; } }
   if(del && confirm('이 저장 내용을 삭제할까요?')){ notes = notes.filter(x => x.id !== +del.dataset.del); store.set('notes', notes); drawNotes(); }
 });
+$('#recEx').onclick = () => { EX.rec = !EX.rec; drawNotes(); };
+$('#pdfEx').onclick = () => { EX.pdf = !EX.pdf; if(EX.pdf && pdfKind !== 'summary'){ pdfKind = 'summary'; showPdf(); } else drawNotes(); };
 // PDF
 function showPdf(){
   document.querySelectorAll('#pdfTabs button').forEach(b => b.classList.toggle('on', b.dataset.k === pdfKind));
@@ -2616,7 +2636,9 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
   let cur = null, photos = [], tool = null;
   const hide = {kw:false, hl:false, hl2:false};
   const save = () => store.set('sumNotes', sumNotes);
-  const byId = id => sumNotes.find(n => n.id === id);
+  let ex = false, demo = [];
+  const L = () => ex ? demo : sumNotes;
+  const byId = id => L().find(n => n.id === id);
   const tp = () => $('#tpDoc');
   function toast(t){ const el = $('#snToast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('show'), 1800); }
   function goTab(t){ const b = document.querySelector(`#tabs button[data-t="${t}"]`); if(b) b.click(); }
@@ -2716,7 +2738,7 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
     drawList();
   }
   function drawList(){
-    $('#snList').innerHTML = sumNotes.length ? sumNotes.map(n => `<div class="sn-item${n.id === cur ? ' cur' : ''}"><div class="t"><strong>${esc(n.title)}</strong><span>${n.sub ? esc(n.sub) + ' · ' : ''}${new Date(n.at).toLocaleDateString('ko-KR')}${n.tape ? ' · 테이프 작업 중' : ''}</span></div>
+    $('#snList').innerHTML = L().length ? L().map(n => `<div class="sn-item${n.id === cur ? ' cur' : ''}"><div class="t"><strong>${esc(n.title)}</strong><span>${n.sub ? esc(n.sub) + ' · ' : ''}${new Date(n.at).toLocaleDateString('ko-KR')}${n.tape ? ' · 테이프 작업 중' : ''}</span></div>
       <button class="btn ghost" data-open="${n.id}">보기</button><button class="btn ghost" data-tape="${n.id}">테이프</button></div>`).join('')
       : '<p class="empty">아직 정리본이 없어요. 사진을 올려 만들어보세요.</p>';
   }
@@ -2731,16 +2753,17 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
     try{ await navigator.clipboard.writeText(plain(n.text)); toast('복사했어요. 한글·워드에 붙여넣으세요'); }catch(e){ toast('복사하지 못했어요'); }
   };
   $('#snDel').onclick = () => {
+    if(ex) return toast('예시 데이터는 지울 수 없어요');
     const n = byId(cur); if(!n || !confirm(`'${n.title}' 정리본과 테이프 작업을 지울까요?`)) return;
     sumNotes = sumNotes.filter(x => x.id !== n.id); save(); cur = null; show(null);
   };
 
   // ── 테이프 ──
   function openTape(id){
-    if(!sumNotes.length){ $('#tpPick').innerHTML = '<option>정리본이 없어요</option>'; tp().innerHTML = '<p class="empty">정리본 탭에서 먼저 정리본을 만들어주세요.</p>'; count(); return; }
-    if(!byId(id)) id = sumNotes[0].id;
+    if(!L().length){ $('#tpPick').innerHTML = '<option>정리본이 없어요</option>'; tp().innerHTML = '<p class="empty">정리본 탭에서 먼저 정리본을 만들어주세요.</p>'; count(); return; }
+    if(!byId(id)) id = L()[0].id;
     cur = id;
-    $('#tpPick').innerHTML = sumNotes.map(n => `<option value="${n.id}"${n.id === id ? ' selected' : ''}>${esc(n.title)}</option>`).join('');
+    $('#tpPick').innerHTML = L().map(n => `<option value="${n.id}"${n.id === id ? ' selected' : ''}>${esc(n.title)}</option>`).join('');
     const n = byId(id);
     tp().innerHTML = n.tape || draw(n.text);
     tp().querySelectorAll('.peek').forEach(x => x.classList.remove('peek'));
@@ -2884,7 +2907,25 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
   $('#tpColorReset').onclick = () => { colors = Object.assign({}, DEF); store.set('tapeColors', colors); applyColors(); drawPens(); };
   new MutationObserver(applyColors).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 
+  // 예시 데이터 켜기·끄기 (켤 때마다 처음 상태로)
+  function setEx(on){
+    if(editing) setEdit(false, true);
+    ex = on;
+    if(on){
+      const r = DEMO_SUM.raw, text = r.replace(/[⟦⟧⟪⟫]/g, '');
+      const tape = draw(r).replace(/⟦(.*?)⟧/g, '<span class="hl">$1</span>').replace(/⟪(.*?)⟫/g, '<span class="hl2">$1</span>');
+      demo = [{id:'demo-sum', title:DEMO_SUM.title, sub:DEMO_SUM.sub, at:DEMO_SUM.at, text, tape}];
+      cur = 'demo-sum';
+    } else cur = null;
+    document.querySelectorAll('[data-sumex]').forEach(b => b.textContent = on ? '내 기록으로 보기' : '예시 데이터로 보기');
+    document.querySelectorAll('[data-sumbar]').forEach(b => b.hidden = !on);
+    show(cur);
+    if($('#tape').classList.contains('on')) openTape(cur);
+  }
+  document.querySelectorAll('[data-sumex]').forEach(b => b.onclick = () => setEx(!ex));
+
   window.sumAdd = (text, title, sub, toTape) => {
+    if(ex) setEx(false);
     const n = {id: uid(), title: title || '정리본 ' + new Date().toLocaleDateString('ko-KR'), sub: sub || '', at: Date.now(), text, tape: null};
     sumNotes.unshift(n); save(); cur = n.id;
     if(toTape){ goTab('tape'); toast('정리본을 만들어 테이프로 열었어요'); } else show(n.id);
