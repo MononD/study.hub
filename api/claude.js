@@ -50,7 +50,7 @@ const TASKS = {
   pdf_summary: { src: 'pdf', sys: BASE + '올려준 자료를 아래 형식에 맞춰 요약하세요.\n\n[핵심 요약]\n5~8줄\n\n[목차별 정리]\n주제별로 2~3줄씩\n\n[시험에 나올 포인트]\n3~5개' },
   pdf_concept: { src: 'pdf', sys: BASE + '올려준 자료의 개념을 정리하세요.\n\n[핵심 개념]\n용어: 쉬운 설명 (최대 10개)\n\n[개념 사이의 관계]\n3~5줄\n\n[헷갈리기 쉬운 점]\n비교해서 2~4개' },
   pdf_quiz: { src: 'pdf', sys: QUIZ, tool: 'quiz' },
-  lecture: { src: 'text', sys: BASE + '아래는 강의를 음성인식으로 받아 적은 글이라 오타나 끊긴 문장이 있을 수 있어요. 문맥에 맞게 바로잡아 아래 형식으로 정리하세요.\n\n[한 줄 요약]\n\n[핵심 내용]\n주제별로 짧게 정리\n\n[중요 용어]\n용어: 설명\n\n[복습 퀴즈]\n단답형 5문제와 정답' },
+  lecture: { src: 'text', max: 6000, sys: BASE + '아래는 강의를 음성인식으로 받아 적은 글이라 오타나 끊긴 문장이 있을 수 있어요. 문맥에 맞게 바로잡아 아래 형식으로 정리하세요.\n\n[한 줄 요약]\n\n[핵심 내용]\n주제별로 짧게 정리\n\n[중요 용어]\n용어: 설명\n\n[복습 퀴즈]\n단답형 5문제와 정답' },
   lecture_quiz: { src: 'text', sys: QUIZ + '\n자료는 강의를 음성인식으로 받아 적은 글이라 오타가 있을 수 있어요. 문맥에 맞게 이해해서 만드세요.', tool: 'quiz' },
   plan: { src: 'text', sys: PLAN, tool: 'plan' },
   constellation: { src: 'text', sys: CONST, tool: 'constellation' },
