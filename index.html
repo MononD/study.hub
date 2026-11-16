@@ -851,10 +851,13 @@ function addReview(name){
 // ---------- 예시 데이터 (심사·시연용, 내 기록은 바뀌지 않아요) ----------
 const DEMO_NOTES = [
   {id:-1, kind:'summary', title:'성인간호학 상부호흡기계 · 성인간호학 2-2 호흡기능장애 기말고사 정리본', at:'2026-11-06', text:"[핵심 요약]\n상부호흡기계는 코에서 후두까지의 구간으로, 폐까지 공기를 전달하고 이산화탄소를 배출하는 통로입니다.\n코선반은 공기를 습하고 따뜻하게 하고, 후두개는 삼킬 때 후두를 막아 흡인을 막습니다.\n건강사정은 호소 증상 중심의 건강력과 시진, 촉진, 타진 순의 신체검진으로 하며, 후두경 검사 후에는 구역반사가 돌아올 때까지 금식합니다.\n기관절개는 상기도 폐색, 분비물 제거, 장기간 기계환기를 위해 하며, 절개 부위 간호, 흡인, 커프 관리가 핵심입니다.\n흡인은 분비물이 있을 때만 1회 10초 이내로 하고, 커프 압력은 20mmHg를 넘기지 않아야 합니다.\n기관내 삽관은 빠르고 상처가 없지만 오래 유지할 수 없어 응급상황에서 시행합니다.\n질환에서는 인플루엔자, 비염, 비용종, 비중격만곡, 비골절, 부비동염, 비출혈, 코 성형술을 다룹니다.\n알레르기성 비염 약물은 종류별 작용과 부작용, 교육 내용이 중요하고, 부비동염은 수분섭취와 증기흡입 등 간호가 핵심입니다.\n\n[목차별 정리]\n1. 구조와 기능\n코, 부비동, 인두, 후두로 구성됩니다. 부비동은 전두동, 사골동, 접형동, 상악동이며 분비물은 비강으로 흐릅니다. 후두는 9개의 연골로 이루어져 있고 갑상연골(아담의 사과), 윤상연골, 성대와 성문이 있습니다.\n\n2. 건강사정\n증상의 시기, 기간, 정도, 완화 및 악화 요인을 질문합니다. 코는 시진과 촉진 후 비경을 사용하고, 인두는 설압자로 목젖의 위치를 확인합니다. 전두동과 상악동은 촉진과 타진으로 압통과 부종을 검사합니다.\n\n3. 임상진단검사\n세균배양은 멸균 면봉으로 코나 인후의 검체를 채취합니다. 후두경 검사는 검사 전 안정제 투여와 금식을 하고, 검사 후 구역반사가 돌아오면 물부터 섭취하게 합니다.\n\n4. 기관절개와 관의 유형\n윤상연골 아래 2~3번째 또는 3~4번째 기관륜을 절개해 누공을 만듭니다. 일반 관은 외관, 닫개, 내관으로 구성되고 커프는 흡인과 공기 누출을 막습니다. 구멍 뚫린 관이나 의사소통 가능 관, Passy-Muir 밸브를 쓰면 말을 할 수 있습니다.\n\n5. 절개 부위 간호와 흡인 간호\n분비물이 있으면 먼저 흡인한 뒤 드레싱을 제거하고, 젖은 드레싱은 감염 원인이므로 자주 교환합니다. 고정 끈은 손가락 하나가 들어갈 정도로 고정하고, 피부 간호는 하루 3번 또는 필요할 때 합니다. 흡인 전에는 100% 산소를 공급하고, 심박동수가 40회 이상 변하거나 부정맥이 생기거나 SpO₂가 90% 이하로 떨어지면 중단합니다.\n\n6. 커프 관리와 관이 빠졌을 때\n커프는 기도를 막을 최소한의 양으로 팽창시키고 압력은 매일 측정합니다. 관이 빠지면 즉시 교체하며, 유치봉합 실이나 지혈겸자로 구멍을 넓히고 단개를 넣은 튜브를 45° 각도로 삽입합니다. 교환이 안 되면 반좌위를 취하게 하고, 호흡이 정지하면 누공을 멸균 드레싱으로 막고 백 밸브 마스크로 환기합니다.\n\n7. 제거, 연하, 언어, 영양 간호\n환자가 환기와 분비물 배출을 충분히 할 수 있으면 제거하고, 누공은 폐쇄 드레싱으로 막습니다. 흡인 위험이 있으면 식사 중에도 커프를 수축시키지 않습니다. 흡인 사정은 푸른색 물 30mL를 삼키게 해서 합니다. 언어장애에는 필담, 단어카드, 인공 후두를 제공하고, 영양은 고열량, 고단백의 진한 음식으로 공급합니다.\n\n8. 기관내 삽관\n앙와위에서 머리를 약간 젖히고 후두경을 왼손으로 잡아 구강 우측으로 넣습니다."},
-  {id:-2, kind:'lecture', title:'성인간호학 · 호흡계 건강사정', at:'2026-11-07', text:"[한 줄 요약]\n호흡계 건강사정은 위험요인(호흡계 질환·가족력·환경 및 직업·흡연·예방접종)과 주요 증상(호흡곤란·기침·가래·객혈)을 순서대로 확인하는 과정입니다.\n\n[핵심 내용]\n1. 호흡 조절 수용체\n말초화학수용체는 대동맥소체와 경동맥소체에 있으며, 동맥혈 산소분압이 떨어지면 호흡중추를 자극합니다. COPD 환자는 낮은 산소농도 상태에 적응되어 있어 고농도 산소를 투여하면 호흡이 억제될 수 있으므로 주의합니다. 압력수용기는 혈압이 급격히 오르면 호흡중추를 일시적으로 억압합니다.\n\n2. 건강력\n호흡기 질환 병력, 사용 중인 약물, 입원 경험, 가족력, 환경과 직업, 흡연(pack/year), 예방접종 여부를 확인합니다.\n\n3. 주요 증상\n호흡곤란은 빠른 호흡이나 과다호흡과 구별하며, Borg 척도나 시각아날로그 척도(VAS)로 정도를 사정합니다. 가래는 양, 색깔, 농도, 냄새를 확인하고, 악취가 나면 감염 진행을 의미합니다. 객혈은 붉은색이고 알칼리성이며, 위장관 출혈인 토혈은 산성입니다.\n\n[중요 용어]\n말초화학수용체: 대동맥소체·경동맥소체에 있으며 산소분압 저하에 반응\npack/year: 1일 흡연량과 흡연 기간으로 계산하는 연간 흡연량\n발작야간호흡곤란: 밤에 자다가 갑자기 호흡곤란으로 깨는 것\n객혈: 기도 내 혈액이 기침과 함께 외부로 배출되는 것\n\n[복습 퀴즈]\n1. 동맥혈 산소분압이 떨어질 때 반응하는 수용체는? → 말초화학수용체\n2. 말초화학수용체가 있는 두 곳은? → 대동맥소체, 경동맥소체\n3. COPD 환자에게 고농도 산소 투여를 피하는 이유는? → 호흡억제\n4. 호흡곤란 정도를 사정하는 도구 두 가지는? → Borg 척도, 시각아날로그 척도(VAS)\n5. 객혈과 토혈을 pH로 구분하면? → 객혈 알칼리, 토혈 산성"}
+  {id:-2, kind:'lecture', title:'성인 호흡 2', at:'2026-11-16', text:"[한 줄 요약]\n폐용량(흡기용량, 기능잔기용량, 폐활량, 총폐용량)과 폐기능검사 지표(FVC, FEV1 등)를 정리하고, 호흡곤란 유형, 과다환기와 저환기, 객혈과 토혈의 구분, 저산소증의 종류와 증상, 고탄산혈증까지 다룬 강의입니다.\n\n[핵심 내용]\n\n1. 폐용량\n흡기용량은 1회 호흡량에 흡기예비량을 더한 값입니다.\n기능잔기용량은 잔기량에 호기예비량을 더한 값으로, 정상 호기 후 폐에 남아 있는 공기량입니다. 잔기량만이 아니라 호기예비량까지 포함합니다.\n폐활량은 힘껏 들이마신 뒤 힘껏 내쉴 수 있는 공기의 최대량이며, 폐질환 진단과 폐기능검사에서 중요합니다.\n총폐용량은 폐가 보유할 수 있는 최대 공기량입니다. 기능잔기용량에 흡기용량을 더하거나, 폐활량에 잔기량을 더해 구합니다.\n\n2. 강제호기량과 폐기능검사 지표\n강제폐활량(FVC)은 깊게 들이마신 뒤 최대한 빠르게 힘껏 내쉰 공기량입니다.\n초당 강제호기량은 1초에 약 83%, 2초에 93%, 3초에 97%를 내쉬는 것이 정상입니다.\n전부 내쉬는 데 4초 이상 걸리면 폐쇄성 폐질환을 의심합니다.\nFVC에 대한 1초 강제호기량(FEV1) 비율이 80% 이상이면 정상입니다. COPD 환자는 80%에 못 미치며 0.7 정도로 나타날 수 있습니다.\n강제호기 초기 유량은 큰 기도의 공기흐름을 평가합니다. 강의에서는 \"1000mm\"로 들리는데 1000mL를 말한 것으로 보이며, 정확한 구간은 교재로 확인하세요.\n강제 중간 호기 유속은 FVC의 초기 25%와 말기 25%를 뺀 중간 50% 구간의 유속입니다."},
+  {id:-3, kind:'concept', title:'성인간호학 상부호흡기계 · PDF 개념', at:'2026-11-06', text:"[핵심 개념]\n상부호흡기계: 코에서 후두까지의 구간으로, 폐까지 공기를 전달하고 이산화탄소를 배출하는 통로\n코선반: 들어오는 공기를 습하고 따뜻하게 만드는 구조\n후두개: 삼킬 때 후두를 덮어 흡인을 막는 덮개\n부비동: 전두동·사골동·접형동·상악동으로 이루어지며, 분비물은 비강으로 흐름\n후두: 9개의 연골로 이루어지며 갑상연골(아담의 사과)·윤상연골·성대·성문이 있음\n기관절개: 윤상연골 아래 2~3번째 또는 3~4번째 기관륜을 절개해 누공을 만드는 것\n커프: 흡인과 공기 누출을 막는 풍선, 기도를 막을 최소한의 양으로 팽창\nPassy-Muir 밸브: 기관절개 환자가 말을 할 수 있게 돕는 밸브\n기관내 삽관: 빠르고 상처가 없지만 오래 유지할 수 없어 응급상황에서 시행\n후두경 검사: 검사 전 안정제 투여와 금식, 검사 후 구역반사가 돌아오면 물부터 섭취\n\n[개념 사이의 관계]\n코선반과 후두개 같은 상부호흡기계 구조는 공기를 데우고 흡인을 막아 하부 기도를 보호합니다.\n상기도가 막히거나 분비물 제거, 장기간 기계환기가 필요하면 기관절개를 하고, 이때 흡인·커프 관리·절개 부위 간호가 핵심이 됩니다.\n응급상황에서는 빠르게 시행할 수 있는 기관내 삽관을 먼저 하고, 장기간 기도 확보가 필요하면 기관절개로 넘어갑니다.\n\n[헷갈리기 쉬운 점]\n기관절개 vs 기관내 삽관: 기관절개는 장기간 유지, 기관내 삽관은 응급·단기간\n흡인 시간 vs 커프 압력: 흡인은 1회 10초 이내, 커프 압력은 20mmHg를 넘기지 않음\n관이 빠졌을 때: 즉시 교체 → 교체가 안 되면 반좌위 → 호흡이 멈추면 누공을 멸균 드레싱으로 막고 백 밸브 마스크로 환기"}
 ];
 // 정리본·테이프 예시: ⟦일반 밑줄⟧ ⟪중요 밑줄⟫
 const DEMO_SUM = {title:'하부호흡기계', sub:'성인간호학', at:new Date('2026-11-07T21:00:00').getTime(), raw:"③ {{말초화학수용체}}\n  CO2 농도↑ → 화학수용체 자극 → 호흡수↑·{{과다환기}}\n  ⟦위치 : {{대동맥소체}}(aortic body) / {{경동맥소체}}(carotid body)⟧\n  명칭 : {{peripheral chemoreceptor}}\n  작용 : 동맥혈 {{산소분압}}↓ 시 반응 → 호흡중추 자극 ※\n  ⟦저산소혈증 → 말초화학수용체 자극 → 호흡중추 자극 → 환기↑⟧\n  ⟪(메모) COPD 환자 : 낮은 산소농도 상태⟫\n  ⟪(메모) 고농도 산소 투여 → 산소분압↑ → 호흡억제 ∴ COPD 환자 고농도 산소 투여 금지 ※ [손글씨 일부 확인 필요]⟫\n  {{압력수용기}}(baroreceptor)\n    위치 : 대동맥동(aortic sinus) / 경동맥동(carotid sinus)\n    작용 : 혈압 급격한 상승 반응 → 호흡중추 일시적 억압 → 호흡 느리고 얕아짐\n\n2. {{건강사정}}\n\n1) {{건강력}}\n\n(1) {{호흡계 질환의 위험요인}}\n\n① {{호흡계 질환}}\n  {{병력}}\n    확인 : 감기·인후통·부비동 문제·알레르기 및 유발인자·{{천식}}·폐렴·결핵 등 호흡기 문제 경험 여부 ※\n  {{약물}}\n    확인 : 항히스타민제·기관지확장제·스테로이드·기침완화제·항생제·산소 사용 여부\n    수집 : 사용 이유·약명·용량·사용 빈도·사용 기간·효과·부작용\n    추가 확인 : 가정용 산소요법 / 인공호흡기 사용 / 분무기 통한 약물투여 여부\n  {{입원 경험}}\n    ⟦확인 : 호흡기 문제로 입원 경험 여부 ※⟧\n    수집 : 입원 시기·치료방법·현재 상황\n\n② {{가족력}}\n  확인 : {{천식}}·{{폐기종}}·{{낭성섬유증}}⟪(cystic fibrosis) 등 가족력 ※⟫\n  ⟪확인 : 유전성 경향 ※⟫\n\n③ {{환경 및 직업}}\n  대기오염·작업환경 등 → {{폐암}}·직업성 폐질환·폐결핵 발생에 영향\n  확인 필요 요인으로 사정\n\n④ {{흡연}}\n  ⟪확인 : 현재와 과거의 흡연 습관·정도 ※⟫\n  조사 : 1일 흡연량·흡연 기간·연간 흡연량({{pack/year}})\n  담배 종류 : 여송연·파이프 흡연·씹는 담배·연기가 없는 담배·전자담배\n  ⟦간접흡연 노출 여부 확인 중요⟧\n  금연 위해 사용한 처방약·비처방약·민간요법 등 경험 확인\n\n⑤ {{예방접종}}\n  확인 : 유행성 감기 / {{폐렴구균성 폐렴}} 예방접종 여부\n  유행성 감기 : 매년 접종 [일부 가려져 확인 필요]\n  폐렴구균 폐렴 예방접종 : 65세 [일부 가려져 확인 필요] 노인·만성 심혈관 질환·만성 폐질환·당뇨병 대상 권장 [일부 가려져 확인 필요]\n\n(2) {{호흡계 질환 증상}}\n\n① {{호흡곤란}}\n  정의 : 호흡기 질환 환자에게 흔히 관찰 + 불편감 동반\n  ⟪구별 : 빠른 호흡·과다호흡 ≠ 호흡곤란 ※⟫\n  확인 : 종류·정도·기간·시작 시간·급/만성 여부·유발요인·악화요인·완화요인\n  확인 : 활동·운동으로 악화 여부·관련 자세 등\n  ⟪정도 사정 도구 : {{Borg 척도}} / {{시각아날로그 척도}}(visual analog scale; VAS) ※⟫\n\n표 18-1 호흡곤란 척도(시각아날로그 척도)\n척도\t점수\t내용\nVAS\t10\t극도의 호흡곤란-최악으로 숨이 참\nVAS\t0\t호흡곤란 없음, 숨차지 않음\nBorg\t0\t전혀 없음\nBorg\t0.5\t거의 없음\nBorg\t1\t아주 경함\nBorg\t2\t경함\nBorg\t3\t중등도\nBorg\t4\t약간 심함\nBorg\t5\t심함\nBorg\t6\t-\nBorg\t7\t아주 심함\nBorg\t8\t-\nBorg\t9\t거의 극도로 심함\nBorg\t10\t극도로 심함\n\n  호흡곤란 유형\n    - {{운동성호흡곤란}}(exertional dyspnea)\n    - {{호기호흡곤란}}(expiratory dyspnea)\n    - {{흡기호흡곤란}}(inspiratory dyspnea)\n    - {{비만호흡곤란}}(liparodyspnea)\n    - {{야간호흡곤란}}(nocturnal dyspnea)\n    - {{기립호흡곤란}}(orthostatic dyspnea)\n    - {{발작호흡곤란}}(paroxysmal dyspnea)\n    - {{발작야간호흡곤란}}(paroxysmal nocturnal dyspnea)\n      (메모) 폐부종, 밤에 자다가 갑자기 호흡곤란으로 깨는 것\n\n② {{기침, 가래 및 객혈}}\n  {{기침}}\n    호흡기계질환 환자에게 흔히 나타나는 증상\n    ⟦기전 : 기침반사 → 이물질 기도 밖 배출 → 폐 흡인 방지 = 방어 작용 ※⟧\n    확인 : 급/만성/발작성 여부·빈도·기침의 유형·정도·유발요인·악화요인·완화요인\n  {{가래}}\n    가래 동반 기침 시 확인 : 양·색깔·농도·냄새\n    정상 가래 : 맑거나 약간 흰색 ※ / 냄새 없음 ※\n    가래색 변화 → 감염 유무·비정상 기관지 분비물 존재 파악\n    악취 가래 → 감염 진행 의미 ※\n  {{객혈}}(hemoptysis)\n    정의 : 기도 내 혈액이 기침과 함께 외부로 배출\n    특성 : {{붉은색}}·{{알칼리}} ※\n    의미 : 호흡계 출혈\n    (메모) 토혈 : 위장관에서의 출혈·산성 [손글씨 일부 확인 필요]\n\n  기침 유형\n    - {{개기침}}(barking cough)\n    - {{마른기침}}(dry cough)\n      (메모) 가래가 없는 건조하고 깔깔한 소리의 기침\n    - {{잦은 마른기침}}(hacking cough)\n    - {{생산성 젖은기침}}(productive cough, wet cough)\n      (메모) 가래 동반 / 축축하고 끈끈한 소리 [손글씨 확인 필요]\n\n  비정상 양상 가래\n    - {{혈액착색가래}}(blood stained sputum)\n    - {{혈액흔적가래}}(blood tinged sputum)\n    - {{혈성가래}}·피가래(bloody sputum)\n    - {{둥근덩이가래}}(globular sputum)\n      (메모) 가래 모양이 둥근 덩어리\n    - {{녹색가래}}(green sputum)\n    - {{고름가래}}(purulent sputum)\n    - {{쇠녹가래}}(rusty sputum)\n      (메모) 쇠가 녹슨 것처럼 갈색 [손글씨 확인 필요]\n\n③ {{천명}}\n  정의 : 기도 좁아짐 / 폐쇄 →"};
+const DEMO_QUIZ = [{"id": "demo-q1", "title": "성인 호흡 2 · 강의 퀴즈", "sub": "성인간호학", "src": "lecture", "at": new Date('2026-11-16T11:14:00').getTime(), "qs": [{"q": "기능잔기용량을 바르게 설명한 것은?", "choices": ["1회 호흡량 + 흡기예비량", "잔기량 + 호기예비량", "폐활량 + 잔기량", "강제폐활량 + 1초량"], "answer": 1, "concept": "기능잔기용량", "explain": "기능잔기용량은 잔기량에 호기예비량을 더한 값으로, 정상 호기 후 폐에 남아 있는 공기량입니다."}, {"q": "1회 호흡량에 흡기예비량을 더한 값은?", "choices": ["폐활량", "총폐용량", "기능잔기용량", "흡기용량"], "answer": 3, "concept": "흡기용량", "explain": "흡기용량 = 1회 호흡량 + 흡기예비량입니다."}, {"q": "폐가 보유할 수 있는 최대 공기량이며 폐활량에 잔기량을 더해 구하는 것은?", "choices": ["총폐용량", "흡기용량", "강제폐활량", "최대환기량"], "answer": 0, "concept": "총폐용량", "explain": "총폐용량은 폐활량 + 잔기량, 또는 기능잔기용량 + 흡기용량으로 구합니다."}, {"q": "힘껏 들이마신 뒤 힘껏 내쉴 수 있는 공기의 최대량으로, 폐질환 진단에 중요한 지표는?", "choices": ["잔기량", "폐활량", "기능잔기용량", "흡기예비량"], "answer": 1, "concept": "폐활량", "explain": "폐활량은 폐질환 진단과 폐기능검사에서 중요한 요소입니다."}, {"q": "강제호기량 검사 결과 중 COPD 같은 폐쇄성 폐질환을 의심하게 하는 것은?", "choices": ["1초에 83%를 내쉰다", "3초에 97%를 내쉰다", "FEV1/FVC가 80% 이상이다", "전부 내쉬는 데 4초 이상 걸리고 FEV1/FVC가 0.7 정도다"], "answer": 3, "concept": "강제호기량", "explain": "전부 내쉬는 데 4초 이상 걸리면 폐쇄성 폐질환을 의심하며, COPD 환자는 FEV1/FVC가 0.7 정도로 나타날 수 있습니다."}, {"q": "흡기 시 흉곽이 오히려 들어가고 호기 시 팽창하는 호흡 양상은?", "choices": ["기좌호흡", "모순호흡", "쿠스마 호흡", "체인스톡스 호흡"], "answer": 1, "concept": "모순호흡", "explain": "흡기와 호기 때 흉곽 움직임이 정상과 반대로 나타나는 것이 모순호흡입니다."}, {"q": "과다환기 때 나타나는 변화로 옳은 것은?", "choices": ["CO2 분압 감소, 호흡성 알칼리증", "CO2 분압 증가, 호흡성 산증", "CO2 분압 감소, 호흡성 산증", "CO2 분압 증가, 호흡성 알칼리증"], "answer": 0, "concept": "과다환기", "explain": "과다환기로 CO2가 과도하게 배출되면 CO2 분압이 떨어져 호흡성 알칼리증이 됩니다."}, {"q": "객혈과 토혈의 구분으로 옳은 것은?", "choices": ["객혈은 구토 시, 토혈은 기침 시 나온다", "객혈은 암갈색, 토혈은 선홍색이다", "객혈은 상대적으로 알칼리성이고 거품이 있으며, 토혈은 산성이고 음식물이 섞인다", "두 가지 모두 위장관 출혈이다"], "answer": 2, "concept": "객혈", "explain": "객혈은 호흡계 출혈로 알칼리성이고 거품이 있으며, 토혈은 위장관 출혈로 산성입니다."}, {"q": "혈액 정체로 모세혈관 혈류가 줄어 산소 공급이 떨어지는 저산소증은?", "choices": ["저산소성 저산소증", "빈혈성 저산소증", "울혈성 저산소증", "무산소증"], "answer": 2, "concept": "울혈성 저산소증", "explain": "혈액이 정체되어 조직으로 가는 혈류가 줄어드는 경우가 울혈성 저산소증입니다."}, {"q": "이산화탄소 분압이 높아진 고탄산혈증에서 생기는 산염기 불균형은?", "choices": ["호흡성 알칼리증", "대사성 알칼리증", "호흡성 산증", "대사성 산증"], "answer": 2, "concept": "고탄산혈증", "explain": "CO2가 쌓이면 혈액이 산성으로 기울어 호흡성 산증이 됩니다."}], "last": null, "demo": true}, {"id": "demo-q2", "title": "성인간호학 상부호흡기계 · PDF 문제", "sub": "성인간호학", "src": "pdf", "at": new Date('2026-11-06T20:00:00').getTime(), "qs": [{"q": "기관절개 환자의 1회 흡인 시간으로 옳은 것은?", "choices": ["5초 이내", "10초 이내", "20초 이내", "30초 이내"], "answer": 1, "concept": "흡인 간호", "explain": "흡인은 분비물이 있을 때만, 1회 10초 이내로 합니다."}, {"q": "기관절개관 커프 압력 관리로 옳은 것은?", "choices": ["10mmHg를 넘기지 않는다", "20mmHg를 넘기지 않는다", "30mmHg 이상 유지한다", "압력은 측정하지 않는다"], "answer": 1, "concept": "커프 관리", "explain": "커프 압력은 20mmHg를 넘기지 않아야 하고 매일 측정합니다."}, {"q": "흡인을 중단해야 하는 상황이 아닌 것은?", "choices": ["심박동수가 40회 이상 변한다", "부정맥이 생긴다", "SpO₂가 90% 이하로 떨어진다", "SpO₂가 98%로 유지된다"], "answer": 3, "concept": "흡인 간호", "explain": "심박동수 40회 이상 변화, 부정맥, SpO₂ 90% 이하일 때 흡인을 중단합니다."}, {"q": "후두경 검사 후 간호로 옳은 것은?", "choices": ["검사 직후 바로 식사한다", "구역반사가 돌아오면 물부터 섭취하게 한다", "24시간 금식한다", "다음 날 아침부터 식사한다"], "answer": 1, "concept": "후두경 검사", "explain": "검사 후 구역반사가 돌아올 때까지 금식하고, 돌아오면 물부터 섭취합니다."}, {"q": "기관절개관이 빠졌는데 교체가 되지 않을 때 취해줄 체위는?", "choices": ["앙와위", "반좌위", "측위", "복위"], "answer": 1, "concept": "관 빠짐", "explain": "교환이 안 되면 반좌위를 취하게 합니다."}, {"q": "기관절개 환자의 흡인 위험을 사정하는 방법은?", "choices": ["우유 50mL를 삼키게 한다", "생리식염수 10mL를 삼키게 한다", "푸른색 물 30mL를 삼키게 한다", "바륨 100mL를 삼키게 한다"], "answer": 2, "concept": "연하 간호", "explain": "흡인 사정은 푸른색 물 30mL를 삼키게 해서 합니다."}, {"q": "부비동에 해당하지 않는 것은?", "choices": ["전두동", "사골동", "접형동", "측두동"], "answer": 3, "concept": "부비동", "explain": "부비동은 전두동, 사골동, 접형동, 상악동입니다."}, {"q": "기관내 삽관에 대한 설명으로 옳은 것은?", "choices": ["오래 유지할 수 있어 장기간 환기에 쓴다", "빠르고 상처가 없어 응급상황에서 시행한다", "윤상연골 아래 기관륜을 절개한다", "복위에서 시행한다"], "answer": 1, "concept": "기관내 삽관", "explain": "기관내 삽관은 빠르고 상처가 없지만 오래 유지할 수 없어 응급상황에서 시행합니다."}], "last": null, "demo": true}];
+const DEMO_SUM2 = {title:'성인간호학 상부호흡기계 · PDF 정리본', sub:'성인간호학', at:new Date('2026-11-06T21:00:00').getTime(), raw:"1. 구조와 기능\n  상부호흡기계 : {{코}} ~ {{후두}} 구간\n  구성 : 코 / 부비동 / 인두 / 후두\n  {{코선반}} : 공기 가습·가온\n  {{후두개}} : 연하 시 후두 폐쇄 → {{흡인}} 방지 ※\n  부비동 : {{전두동}} / {{사골동}} / {{접형동}} / {{상악동}}\n  - 분비물 → 비강으로 배출\n  후두 : 연골 {{9개}}\n  - {{갑상연골}}(아담의 사과)·{{윤상연골}}·성대·성문\n\n2. 건강사정\n  문진 : 증상 시기·기간·정도·완화 및 악화 요인\n  코 : 시진·촉진 → {{비경}} 사용\n  인두 : {{설압자}} → 목젖 위치 확인\n  전두동·상악동 : 촉진·타진 → 압통·부종 확인\n\n3. 임상진단검사\n  세균배양 : {{멸균 면봉}} → 코·인후 검체 채취\n  후두경 검사\n  - 검사 전 : 안정제 투여 + {{금식}}\n  - 검사 후 : {{구역반사}} 회복 → 물부터 섭취 ※\n\n4. 기관절개\n  목적 : 상기도 폐색 / 분비물 제거 / 장기간 기계환기\n  부위 : 윤상연골 아래 {{2~3번째}} 또는 {{3~4번째}} 기관륜 절개 → 누공\n  관 구성 : {{외관}}·{{닫개}}·{{내관}}\n  커프 : 흡인·공기 누출 방지\n  발성 : 구멍 뚫린 관 / 의사소통 가능 관 / {{Passy-Muir 밸브}}\n\n5. 절개 부위 간호와 흡인 간호\n  흡인 시행 : 분비물 있을 때만\n  1회 흡인 시간 : {{10초 이내}} ※\n  흡인 전 : {{100% 산소}} 공급\n  중단 기준 : 심박동수 {{40회}} 이상 변화 / 부정맥 / SpO₂ {{90%}} 이하 ※\n  드레싱 : 분비물 흡인 → 드레싱 제거 / 젖은 드레싱 = 감염 원인 → 자주 교환\n  고정 끈 : 손가락 {{1개}} 들어갈 정도\n  피부 간호 : 하루 3번 또는 필요 시\n\n6. 커프 관리와 관 빠짐\n  커프 : 기도를 막을 최소한의 양으로 팽창\n  커프 압력 : {{20mmHg}} 넘지 않게, 매일 측정 ※\n  관 빠짐 → 즉시 교체 (튜브 {{45°}} 각도 삽입)\n  교체 불가 → {{반좌위}} ※\n  호흡 정지 → 누공 멸균 드레싱 + {{백 밸브 마스크}} 환기\n\n7. 제거·연하·언어·영양 간호\n  흡인 사정 : {{푸른색 물}} 30mL 삼킴\n  흡인 위험 → 식사 중에도 커프 수축 금지 ※\n  언어장애 : 필담·단어카드·인공 후두\n  영양 : 고열량·고단백 진한 음식\n\n8. 기관내 삽관\n  특징 : 빠름·상처 없음 / 장기간 유지 불가 → {{응급상황}}\n  방법 : {{앙와위}} + 머리 약간 젖힘 → 후두경 왼손 → 구강 우측 삽입\n\n[빠진 내용 점검]\n- 질환(인플루엔자·비염·비용종·비중격만곡·비골절·부비동염·비출혈·코 성형술) 세부 내용 [확인 필요]"};
 const EX = {rec:false, pdf:false};
 const exBar = '<div class="demo-bar">예시 데이터예요. 내 기록은 바뀌지 않아요.</div>';
 // ---------- 저장 · 강의 정리 · PDF ----------
@@ -874,10 +877,12 @@ function drawNotes(){
   fill($('#recSaved'), 'lecture', EX.rec);
   $('#recEx').textContent = EX.rec ? '내 기록으로 보기' : '예시 데이터로 보기';
   $('#pdfEx').textContent = EX.pdf ? '내 기록으로 보기' : '예시 데이터로 보기';
-  if(pdfKind === 'quiz') $('#pdfSaved').innerHTML = quizListHTML('pdf');
-  else if(pdfKind === 'tape') $('#pdfSaved').innerHTML = '<p class="empty">만든 정리본은 정리본·테이프 탭에 저장돼요.</p>';
+  if(pdfKind === 'quiz') $('#pdfSaved').innerHTML = (EX.pdf ? exBar : '') + quizListHTML('pdf', EX.pdf);
+  else if(pdfKind === 'tape') $('#pdfSaved').innerHTML = EX.pdf && window.sumDraw
+    ? exBar + `<div class="note"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px"><b>${esc(DEMO_SUM2.title)}</b><button class="btn" data-pdftape>테이프로 열기 →</button></div><div class="sn-doc">${window.sumDraw(DEMO_SUM2.raw)}</div></div>`
+    : '<p class="empty">만든 정리본은 정리본·테이프 탭에 저장돼요.</p>';
   else fill($('#pdfSaved'), pdfKind, EX.pdf);
-  $('#recQuizSaved').innerHTML = quizListHTML('lecture');
+  $('#recQuizSaved').innerHTML = (EX.rec ? exBar : '') + quizListHTML('lecture', EX.rec);
   $('#pdfSavedTitle').textContent = '저장한 ' + KIND_NAME[pdfKind];
 }
 ['#recSaved', '#pdfSaved'].forEach(sel => $(sel).onclick = async e => {
@@ -886,7 +891,8 @@ function drawNotes(){
   if(del && confirm('이 저장 내용을 삭제할까요?')){ notes = notes.filter(x => x.id !== +del.dataset.del); store.set('notes', notes); drawNotes(); }
 });
 $('#recEx').onclick = () => { EX.rec = !EX.rec; drawNotes(); };
-$('#pdfEx').onclick = () => { EX.pdf = !EX.pdf; if(EX.pdf && pdfKind !== 'summary'){ pdfKind = 'summary'; showPdf(); } else drawNotes(); };
+$('#pdfEx').onclick = () => { EX.pdf = !EX.pdf; drawNotes(); };
+$('#pdfSaved').addEventListener('click', e => { if(e.target.closest('[data-pdftape]') && window.sumDemo) window.sumDemo('demo-sum2'); });
 // PDF
 function showPdf(){
   document.querySelectorAll('#pdfTabs button').forEach(b => b.classList.toggle('on', b.dataset.k === pdfKind));
@@ -1517,13 +1523,13 @@ async function makeQuiz({src, sub, title, payload, box, msg, btn}){
   }catch(e){ msg.textContent = '실패: ' + e.message; }
   finally{ btn.disabled = false; }
 }
-function quizListHTML(src){
-  const l = (quizSets || []).filter(s => s.src === src);
+function quizListHTML(src, ex){
+  const l = (ex ? DEMO_QUIZ : quizSets || []).filter(s => s.src === src);
   if(!l.length) return '<p class="empty">아직 만든 퀴즈가 없어요.</p>';
-  return l.map(s => `<div class="note"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px"><b>${esc(s.title)}</b><span style="color:var(--sub);font-size:12px;flex:none">${dstr(s.at)}${s.last != null ? ' · 최근 ' + s.last + '%' : ' · 아직 안 풂'}</span></div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-qo="${s.id}">풀기</button><button class="btn ghost" data-qd="${s.id}">삭제</button></div></div>`).join('');
+  return l.map(s => `<div class="note"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px"><b>${esc(s.title)}</b><span style="color:var(--sub);font-size:12px;flex:none">${dstr(s.at)}${s.last != null ? ' · 최근 ' + s.last + '%' : ' · 아직 안 풂'}</span></div><div class="row" style="margin:8px 0 0"><button class="btn ghost" data-qo="${s.id}">풀기</button>${s.demo ? '' : `<button class="btn ghost" data-qd="${s.id}">삭제</button>`}</div></div>`).join('');
 }
 function openQuiz(box, idOrSet, scroll){
-  const set = typeof idOrSet === 'string' ? quizSets.find(s => s.id === idOrSet) : idOrSet; if(!set) return;
+  const set = typeof idOrSet === 'string' ? quizSets.concat(DEMO_QUIZ).find(s => s.id === idOrSet) : idOrSet; if(!set) return;
   box._q = {set, order:set.qs.map((_, i) => i), picks:{}, graded:false, retry:false};
   box.style.display = ''; drawQuiz(box);
   if(scroll) box.scrollIntoView({behavior:'smooth', block:'start'});
@@ -1551,6 +1557,12 @@ function drawQuiz(box){
 }
 function gradeQuiz(box){
   const st = box._q, set = st.set, items = [], wrong = [], now = Date.now();
+  if(set.demo){   // 예시 퀴즈는 채점만 하고 별·풀이 기록은 바꾸지 않아요
+    let ok = 0; st.order.forEach(qi => { if(st.picks[qi] === set.qs[qi].answer) ok++; else wrong.push(qi); });
+    st.graded = true; st.wrong = wrong;
+    st.summary = `${st.order.length}문제 중 ${ok}개 정답 (${P(ok / st.order.length)}) · 예시 퀴즈라 내 별과 기록은 바뀌지 않아요`;
+    drawQuiz(box); return;
+  }
   const real = {concepts, consts}, doneBefore = doneConsts(real);
   const snap = new Map(concepts.map(c => [c.id, {ok:c.ok, strong:c.ok && memOf(c) >= FADE}]));
   let ok = 0;
@@ -2908,14 +2920,14 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
   new MutationObserver(applyColors).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 
   // 예시 데이터 켜기·끄기 (켤 때마다 처음 상태로)
-  function setEx(on){
+  function setEx(on, pick){
     if(editing) setEdit(false, true);
     ex = on;
     if(on){
-      const r = DEMO_SUM.raw, text = r.replace(/[⟦⟧⟪⟫]/g, '');
-      const tape = draw(r).replace(/⟦(.*?)⟧/g, '<span class="hl">$1</span>').replace(/⟪(.*?)⟫/g, '<span class="hl2">$1</span>');
-      demo = [{id:'demo-sum', title:DEMO_SUM.title, sub:DEMO_SUM.sub, at:DEMO_SUM.at, text, tape}];
-      cur = 'demo-sum';
+      demo = [['demo-sum', DEMO_SUM], ['demo-sum2', DEMO_SUM2]].map(([id, d]) => ({id, title:d.title, sub:d.sub, at:d.at,
+        text:d.raw.replace(/[⟦⟧⟪⟫]/g, ''),
+        tape:draw(d.raw).replace(/⟦(.*?)⟧/g, '<span class="hl">$1</span>').replace(/⟪(.*?)⟫/g, '<span class="hl2">$1</span>')}));
+      cur = pick || 'demo-sum';
     } else cur = null;
     document.querySelectorAll('[data-sumex]').forEach(b => b.textContent = on ? '내 기록으로 보기' : '예시 데이터로 보기');
     document.querySelectorAll('[data-sumbar]').forEach(b => b.hidden = !on);
@@ -2923,6 +2935,8 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
     if($('#tape').classList.contains('on')) openTape(cur);
   }
   document.querySelectorAll('[data-sumex]').forEach(b => b.onclick = () => setEx(!ex));
+  window.sumDraw = draw;
+  window.sumDemo = id => { setEx(true, id); goTab('tape'); };
 
   window.sumAdd = (text, title, sub, toTape) => {
     if(ex) setEx(false);
