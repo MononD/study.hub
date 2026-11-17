@@ -396,6 +396,7 @@
     <button class="btn ghost" id="uniReset">원래 크기</button>
     <button class="btn ghost" id="uniDemo">예시 우주 보기</button>
   </div>
+  <div class="chips" id="uniDemoPick" hidden></div>
   <div class="uni" id="uniBox">
     <canvas id="uniCv" role="img" aria-label="과목 행성과 개념 별 지도"></canvas>
     <div class="uni-count" id="uniCount"></div>
@@ -784,7 +785,7 @@ const calE = () => calEx ? calEx.events : events;
 const calLog = () => calEx ? calEx.log : studyLog;
 const calDay = k => Object.values(calLog()[k] || {}).reduce((a, b) => a + b, 0);
 function buildCalDemo(){
-  const w = demoWorld(), ev = {}, D = n => fmt(new Date(Date.now() + n * DAY));
+  const w = demoWorld(0), ev = {}, D = n => fmt(new Date(Date.now() + n * DAY));
   const add = (n, t, time, extra) => (ev[D(n)] = ev[D(n)] || []).push(Object.assign({t, time}, extra || {}));
   const plan = [[0, '약리학: 약동학 복습 (반감기·생체이용률·초회통과효과)'], [1, '약리학: 약력학 (작용제·길항제·치료지수)'], [2, '약리학: 심혈관약 (베타차단제·ACE 억제제·이뇨제)'], [3, '약리학: 틀린 개념 퀴즈 + 전체 훑기'],
     [5, '성인간호학: 폐기능 (폐활량·기능잔기용량·강제호기량)'], [6, '성인간호학: 호흡부전 (저산소증·고탄산혈증·산소요법)'], [7, '성인간호학: 기도관리 (기관절개·흡인 간호·커프 관리)'], [8, '성인간호학: COPD·객혈·호흡곤란'], [9, '성인간호학: 틀린 개념 집중 복습'], [10, '성인간호학: 전체 모의 퀴즈']];
@@ -1817,10 +1818,13 @@ function drawAnalysis(){
 }
 
 // ===== 예시 우주 (심사·시연용) =====
-function demoWorld(){
+// 예시 우주 2~9: 시간표 예시 2~9 학생들의 과목 (과목마다 개념 6개, 별자리 2개)
+const DEMO_UNI = [[["통상 일본어회화", ["견적서(見積書)", "주문(注文)", "납기(納期)", "거래처(取引先)", "경어(敬語)", "명함 교환"], "거래자리", "비즈니스예절자리"], ["취창업멘토링", ["자기소개서", "면접 준비", "포트폴리오", "창업 아이템", "사업계획서", "시장 조사"], "취업자리", "창업자리"], ["일본어 통번역", ["순차통역", "동시통역", "노트테이킹", "직역", "의역", "현지화"], "통역자리", "번역자리"], ["기업경제입문", ["수요와 공급", "기회비용", "한계효용", "손익계산서", "재무상태표", "현금흐름표"], "경제원리자리", "재무제표자리"], ["일본어독해2", ["조사", "접속사", "문말표현", "수동형", "사역형", "사역수동형"], "문장연결자리", "동사활용자리"], ["재미있는 중국어", ["성조", "병음", "간체자", "인사말", "숫자 읽기", "양사"], "발음자리", "기초회화자리"], ["면세점실용외국어", ["가격 안내", "결제 응대", "면세 한도", "여권 확인", "교환·환불", "상품 추천"], "결제자리", "고객응대자리"]], [["선박계산", ["배수량", "부력", "흘수", "무게중심", "복원성", "트림"], "부력자리", "균형자리"], ["유체역학", ["연속방정식", "베르누이 정리", "압력", "점성", "층류", "난류"], "보존법칙자리", "흐름자리"], ["디지털사회와 컴퓨터활용", ["스프레드시트", "함수", "데이터 정렬", "개인정보 보호", "디지털 리터러시", "클라우드"], "엑셀자리", "디지털시민자리"], ["항공드론 AI 기초수학", ["벡터", "행렬", "좌표변환", "미분", "확률", "경사하강법"], "선형대수자리", "최적화자리"]], [["근골격계 작업치료학", ["관절가동범위", "도수근력검사", "손 기능 평가", "부목", "인체공학", "재활 운동"], "평가자리", "중재자리"], ["감각처리장애와 중재", ["전정감각", "고유수용성감각", "촉각", "감각조절장애", "감각식이", "감각통합치료"], "감각체계자리", "감각중재자리"], ["보조공학", ["휠체어", "보행 보조기", "자세 유지", "의사소통 보조기기", "스위치 접근", "컴퓨터 접근"], "이동자리", "접근자리"], ["치매 작업치료", ["인지 평가", "MMSE", "기억력", "회상치료", "일상생활활동", "보호자 교육"], "인지평가자리", "치매중재자리"], ["지역사회 재활", ["지역사회중심재활", "장애인 복지", "사례 관리", "직업 재활", "주거 환경", "자립생활"], "지역자원자리", "자립자리"], ["취창업 멘토링", ["자기소개서", "면접 준비", "포트폴리오", "창업 아이템", "사업계획서", "시장 조사"], "취업자리", "창업자리"], ["연구방법론", ["연구 가설", "변수", "표본추출", "신뢰도", "타당도", "연구 윤리"], "연구설계자리", "측정자리"]], [["해양과 기후변화_캡스톤디자인", ["해류", "엘니뇨", "탄소 순환", "해수면 상승", "해양 산성화", "온실효과"], "해양순환자리", "기후위기자리"], ["데이터시각화입문", ["막대그래프", "산점도", "히스토그램", "색상 대비", "대시보드", "데이터 정제"], "차트자리", "디자인자리"], ["동물플랑크톤 바이오매스실험_캡스톤디자인", ["동물플랑크톤", "요각류", "네트 채집", "건중량", "탄소량 환산", "현존량"], "채집자리", "측정자리"], ["해양분자생태학_캡스톤디자인", ["DNA 추출", "PCR", "메타바코딩", "유전자 마커", "종 다양성", "계통수"], "분자실험자리", "다양성자리"], ["IT기반 해양모니터링", ["해양 부이", "수온 센서", "해양 관측망", "위성 원격탐사", "GIS", "실시간 데이터"], "관측장비자리", "해양데이터자리"], ["자연과 스마트 신소재", ["생체모방", "형상기억합금", "자가치유 소재", "나노소재", "그래핀", "친환경 소재"], "생체모방자리", "첨단소재자리"]], [["사회복지현장실습의 이해", ["실습기관", "슈퍼비전", "실습일지", "사례 관리", "기록 작성", "전문가 윤리"], "실습자리", "실천자리"], ["자원봉사론", ["자원봉사 동기", "인정과 보상", "지속 참여", "모집", "교육", "배치"], "참여자리", "운영자리"], ["프로그램 개발과 평가", ["욕구 조사", "목표 설정", "논리 모델", "산출", "성과 평가", "효율성"], "기획자리", "평가자리"], ["가족상담 및 가족치료", ["가족체계이론", "경계", "삼각관계", "가계도", "구조적 가족치료", "의사소통 패턴"], "가족체계자리", "가족치료자리"], ["사회복지조사론", ["조사 설계", "표본추출", "설문지", "신뢰도", "타당도", "질적 연구"], "조사설계자리", "측정자리"], ["사회복지실천기술론", ["면접 기술", "경청", "공감", "사정", "개입", "종결"], "상담기술자리", "실천과정자리"], ["사회복지 통계", ["평균", "표준편차", "정규분포", "t검정", "카이제곱", "상관분석"], "기술통계자리", "추론통계자리"], ["직업탐색 및 자기개발", ["직업흥미검사", "강점 찾기", "진로 목표", "이력서", "면접", "자기관리"], "탐색자리", "준비자리"], ["나를 찾아가는 인문고전 읽기", ["논어", "소크라테스", "국가", "데미안", "자아", "성찰"], "고전자리", "자아자리"]], [["여성건강간호학 2", ["산전관리", "분만 단계", "태아 감시", "산욕기", "모유수유", "산후출혈"], "분만자리", "산욕자리"], ["성인간호학 4", ["당뇨병", "갑상선기능항진증", "쿠싱증후군", "뇌졸중", "두개내압 상승", "뇌전증"], "내분비자리", "신경계자리"], ["지역사회간호학 1", ["일차보건의료", "보건소", "건강증진", "역학", "지역사회 사정", "감염병 관리"], "보건사업자리", "역학자리"], ["아동간호학 2", ["성장발달", "놀이 치료", "예방접종", "열성경련", "탈수", "호흡기 감염"], "성장자리", "소아질환자리"], ["정신간호학 1", ["치료적 의사소통", "방어기제", "정신상태검사", "불안", "우울", "조현병"], "정신사정자리", "정신질환자리"], ["성인간호학 실습 1", ["활력징후", "투약", "무균술", "간호과정", "간호기록", "인수인계"], "기본간호자리", "실습기록자리"]], [["웹프로그래밍", ["HTML", "CSS", "JavaScript", "DOM", "HTTP", "반응형 웹"], "프론트엔드자리", "웹동작자리"], ["자료구조론", ["배열", "연결 리스트", "스택", "트리", "그래프", "해시 테이블"], "선형구조자리", "비선형구조자리"], ["자바프로그래밍", ["클래스", "객체", "생성자", "상속", "다형성", "인터페이스"], "클래스자리", "객체지향자리"], ["프로그래밍기초", ["변수", "자료형", "연산자", "조건문", "반복문", "함수"], "기초문법자리", "제어흐름자리"], ["기초선형대수학", ["벡터", "행렬", "행렬식", "역행렬", "고유값", "선형변환"], "행렬자리", "변환자리"], ["컴퓨터구조", ["CPU", "레지스터", "파이프라이닝", "캐시 메모리", "주기억장치", "가상 메모리"], "처리장치자리", "기억장치자리"]], [["지역사회간호학(2)", ["학교보건", "산업보건", "재난관리", "가정간호", "방문간호", "보건교육"], "보건영역자리", "방문간호자리"], ["정신간호학(2)", ["양극성 장애", "주요우울장애", "자살 위험 사정", "조현병", "불안장애", "물질 관련 장애"], "기분장애자리", "정신질환자리"], ["여성건강간호학(2)", ["월경장애", "폐경", "불임", "자궁근종", "유방암", "자궁경부암"], "생식건강자리", "여성암자리"], ["성인간호학(4)", ["당뇨병", "갑상선기능항진증", "쿠싱증후군", "뇌졸중", "두개내압 상승", "뇌전증"], "내분비자리", "신경계자리"], ["자율실습", ["시뮬레이션", "활력징후 측정", "투약", "정맥주사", "유치도뇨", "기관 흡인"], "시뮬레이션자리", "핵심술기자리"], ["간호관리학", ["리더십", "동기부여", "의사결정", "인적자원관리", "간호전달체계", "질 관리"], "리더십자리", "관리체계자리"]]];
+let demoIdx = 0;   // 0 = 예시 데이터 1
+function demoWorld(idx = demoIdx){
   const r = rng(42), now = Date.now(), SPAN = 24;
   // 시간표 순서(월→금)대로 행성이 돼요: 수성부터 해왕성, 9번째부터 왜소행성
-  const names = {
+  let names = {
     '성인간호학':['폐활량','기능잔기용량','강제호기량','COPD','저산소증','고탄산혈증','객혈','기관절개','흡인 간호','커프 관리','산소요법','호흡곤란'],
     '보건의료':['의료법','감염병예방법','국민건강보험','의료급여','응급의료','개인정보 보호'],
     '여성간호학':['월경주기','배란','산전관리','분만 단계','산욕기','모유수유','갱년기','자궁근종'],
@@ -1831,7 +1835,7 @@ function demoWorld(){
     '선박계산':['배수량','부력','복원성','무게중심','트림','흘수'],
     '해양과 기후변화':['해류','엘니뇨','해수면 상승','해양 산성화','탄소 순환','온실효과'],
     '가족복지론':['가족 기능','가족 정책','한부모가족','다문화가족','아동 돌봄','노인 부양']};
-  const groups = {
+  let groups = {
     '성인간호학':[['폐기능자리',[0,1,2]],['호흡부전자리',[4,5,10]],['기도관리자리',[7,8,9]]],
     '보건의료':[['법규자리',[0,1,4]]],
     '여성간호학':[['임신자리',[2,3,4]],['생식자리',[0,1,6]]],
@@ -1842,6 +1846,10 @@ function demoWorld(){
     '선박계산':[['복원성자리',[1,2,3]]],
     '해양과 기후변화':[['기후자리',[0,1,2]]],
     '가족복지론':[['돌봄자리',[2,3,4]]]};
+  if(idx){
+    names = {}; groups = {};
+    DEMO_UNI[idx - 1].forEach(([sub, cs, g1, g2]) => { names[sub] = cs; groups[sub] = [[g1, [0, 1, 2]], [g2, [3, 4, 5]]]; });
+  }
   const concepts = [], cs = {}, consts = {};
   Object.keys(names).forEach((sub, si) => {
     cs[sub] = names[sub].map((n, i) => {
@@ -1851,10 +1859,11 @@ function demoWorld(){
     consts[sub] = groups[sub].map(([gn, idx]) => { const ids = idx.map(i => cs[sub][i].id); return {name:gn, ids, links:ids.slice(1).map((id, i) => [ids[i], id])}; });
   });
   const subs = Object.keys(names), sessionsD = [], att = [], log = {};
+  const examSubs = subs.filter(x => !/멘토링|실습|직업탐색|자율/.test(x));   // 시험 혜성은 이론 과목으로
   for(let d = SPAN; d >= 0; d--){
     const day = new Date(now - d * DAY), cnt = r() < .15 ? 0 : 1 + Math.floor(r() * 3);
     for(let i = 0; i < cnt; i++){
-      const hour = [8, 9, 10, 11, 14, 15, 16, 20, 21, 23][Math.floor(r() * 10)], len = [25, 30, 45, 50, 60, 60, 75][Math.floor(r() * 7)], sub = subs[Math.floor(r() * (d > 12 ? 6 : subs.length))];
+      const hour = [8, 9, 10, 11, 14, 15, 16, 20, 21, 23][Math.floor(r() * 10)], len = [25, 30, 45, 50, 60, 60, 75][Math.floor(r() * 7)], sub = subs[Math.floor(r() * (d > 12 ? Math.min(6, subs.length) : subs.length))];
       const st = new Date(day); st.setHours(hour, Math.floor(r() * 50), 0, 0);
       const end = st.getTime() + len * 60000, qAt = end + 10 * 60000;
       if(qAt > now) continue;
@@ -1862,7 +1871,7 @@ function demoWorld(){
       const k = fmt(st); log[k] = log[k] || {}; log[k][sub] = (log[k][sub] || 0) + len * 60;
       const pool = cs[sub].filter(c => c.at <= qAt);
       if(pool.length && r() < .85){
-        const p = .55 + (hour < 12 ? .18 : hour >= 22 ? -.12 : 0) + (len > 50 ? .12 : len > 30 ? .04 : -.08) + (sub === '약리학' ? -.08 : 0);
+        const p = .55 + (hour < 12 ? .18 : hour >= 22 ? -.12 : 0) + (len > 50 ? .12 : len > 30 ? .04 : -.08) + (sub === subs[1] ? -.08 : 0);
         const pick = pool.slice().sort(() => r() - .5).slice(0, 4), items = [];
         pick.forEach(c => { for(let q = 0; q < 2; q++){ const good = r() < p + (r() - .5) * .2; items.push({c:c.name, s:sub, ok:good}); if(good) c.c++; else c.w++; } });
         att.push({id:'demo-a' + att.length, set:'demo', sub, src:r() < .5 ? 'pdf' : r() < .7 ? 'lecture' : 'review', at:qAt, n:items.length, ok:items.filter(x => x.ok).length, items});
@@ -1872,7 +1881,7 @@ function demoWorld(){
   const rv = concepts.filter(c => c.at < now - 2 * DAY && r() < .45).map(c => ({c:c.name, s:c.sub, ok:true}));
   att.push({id:'demo-rv', set:'demo', sub:'여러 과목', src:'review', at:now - 3 * 3600000, n:rv.length, ok:rv.length, items:rv});
   const wd = {concepts, attempts:att, sessions:sessionsD, log, consts, demo:true,
-    exams:[{id:'demo-e1', sub:'약리학', date:fmt(new Date(now + 4 * DAY))}, {id:'demo-e2', sub:'성인간호학', date:fmt(new Date(now + 11 * DAY))}]};
+    exams:[{id:'demo-e1', sub:idx ? examSubs[1] : '약리학', date:fmt(new Date(now + 4 * DAY))}, {id:'demo-e2', sub:idx ? examSubs[0] : '성인간호학', date:fmt(new Date(now + 11 * DAY))}]};
   buildEvents(wd).forEach(ev => ev.list.forEach(x => learn(concepts.find(c => c.id === x.id), x.good, ev.t)));
   return wd;
 }
@@ -2577,12 +2586,29 @@ function uniControls(){
   ['#uniBack', '#uniTheme', '#uniLink', '#uniAdd'].forEach(id => $(id).style.display = sub ? '' : 'none');
   document.querySelectorAll('#uniTheme button').forEach(b => b.classList.toggle('on', b.dataset.th === uniPrefs.theme));
   $('#uniDemo').textContent = U.demo ? '내 우주로 돌아가기' : '예시 우주 보기';
+  drawUniPick();
   $('#uniTL').textContent = U.tl ? '타임랩스 멈추기' : '타임랩스';
   $('#uniHint').textContent = sub
     ? '오므리거나 휠을 내리면 별이 모여 은하가 되고, 더 오므리면 태양계로 돌아가요 · 벌리면 확대 · 별을 누르면 설명'
     : '행성(과목)을 누르거나, 행성 쪽으로 벌리거나 휠을 올리면 그 과목 하늘로 들어가요';
   U.hud = null;
 }
+function drawUniPick(){
+  const box = $('#uniDemoPick'); box.hidden = !U.demo; if(!U.demo) return;
+  box.innerHTML = Array.from({length:DEMO_UNI.length + 1}, (_, i) => `<button class="chip${i === demoIdx ? ' on' : ''}" data-i="${i}">예시 데이터 ${i + 1}</button>`).join('');
+}
+// 예시 번호 바꾸기: 우주·분석·시간표 예시가 같이 바뀌어요
+function setDemoIdx(i){
+  demoIdx = i;
+  if(U.demo){ U.demo = demoWorld(); U.tl = null; U.stars.clear(); U.meteors = []; goSolar(); U.demo.sessions.slice(-4).forEach(s => uniMeteor(s.sub)); }
+  if(anDemo){ anDemo = demoWorld(); if($('#an').classList.contains('on')) drawAnalysis(); }
+  drawUniPick();
+}
+$('#uniDemoPick').onclick = e => {
+  const b = e.target.closest('[data-i]'); if(!b) return;
+  const i = +b.dataset.i; setDemoIdx(i);
+  if(typeof demoAll !== 'undefined' && demoAll && window.pickTTDemo) window.pickTTDemo(i);
+};
 function toggleUniDemo(){ U.demo = U.demo ? null : demoWorld(); U.tl = null; U.stars.clear(); U.meteors = []; goSolar(); if(U.demo) U.demo.sessions.slice(-4).forEach(s => uniMeteor(s.sub)); }
 
 // ===== 연결 =====
@@ -3022,7 +3048,7 @@ function setDemoAll(on){
     Object.assign(realData, {tt, memos, vocab, links, studyLog, subj:prefs.subject});
     demoAll = true;
     tt = clone(DEMO_TT); memos = clone(DEMO_MEMOS).map((m, i) => Object.assign(m, {at:Date.now() - i * 26 * 3600000})); vocab = clone(DEMO_VOCAB); links = clone(DEMO_LINKS);
-    studyLog = demoWorld().log; prefs.subject = '성인간호학'; ttDemoIdx = 0;
+    demoIdx = 0; studyLog = demoWorld(0).log; prefs.subject = '성인간호학'; ttDemoIdx = 0;
   } else {
     tt = realData.tt; memos = realData.memos; vocab = realData.vocab; links = realData.links; studyLog = realData.studyLog; prefs.subject = realData.subj;
     demoAll = false;
@@ -3049,8 +3075,11 @@ function drawTTPick(){
 }
 $('#ttDemoPick').onclick = e => {
   const b = e.target.closest('[data-i]'); if(!b || !demoAll) return;
-  ttDemoIdx = +b.dataset.i; tt = clone(ttDemoIdx ? DEMO_TTS[ttDemoIdx - 1] : DEMO_TT); drawTT(); drawTTPick();
+  pickTTDemo(+b.dataset.i);
+  if(ttDemoIdx <= DEMO_UNI.length && ttDemoIdx !== demoIdx) setDemoIdx(ttDemoIdx);
 };
+function pickTTDemo(i){ ttDemoIdx = i; tt = clone(i ? DEMO_TTS[i - 1] : DEMO_TT); drawTT(); drawTTPick(); }
+window.pickTTDemo = pickTTDemo;
 $('#demoAll').onclick = $('#demoBannerBtn').onclick = () => setDemoAll(!demoAll);
 { const go = $('#tmGo').onclick; $('#tmGo').onclick = () => {
   if(demoAll && !tm.running){ if(!confirm('지금은 예시 데이터를 보는 중이라 공부 기록이 저장되지 않아요. 내 기록으로 바꾸고 타이머를 시작할까요?')) return; setDemoAll(false); }
