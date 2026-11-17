@@ -92,6 +92,15 @@
   .digits{font-size:clamp(44px,13vw,110px);font-weight:700;font-variant-numeric:tabular-nums;font-family:"SF Mono",Menlo,Consolas,monospace;line-height:1.15;padding:12px 0}
   .tm-foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;font-weight:600;min-height:36px}
   #tmRight{font-size:32px}
+  .tm-today{margin-bottom:14px}
+  .tm-today-head{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:700}
+  .tm-today-head small{font-weight:400;color:var(--sub);font-size:12px}
+  .tm-today-total{font-size:38px;font-weight:800;letter-spacing:-.5px;margin:4px 0 10px;font-variant-numeric:tabular-nums}
+  .td-row{display:grid;grid-template-columns:minmax(0,1fr) 2fr 80px;gap:10px;align-items:center;font-size:13px;padding:5px 0}
+  .td-row span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .td-bar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+  .td-bar i{display:block;height:100%;background:var(--dark);border-radius:4px}
+  .td-row b{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
   .ev.st{background:var(--dark);color:var(--on);border-left-color:var(--dark)}
   .studyline{font-size:13px;color:var(--sub);margin-bottom:8px}
   main{padding-bottom:110px}
@@ -434,6 +443,11 @@
 
 <section id="tm">
   <h2>타이머</h2>
+  <div class="card tm-today">
+    <div class="tm-today-head"><span>오늘 공부한 시간</span><small id="tdWeek"></small></div>
+    <div class="tm-today-total" id="tdTotal">0분</div>
+    <div id="tdList"></div>
+  </div>
   <div class="card">
     <div class="row">
       <input id="tmSubject" list="subjList" placeholder="과목 (시간표 과목 선택 또는 직접 입력)">
@@ -1184,8 +1198,21 @@ function wedge(f){
   else { const th = f*2*Math.PI; el.setAttribute('d', `M${c} ${c}L${c} ${c - R}A${R} ${R} 0 ${th > Math.PI ? 1 : 0} 1 ${c + R*Math.sin(th)} ${c - R*Math.cos(th)}Z`); }
 }
 function dateLabel(){ const d = new Date(); return d.getFullYear() + '. ' + (d.getMonth()+1) + '. ' + d.getDate() + '. (' + '일월화수목금토'[d.getDay()] + ')'; }
+// 오늘 공부한 시간 합계 (타이머가 도는 동안 실시간으로 늘어나요)
+function drawToday(){
+  const k = fmt(new Date()), d = studyLog[k] || {}, tot = dayTotal(k), t = Math.floor(tot);
+  const p = n => String(n).padStart(2, '0');
+  $('#tdTotal').textContent = Math.floor(t / 3600) + '시간 ' + p(Math.floor(t % 3600 / 60)) + '분 ' + p(t % 60) + '초';
+  let wk = 0; const now = new Date(), mon = new Date(now); mon.setDate(now.getDate() - (now.getDay() + 6) % 7);
+  for(let x = new Date(mon); x <= now; x.setDate(x.getDate() + 1)) wk += dayTotal(fmt(x));
+  $('#tdWeek').textContent = '이번 주 ' + fmtDur(wk);
+  const rows = Object.entries(d).filter(([, v]) => v >= 1).sort((a, b) => b[1] - a[1]), mx = rows.length ? rows[0][1] : 1;
+  $('#tdList').innerHTML = rows.length ? rows.map(([n, v]) => `<div class="td-row"><span>${esc(n)}</span><div class="td-bar"><i style="width:${Math.max(3, v / mx * 100)}%"></i></div><b>${fmtDur(v)}</b></div>`).join('')
+    : '<p class="soon" style="margin:0">아직 오늘 기록이 없어요. 타이머를 시작해보세요.</p>';
+}
 function render(){
   const rm = Math.max(tm.remain, 0);
+  drawToday();
   $('#tmTop').textContent = dateLabel() + '  ·  오늘 ' + fmtDur(dayTotal(fmt(new Date()))) + examTag();
   $('#tmSub').textContent = '● ' + (prefs.subject || '과목 없음') + ' · ' + (tm.mode === 'focus' ? '집중' : '휴식');
   if(prefs.view === 'dial'){ wedge(Math.min(rm/3600000, 1)); $('#tmRight').textContent = Math.ceil(rm/60000); }
@@ -1858,7 +1885,7 @@ function drawAnalysis(){
 // 예시 우주 2~9: 시간표 예시 2~9 학생들의 과목 (과목마다 개념 6개, 별자리 2개)
 const DEMO_UNI = [[["통상 일본어회화", ["견적서(見積書)", "주문(注文)", "납기(納期)", "거래처(取引先)", "경어(敬語)", "명함 교환"], "거래자리", "비즈니스예절자리"], ["취창업멘토링", ["자기소개서", "면접 준비", "포트폴리오", "창업 아이템", "사업계획서", "시장 조사"], "취업자리", "창업자리"], ["일본어 통번역", ["순차통역", "동시통역", "노트테이킹", "직역", "의역", "현지화"], "통역자리", "번역자리"], ["기업경제입문", ["수요와 공급", "기회비용", "한계효용", "손익계산서", "재무상태표", "현금흐름표"], "경제원리자리", "재무제표자리"], ["일본어독해2", ["조사", "접속사", "문말표현", "수동형", "사역형", "사역수동형"], "문장연결자리", "동사활용자리"], ["재미있는 중국어", ["성조", "병음", "간체자", "인사말", "숫자 읽기", "양사"], "발음자리", "기초회화자리"], ["면세점실용외국어", ["가격 안내", "결제 응대", "면세 한도", "여권 확인", "교환·환불", "상품 추천"], "결제자리", "고객응대자리"]], [["선박계산", ["배수량", "부력", "흘수", "무게중심", "복원성", "트림"], "부력자리", "균형자리"], ["유체역학", ["연속방정식", "베르누이 정리", "압력", "점성", "층류", "난류"], "보존법칙자리", "흐름자리"], ["디지털사회와 컴퓨터활용", ["스프레드시트", "함수", "데이터 정렬", "개인정보 보호", "디지털 리터러시", "클라우드"], "엑셀자리", "디지털시민자리"], ["항공드론 AI 기초수학", ["벡터", "행렬", "좌표변환", "미분", "확률", "경사하강법"], "선형대수자리", "최적화자리"]], [["근골격계 작업치료학", ["관절가동범위", "도수근력검사", "손 기능 평가", "부목", "인체공학", "재활 운동"], "평가자리", "중재자리"], ["감각처리장애와 중재", ["전정감각", "고유수용성감각", "촉각", "감각조절장애", "감각식이", "감각통합치료"], "감각체계자리", "감각중재자리"], ["보조공학", ["휠체어", "보행 보조기", "자세 유지", "의사소통 보조기기", "스위치 접근", "컴퓨터 접근"], "이동자리", "접근자리"], ["치매 작업치료", ["인지 평가", "MMSE", "기억력", "회상치료", "일상생활활동", "보호자 교육"], "인지평가자리", "치매중재자리"], ["지역사회 재활", ["지역사회중심재활", "장애인 복지", "사례 관리", "직업 재활", "주거 환경", "자립생활"], "지역자원자리", "자립자리"], ["취창업 멘토링", ["자기소개서", "면접 준비", "포트폴리오", "창업 아이템", "사업계획서", "시장 조사"], "취업자리", "창업자리"], ["연구방법론", ["연구 가설", "변수", "표본추출", "신뢰도", "타당도", "연구 윤리"], "연구설계자리", "측정자리"]], [["해양과 기후변화_캡스톤디자인", ["해류", "엘니뇨", "탄소 순환", "해수면 상승", "해양 산성화", "온실효과"], "해양순환자리", "기후위기자리"], ["데이터시각화입문", ["막대그래프", "산점도", "히스토그램", "색상 대비", "대시보드", "데이터 정제"], "차트자리", "디자인자리"], ["동물플랑크톤 바이오매스실험_캡스톤디자인", ["동물플랑크톤", "요각류", "네트 채집", "건중량", "탄소량 환산", "현존량"], "채집자리", "측정자리"], ["해양분자생태학_캡스톤디자인", ["DNA 추출", "PCR", "메타바코딩", "유전자 마커", "종 다양성", "계통수"], "분자실험자리", "다양성자리"], ["IT기반 해양모니터링", ["해양 부이", "수온 센서", "해양 관측망", "위성 원격탐사", "GIS", "실시간 데이터"], "관측장비자리", "해양데이터자리"], ["자연과 스마트 신소재", ["생체모방", "형상기억합금", "자가치유 소재", "나노소재", "그래핀", "친환경 소재"], "생체모방자리", "첨단소재자리"]], [["사회복지현장실습의 이해", ["실습기관", "슈퍼비전", "실습일지", "사례 관리", "기록 작성", "전문가 윤리"], "실습자리", "실천자리"], ["자원봉사론", ["자원봉사 동기", "인정과 보상", "지속 참여", "모집", "교육", "배치"], "참여자리", "운영자리"], ["프로그램 개발과 평가", ["욕구 조사", "목표 설정", "논리 모델", "산출", "성과 평가", "효율성"], "기획자리", "평가자리"], ["가족상담 및 가족치료", ["가족체계이론", "경계", "삼각관계", "가계도", "구조적 가족치료", "의사소통 패턴"], "가족체계자리", "가족치료자리"], ["사회복지조사론", ["조사 설계", "표본추출", "설문지", "신뢰도", "타당도", "질적 연구"], "조사설계자리", "측정자리"], ["사회복지실천기술론", ["면접 기술", "경청", "공감", "사정", "개입", "종결"], "상담기술자리", "실천과정자리"], ["사회복지 통계", ["평균", "표준편차", "정규분포", "t검정", "카이제곱", "상관분석"], "기술통계자리", "추론통계자리"], ["직업탐색 및 자기개발", ["직업흥미검사", "강점 찾기", "진로 목표", "이력서", "면접", "자기관리"], "탐색자리", "준비자리"], ["나를 찾아가는 인문고전 읽기", ["논어", "소크라테스", "국가", "데미안", "자아", "성찰"], "고전자리", "자아자리"]], [["여성건강간호학 2", ["산전관리", "분만 단계", "태아 감시", "산욕기", "모유수유", "산후출혈"], "분만자리", "산욕자리"], ["성인간호학 4", ["당뇨병", "갑상선기능항진증", "쿠싱증후군", "뇌졸중", "두개내압 상승", "뇌전증"], "내분비자리", "신경계자리"], ["지역사회간호학 1", ["일차보건의료", "보건소", "건강증진", "역학", "지역사회 사정", "감염병 관리"], "보건사업자리", "역학자리"], ["아동간호학 2", ["성장발달", "놀이 치료", "예방접종", "열성경련", "탈수", "호흡기 감염"], "성장자리", "소아질환자리"], ["정신간호학 1", ["치료적 의사소통", "방어기제", "정신상태검사", "불안", "우울", "조현병"], "정신사정자리", "정신질환자리"], ["성인간호학 실습 1", ["활력징후", "투약", "무균술", "간호과정", "간호기록", "인수인계"], "기본간호자리", "실습기록자리"]], [["웹프로그래밍", ["HTML", "CSS", "JavaScript", "DOM", "HTTP", "반응형 웹"], "프론트엔드자리", "웹동작자리"], ["자료구조론", ["배열", "연결 리스트", "스택", "트리", "그래프", "해시 테이블"], "선형구조자리", "비선형구조자리"], ["자바프로그래밍", ["클래스", "객체", "생성자", "상속", "다형성", "인터페이스"], "클래스자리", "객체지향자리"], ["프로그래밍기초", ["변수", "자료형", "연산자", "조건문", "반복문", "함수"], "기초문법자리", "제어흐름자리"], ["기초선형대수학", ["벡터", "행렬", "행렬식", "역행렬", "고유값", "선형변환"], "행렬자리", "변환자리"], ["컴퓨터구조", ["CPU", "레지스터", "파이프라이닝", "캐시 메모리", "주기억장치", "가상 메모리"], "처리장치자리", "기억장치자리"]], [["지역사회간호학(2)", ["학교보건", "산업보건", "재난관리", "가정간호", "방문간호", "보건교육"], "보건영역자리", "방문간호자리"], ["정신간호학(2)", ["양극성 장애", "주요우울장애", "자살 위험 사정", "조현병", "불안장애", "물질 관련 장애"], "기분장애자리", "정신질환자리"], ["여성건강간호학(2)", ["월경장애", "폐경", "불임", "자궁근종", "유방암", "자궁경부암"], "생식건강자리", "여성암자리"], ["성인간호학(4)", ["당뇨병", "갑상선기능항진증", "쿠싱증후군", "뇌졸중", "두개내압 상승", "뇌전증"], "내분비자리", "신경계자리"], ["자율실습", ["시뮬레이션", "활력징후 측정", "투약", "정맥주사", "유치도뇨", "기관 흡인"], "시뮬레이션자리", "핵심술기자리"], ["간호관리학", ["리더십", "동기부여", "의사결정", "인적자원관리", "간호전달체계", "질 관리"], "리더십자리", "관리체계자리"]]];
 let demoIdx = 0;   // 0 = 예시 데이터 1
-function demoWorld(idx = demoIdx){
+function demoWorld(idx = demoIdx, nowAt){
   // 학생마다 다른 공부 습관 (학점 참고): 쉬는 날 비율·하루 최대 횟수·공부 시간대·집중 길이·기본 정답률·복습 비율
   const PROF = [
     {skip:.15, max:3, hours:[8, 9, 10, 11, 14, 15, 16, 20, 21, 23], lens:[25, 30, 45, 50, 60, 60, 75], base:.55, rev:.45, q:1, pick:4, rvd:[0.12]},   // 예시 1
@@ -1871,7 +1898,7 @@ function demoWorld(idx = demoIdx){
     {skip:.16, max:3, hours:[19, 20, 21, 22, 23, 23, 0, 14],       lens:[45, 50, 60, 75, 90],         base:.63, rev:.4, q:3, pick:5, rvd:[6, 4, 2, 0.12]},    // 8 · 3.86
     {skip:.22, max:3, hours:[9, 10, 14, 15, 20, 21, 22, 23],       lens:[30, 40, 45, 50, 60],         base:.57, rev:.3, q:2, pick:4, rvd:[4, 0.12]}];   // 9 · 3.65
   const pf = PROF[idx] || PROF[0];
-  const r = rng(42 + idx * 7), now = Date.now(), SPAN = 24;
+  const r = rng(42 + idx * 7), now = nowAt || Date.now(), SPAN = 24;
   // 시간표 순서(월→금)대로 행성이 돼요: 수성부터 해왕성, 9번째부터 왜소행성
   let names = {
     '성인간호학':['폐활량','기능잔기용량','강제호기량','COPD','저산소증','고탄산혈증','객혈','기관절개','흡인 간호','커프 관리','산소요법','호흡곤란'],
@@ -1929,6 +1956,8 @@ function demoWorld(idx = demoIdx){
       }
     }
   }
+  // 타이머 '오늘 공부한 시간' 예시: 오늘 기록이 없으면 학생별로 채워요 (기록 정리 검사 때는 넣지 않아요)
+  if(!nowAt){ const tk = fmt(new Date(now)); if(!log[tk]){ const m = [90, 25, 30, 80, 150, 60, 140, 110, 70][idx] || 60; log[tk] = {[subs[0]]: Math.round(m * .6) * 60, [subs[1 % subs.length]]: Math.round(m * .4) * 60}; } }
   // 흐려진 별 복습: 학점 높은 학생일수록 자주, 많이 복습해요
   pf.rvd.forEach((dd, k) => {
     const T = now - dd * DAY;
@@ -2659,6 +2688,7 @@ function setDemoIdx(i){
   if(anDemo){ anDemo = demoWorld(); if($('#an').classList.contains('on')) drawAnalysis(); }
   drawUniPick();
   applyDemoPack(i);
+  if(typeof demoAll !== 'undefined' && demoAll){ studyLog = demoWorld(i).log; render(); }
   drawDemoChips();
 }
 $('#uniDemoPick').onclick = e => {
@@ -3096,7 +3126,7 @@ const DEMO_TT = [{"id": 9001, "day": 0, "start": 540, "end": 660, "name": "성�
 const DEMO_MEMOS = [{"id": "dm1", "sub": "성인간호학", "text": "성인간호학 기말 범위\n호흡기능장애 전체 (상부·하부호흡기계)\n폐용량 공식 꼭 외우기: 기능잔기용량 = 잔기량 + 호기예비량\nFEV1/FVC 80% 이상 정상, COPD는 0.7 정도\n교수님이 객혈 vs 토혈 구분 강조하심"}, {"id": "dm2", "sub": "성인간호학", "text": "실습 전 체크\n흡인은 1회 10초 이내, 흡인 전 100% 산소\n커프 압력 20mmHg 넘기지 않기\n관 빠지면 교체 → 안 되면 반좌위"}, {"id": "dm3", "sub": "자바프로그래밍", "text": "자바 과제 아이디어\n학생 성적 관리 프로그램 - 클래스로 Student 만들기\n상속 써서 대학원생 클래스 따로\n마감 금요일 23:59"}, {"id": "dm4", "sub": "", "text": "스터디 모임 할 일\n이번 주: 약리학 반감기·생체이용률 문제 각자 5개씩 만들어오기\n다음 주: 성인간호학 호흡 파트 테이프로 서로 퀴즈"}, {"id": "dm5", "sub": "", "text": "이번 주 할 일\n성인간호학 사례보고서 마감\n동아리 회의 자료 준비\n공모전 보고서 마무리"}];
 const DEMO_VOCAB = {"lists": [{"id": 9101, "name": "의학용어 Day 1", "words": [{"id": 1, "w": "dyspnea", "m": "호흡곤란"}, {"id": 2, "w": "hemoptysis", "m": "객혈"}, {"id": 3, "w": "hematemesis", "m": "토혈"}, {"id": 4, "w": "tachypnea", "m": "빈호흡"}, {"id": 5, "w": "hypoxemia", "m": "저산소혈증"}, {"id": 6, "w": "hypercapnia", "m": "고탄산혈증"}, {"id": 7, "w": "wheezing", "m": "천명"}, {"id": 8, "w": "sputum", "m": "가래"}, {"id": 9, "w": "orthopnea", "m": "기좌호흡"}, {"id": 10, "w": "cyanosis", "m": "청색증"}]}, {"id": 9102, "name": "의학용어 Day 2", "words": [{"id": 11, "w": "tracheostomy", "m": "기관절개술"}, {"id": 12, "w": "intubation", "m": "삽관"}, {"id": 13, "w": "suction", "m": "흡인"}, {"id": 14, "w": "aspiration", "m": "흡인(이물질이 기도로 들어감)"}, {"id": 15, "w": "epistaxis", "m": "비출혈"}, {"id": 16, "w": "sinusitis", "m": "부비동염"}, {"id": 17, "w": "rhinitis", "m": "비염"}, {"id": 18, "w": "larynx", "m": "후두"}]}, {"id": 9103, "name": "TOEIC Day 1", "words": [{"id": 21, "w": "deadline", "m": "마감 기한"}, {"id": 22, "w": "submit", "m": "제출하다"}, {"id": 23, "w": "schedule", "m": "일정을 잡다"}, {"id": 24, "w": "available", "m": "이용 가능한"}, {"id": 25, "w": "reimburse", "m": "환급하다"}, {"id": 26, "w": "mandatory", "m": "의무적인"}]}], "cur": 9101};
 const DEMO_LINKS = [{"name": "구미대학교 홈페이지", "url": "https://www.gumi.ac.kr"}, {"name": "한국보건의료인국가시험원", "url": "https://www.kuksiwon.or.kr"}, {"name": "국가건강정보포털", "url": "https://health.kdca.go.kr"}, {"name": "약학정보원 (의약품 검색)", "url": "https://www.health.kr"}, {"name": "RISS 학술연구정보", "url": "https://www.riss.kr"}, {"name": "네이버 영어사전", "url": "https://en.dict.naver.com"}];
-const DEMO_KEYS = new Set(['tt2', 'memos', 'vocab', 'links', 'tmPrefs']);
+const DEMO_KEYS = new Set(['tt2', 'memos', 'vocab', 'links', 'tmPrefs', 'study']);
 let demoAll = false; const realData = {};
 { const set0 = store.set.bind(store); store.set = (k, v) => { if(demoAll && DEMO_KEYS.has(k)) return; set0(k, v); }; }
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -3156,6 +3186,17 @@ $('#demoAll').onclick = $('#demoBannerBtn').onclick = () => setDemoAll(!demoAll)
   if(demoAll && !tm.running){ if(!confirm('지금은 예시 데이터를 보는 중이라 공부 기록이 저장되지 않아요. 내 기록으로 바꾸고 타이머를 시작할까요?')) return; setDemoAll(false); }
   go();
 }; }
+// 이전 버전 버그로 예시 공부 기록이 내 기록에 저장된 경우 자동으로 지워요.
+// 예시 기록은 모두 1분 단위 정수(초)이고, 타이머로 쌓인 진짜 기록은 소수점 초가 섞여 있어서 구분할 수 있어요.
+(function cleanDemoStudy(){
+  try{
+    const st = store.get('study', {});
+    const fake = Object.keys(st).filter(k => { const v = Object.values(st[k] || {}); return v.length && v.every(x => Number.isInteger(x) && x > 0 && x % 60 === 0); });
+    if(fake.length < 5) return;
+    fake.forEach(k => delete st[k]); studyLog = st; store.set('study', st);
+    console.log('[Focuspace] 섞여 들어간 예시 공부 기록 ' + fake.length + '일을 지웠어요');
+  }catch(e){}
+})();
 setDemoAll(true);
 
 // ---------- 탭 순서 바꾸기 ----------
