@@ -157,6 +157,15 @@
   .mp-pos span{margin-right:auto}
   .mp-pos button{border:1px solid rgba(255,255,255,.3);background:none;color:#fff;border-radius:8px;width:38px;height:32px;font-size:14px;cursor:pointer}
   .mp-pos button.on{background:#fff;color:#111}
+  .demo-btn{margin-left:auto;margin-right:8px}
+  header .demo-btn ~ .theme-btn, header .demo-btn ~ .music-btn{margin-left:0}
+  header .demo-btn ~ .music-btn:not([hidden]){margin-right:8px}
+  @media (max-width:600px){ header .demo-btn{display:none} header .demo-btn ~ .music-btn:not([hidden]){margin-left:auto;margin-right:0} header .demo-btn ~ .theme-btn{margin-left:auto} header .demo-btn ~ .music-btn:not([hidden]) + .theme-btn{margin-left:8px} }
+  .demo-banner{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;background:#fff7e0;color:#5b4a12;border-bottom:1px solid #ecd9a0;padding:8px 16px;font-size:13px}
+  .demo-banner[hidden]{display:none}
+  .demo-banner button{border:1px solid #c9b26a;background:#fff;color:#5b4a12;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit}
+  [data-theme=dark] .demo-banner{background:#2a2410;color:#f1e3b0;border-color:#4a3f1c}
+  [data-theme=dark] .demo-banner button{background:transparent;color:#f1e3b0;border-color:#7a6a30}
   .auth-btn{align-self:center;border:1px solid #777;background:transparent;color:#fff;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;max-width:45vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .auth-btn.on{background:#fff;color:#111;border-color:#fff}
   .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
@@ -312,7 +321,7 @@
 </style>
 </head>
 <body>
-<header><h1 class="logo">Focuspace</h1><button class="music-btn" id="musicBtn" aria-label="음악 플레이어 켜기" title="음악 플레이어 켜기" hidden>♪</button><button class="theme-btn" id="themeBtn" aria-label="화면 테마 바꾸기"></button><button class="auth-btn" id="authBtn">로그인</button></header>
+<header><h1 class="logo">Focuspace</h1><button class="auth-btn demo-btn" id="demoAll">예시 보기</button><button class="music-btn" id="musicBtn" aria-label="음악 플레이어 켜기" title="음악 플레이어 켜기" hidden>♪</button><button class="theme-btn" id="themeBtn" aria-label="화면 테마 바꾸기"></button><button class="auth-btn" id="authBtn">로그인</button></header>
 <nav id="tabs">
   <button data-t="uni">우주</button>
   <button data-t="tt">시간표</button>
@@ -328,6 +337,7 @@
   <button data-t="lk">링크 모음</button>
   <button class="nav-edit" id="navEdit" aria-label="탭 순서 바꾸기">⇄ 순서</button>
 </nav>
+<div class="demo-banner" id="demoBanner" hidden><span>지금은 <b>예시 데이터</b>를 보여주고 있어요. 내 기록은 바뀌지 않아요.</span><button id="demoBannerBtn">내 기록 보기</button></div>
 <main>
 
 <section id="tt">
@@ -2979,6 +2989,7 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
     if($('#tape').classList.contains('on')) openTape(cur);
   }
   document.querySelectorAll('[data-sumex]').forEach(b => b.onclick = () => setEx(!ex));
+  window.sumSetEx = on => { if(ex !== on) setEx(on); };
   window.sumDraw = draw;
   window.sumDemo = id => { setEx(true, id); goTab('tape'); };
 
@@ -2992,6 +3003,47 @@ window.addEventListener('pagehide', () => { if(mmSaveT){ clearTimeout(mmSaveT); 
   const prevOnTab = window.onTab;
   window.onTab = t => { if(prevOnTab) prevOnTab(t); if(t !== 'tape' && editing) setEdit(false, true); if(t === 'sum'){ drawSubs(); drawList(); } if(t === 'tape') openTape(cur); };
 })();
+
+// ---------- 예시 모드: 처음 들어오면 모든 탭이 예시 데이터로 시작해요 ----------
+const DEMO_TT = [{"id": 9001, "day": 0, "start": 540, "end": 660, "name": "성인간호학", "room": "414호", "color": "#a5bdd4"}, {"id": 9002, "day": 0, "start": 660, "end": 720, "name": "보건의료", "room": "414", "color": ""}, {"id": 9003, "day": 0, "start": 840, "end": 930, "name": "여성간호학", "room": "315", "color": ""}, {"id": 9004, "day": 0, "start": 960, "end": 1110, "name": "자바프로그래밍", "room": "종합 507 강의실", "color": ""}, {"id": 9005, "day": 1, "start": 540, "end": 720, "name": "약리학", "room": "411", "color": ""}, {"id": 9006, "day": 1, "start": 750, "end": 870, "name": "새로운 생명체 : 인공지능", "room": "외 201", "color": "#dcb3c3"}, {"id": 9007, "day": 1, "start": 900, "end": 1020, "name": "나를 찾아가는 인문고전 읽기", "room": "I0307", "color": ""}, {"id": 9008, "day": 2, "start": 570, "end": 690, "name": "선박계산", "room": "2북 466", "color": ""}, {"id": 9009, "day": 2, "start": 870, "end": 1110, "name": "해양과 기후변화", "room": "N17-212", "color": "#adc4a4"}, {"id": 9010, "day": 3, "start": 600, "end": 750, "name": "가족복지론", "room": "90306", "color": ""}];
+const DEMO_MEMOS = [{"id": "dm1", "sub": "성인간호학", "text": "성인간호학 기말 범위\n호흡기능장애 전체 (상부·하부호흡기계)\n폐용량 공식 꼭 외우기: 기능잔기용량 = 잔기량 + 호기예비량\nFEV1/FVC 80% 이상 정상, COPD는 0.7 정도\n교수님이 객혈 vs 토혈 구분 강조하심"}, {"id": "dm2", "sub": "성인간호학", "text": "실습 전 체크\n흡인은 1회 10초 이내, 흡인 전 100% 산소\n커프 압력 20mmHg 넘기지 않기\n관 빠지면 교체 → 안 되면 반좌위"}, {"id": "dm3", "sub": "자바프로그래밍", "text": "자바 과제 아이디어\n학생 성적 관리 프로그램 - 클래스로 Student 만들기\n상속 써서 대학원생 클래스 따로\n마감 금요일 23:59"}, {"id": "dm4", "sub": "", "text": "스터디 모임 할 일\n이번 주: 약리학 반감기·생체이용률 문제 각자 5개씩 만들어오기\n다음 주: 성인간호학 호흡 파트 테이프로 서로 퀴즈"}, {"id": "dm5", "sub": "", "text": "이번 주 할 일\n성인간호학 사례보고서 마감\n동아리 회의 자료 준비\n공모전 보고서 마무리"}];
+const DEMO_VOCAB = {"lists": [{"id": 9101, "name": "의학용어 Day 1", "words": [{"id": 1, "w": "dyspnea", "m": "호흡곤란"}, {"id": 2, "w": "hemoptysis", "m": "객혈"}, {"id": 3, "w": "hematemesis", "m": "토혈"}, {"id": 4, "w": "tachypnea", "m": "빈호흡"}, {"id": 5, "w": "hypoxemia", "m": "저산소혈증"}, {"id": 6, "w": "hypercapnia", "m": "고탄산혈증"}, {"id": 7, "w": "wheezing", "m": "천명"}, {"id": 8, "w": "sputum", "m": "가래"}, {"id": 9, "w": "orthopnea", "m": "기좌호흡"}, {"id": 10, "w": "cyanosis", "m": "청색증"}]}, {"id": 9102, "name": "의학용어 Day 2", "words": [{"id": 11, "w": "tracheostomy", "m": "기관절개술"}, {"id": 12, "w": "intubation", "m": "삽관"}, {"id": 13, "w": "suction", "m": "흡인"}, {"id": 14, "w": "aspiration", "m": "흡인(이물질이 기도로 들어감)"}, {"id": 15, "w": "epistaxis", "m": "비출혈"}, {"id": 16, "w": "sinusitis", "m": "부비동염"}, {"id": 17, "w": "rhinitis", "m": "비염"}, {"id": 18, "w": "larynx", "m": "후두"}]}, {"id": 9103, "name": "TOEIC Day 1", "words": [{"id": 21, "w": "deadline", "m": "마감 기한"}, {"id": 22, "w": "submit", "m": "제출하다"}, {"id": 23, "w": "schedule", "m": "일정을 잡다"}, {"id": 24, "w": "available", "m": "이용 가능한"}, {"id": 25, "w": "reimburse", "m": "환급하다"}, {"id": 26, "w": "mandatory", "m": "의무적인"}]}], "cur": 9101};
+const DEMO_LINKS = [{"name": "구미대학교 홈페이지", "url": "https://www.gumi.ac.kr"}, {"name": "한국보건의료인국가시험원", "url": "https://www.kuksiwon.or.kr"}, {"name": "국가건강정보포털", "url": "https://health.kdca.go.kr"}, {"name": "약학정보원 (의약품 검색)", "url": "https://www.health.kr"}, {"name": "RISS 학술연구정보", "url": "https://www.riss.kr"}, {"name": "네이버 영어사전", "url": "https://en.dict.naver.com"}];
+const DEMO_KEYS = new Set(['tt2', 'memos', 'vocab', 'links', 'tmPrefs']);
+let demoAll = false; const realData = {};
+{ const set0 = store.set.bind(store); store.set = (k, v) => { if(demoAll && DEMO_KEYS.has(k)) return; set0(k, v); }; }
+const clone = o => JSON.parse(JSON.stringify(o));
+function setDemoAll(on){
+  if(on === demoAll) return;
+  if(on){
+    Object.assign(realData, {tt, memos, vocab, links, studyLog, subj:prefs.subject});
+    demoAll = true;
+    tt = clone(DEMO_TT); memos = clone(DEMO_MEMOS).map((m, i) => Object.assign(m, {at:Date.now() - i * 26 * 3600000})); vocab = clone(DEMO_VOCAB); links = clone(DEMO_LINKS);
+    studyLog = demoWorld().log; prefs.subject = '성인간호학';
+  } else {
+    tt = realData.tt; memos = realData.memos; vocab = realData.vocab; links = realData.links; studyLog = realData.studyLog; prefs.subject = realData.subj;
+    demoAll = false;
+  }
+  // 탭마다 있던 예시 보기도 같이 켜고 꺼요
+  if(!!U.demo !== on) toggleUniDemo();
+  anDemo = on ? demoWorld() : null;
+  if(!!calEx !== on) $('#calEx').click();
+  EX.rec = EX.pdf = on; drawNotes();
+  if(window.sumSetEx) window.sumSetEx(on);
+  vkOrder = null; vkEdit = null; vkShown.clear();
+  $('#tmSubject').value = prefs.subject || '';
+  drawTT(); drawVocab(); drawLinks(); render();
+  { const f = memos.slice().sort((a, b) => b.at - a.at)[0]; openMemo(f ? f.id : null); }
+  if($('#an').classList.contains('on')) drawAnalysis();
+  $('#demoAll').textContent = on ? '내 기록 보기' : '예시 보기';
+  $('#demoBanner').hidden = !on;
+}
+$('#demoAll').onclick = $('#demoBannerBtn').onclick = () => setDemoAll(!demoAll);
+{ const go = $('#tmGo').onclick; $('#tmGo').onclick = () => {
+  if(demoAll && !tm.running){ if(!confirm('지금은 예시 데이터를 보는 중이라 공부 기록이 저장되지 않아요. 내 기록으로 바꾸고 타이머를 시작할까요?')) return; setDemoAll(false); }
+  go();
+}; }
+setDemoAll(true);
 
 // ---------- 탭 순서 바꾸기 ----------
 function navTabs(){ return [...document.querySelectorAll('#tabs button[data-t]')]; }
