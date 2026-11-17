@@ -1855,15 +1855,15 @@ let demoIdx = 0;   // 0 = 예시 데이터 1
 function demoWorld(idx = demoIdx){
   // 학생마다 다른 공부 습관 (학점 참고): 쉬는 날 비율·하루 최대 횟수·공부 시간대·집중 길이·기본 정답률·복습 비율
   const PROF = [
-    {skip:.15, max:3, hours:[8, 9, 10, 11, 14, 15, 16, 20, 21, 23], lens:[25, 30, 45, 50, 60, 60, 75], base:.55, rev:.45},   // 예시 1
-    {skip:.45, max:2, hours:[21, 22, 23, 23, 0, 1, 15, 16],        lens:[20, 25, 25, 30, 30, 45],     base:.47, rev:.12},   // 2 · 2.80
-    {skip:.38, max:2, hours:[20, 21, 22, 23, 23, 14, 16],          lens:[25, 25, 30, 30, 45, 50],     base:.52, rev:.18},   // 3 · 3.20
-    {skip:.15, max:3, hours:[9, 10, 14, 15, 16, 19, 20, 21],       lens:[40, 45, 50, 50, 60, 60],     base:.58, rev:.45},   // 4 · 3.90
-    {skip:.05, max:4, hours:[7, 8, 9, 10, 10, 13, 14, 19, 20],     lens:[50, 60, 60, 75, 75, 90],     base:.66, rev:.65},   // 5 · 4.23
-    {skip:.20, max:3, hours:[10, 11, 14, 15, 19, 20, 21, 22],      lens:[30, 45, 45, 50, 60],         base:.59, rev:.35},   // 6 · 3.74
-    {skip:.08, max:3, hours:[7, 8, 9, 13, 14, 15, 19, 20],         lens:[45, 50, 60, 60, 75, 90],     base:.70, rev:.6},    // 7 · 4.18
-    {skip:.16, max:3, hours:[19, 20, 21, 22, 23, 23, 0, 14],       lens:[45, 50, 60, 75, 90],         base:.63, rev:.4},    // 8 · 3.86
-    {skip:.22, max:3, hours:[9, 10, 14, 15, 20, 21, 22, 23],       lens:[30, 40, 45, 50, 60],         base:.57, rev:.3}];   // 9 · 3.65
+    {skip:.15, max:3, hours:[8, 9, 10, 11, 14, 15, 16, 20, 21, 23], lens:[25, 30, 45, 50, 60, 60, 75], base:.55, rev:.45, q:1, pick:4, rvd:[0.12]},   // 예시 1
+    {skip:.45, max:2, hours:[21, 22, 23, 23, 0, 1, 15, 16],        lens:[20, 25, 25, 30, 30, 45],     base:.47, rev:.12, q:1, pick:3, rvd:[0.12]},   // 2 · 2.80
+    {skip:.38, max:2, hours:[20, 21, 22, 23, 23, 14, 16],          lens:[25, 25, 30, 30, 45, 50],     base:.52, rev:.18, q:1, pick:3, rvd:[0.12]},   // 3 · 3.20
+    {skip:.15, max:3, hours:[9, 10, 14, 15, 16, 19, 20, 21],       lens:[40, 45, 50, 50, 60, 60],     base:.58, rev:.45, q:2, pick:5, rvd:[6, 3, 0.12]},   // 4 · 3.90
+    {skip:.05, max:4, hours:[7, 8, 9, 10, 10, 13, 14, 19, 20],     lens:[50, 60, 60, 75, 75, 90],     base:.66, rev:.65, q:4, pick:6, rvd:[10, 8, 6, 4, 2, 1, 0.12]},   // 5 · 4.23
+    {skip:.20, max:3, hours:[10, 11, 14, 15, 19, 20, 21, 22],      lens:[30, 45, 45, 50, 60],         base:.59, rev:.35, q:2, pick:4, rvd:[5, 0.12]},   // 6 · 3.74
+    {skip:.08, max:3, hours:[7, 8, 9, 13, 14, 15, 19, 20],         lens:[45, 50, 60, 60, 75, 90],     base:.70, rev:.6, q:4, pick:6, rvd:[9, 7, 5, 3, 1, 0.12]},    // 7 · 4.18
+    {skip:.16, max:3, hours:[19, 20, 21, 22, 23, 23, 0, 14],       lens:[45, 50, 60, 75, 90],         base:.63, rev:.4, q:3, pick:5, rvd:[6, 4, 2, 0.12]},    // 8 · 3.86
+    {skip:.22, max:3, hours:[9, 10, 14, 15, 20, 21, 22, 23],       lens:[30, 40, 45, 50, 60],         base:.57, rev:.3, q:2, pick:4, rvd:[4, 0.12]}];   // 9 · 3.65
   const pf = PROF[idx] || PROF[0];
   const r = rng(42 + idx * 7), now = Date.now(), SPAN = 24;
   // 시간표 순서(월→금)대로 행성이 돼요: 수성부터 해왕성, 9번째부터 왜소행성
@@ -1914,16 +1914,21 @@ function demoWorld(idx = demoIdx){
       sessionsD.push({at:st.getTime(), sec:len * 60, sub});
       const k = fmt(st); log[k] = log[k] || {}; log[k][sub] = (log[k][sub] || 0) + len * 60;
       const pool = cs[sub].filter(c => c.at <= qAt);
-      if(pool.length && r() < .85){
+      for(let qi = 0; qi < pf.q; qi++){
+        const qT = qAt + qi * 20 * 60000; if(qT > now || !pool.length || r() > .85) continue;
         const p = pf.base + (hour >= 6 && hour < 12 ? .18 : hour >= 22 || hour < 5 ? -.12 : 0) + (len > 50 ? .12 : len > 30 ? .04 : -.08) + (sub === subs[1] ? -.08 : 0);
-        const pick = pool.slice().sort(() => r() - .5).slice(0, 4), items = [];
+        const pick = pool.slice().sort(() => r() - .5).slice(0, pf.pick), items = [];
         pick.forEach(c => { for(let q = 0; q < 2; q++){ const good = r() < p + (r() - .5) * .2; items.push({c:c.name, s:sub, ok:good}); if(good) c.c++; else c.w++; } });
-        att.push({id:'demo-a' + att.length, set:'demo', sub, src:r() < .5 ? 'pdf' : r() < .7 ? 'lecture' : 'review', at:qAt, n:items.length, ok:items.filter(x => x.ok).length, items});
+        att.push({id:'demo-a' + att.length, set:'demo', sub, src:r() < .5 ? 'pdf' : r() < .7 ? 'lecture' : 'review', at:qT, n:items.length, ok:items.filter(x => x.ok).length, items});
       }
     }
   }
-  const rv = concepts.filter(c => c.at < now - 2 * DAY && r() < pf.rev).map(c => ({c:c.name, s:c.sub, ok:true}));
-  att.push({id:'demo-rv', set:'demo', sub:'여러 과목', src:'review', at:now - 3 * 3600000, n:rv.length, ok:rv.length, items:rv});
+  // 흐려진 별 복습: 학점 높은 학생일수록 자주, 많이 복습해요
+  pf.rvd.forEach((dd, k) => {
+    const T = now - dd * DAY;
+    const rv = concepts.filter(c => c.at < T - 2 * DAY && r() < pf.rev).map(c => ({c:c.name, s:c.sub, ok:r() < Math.min(.97, pf.base + .3)}));
+    if(rv.length) att.push({id:'demo-rv' + k, set:'demo', sub:'여러 과목', src:'review', at:T, n:rv.length, ok:rv.filter(x => x.ok).length, items:rv});
+  });
   const wd = {concepts, attempts:att, sessions:sessionsD, log, consts, demo:true,
     exams:[{id:'demo-e1', sub:idx ? examSubs[0] : '약리학', date:fmt(new Date(now + 4 * DAY))}, {id:'demo-e2', sub:idx ? examSubs[1] : '성인간호학', date:fmt(new Date(now + 11 * DAY))}]};
   buildEvents(wd).forEach(ev => ev.list.forEach(x => learn(concepts.find(c => c.id === x.id), x.good, ev.t)));
